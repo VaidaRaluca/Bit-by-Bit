@@ -1,12 +1,12 @@
 export module game;
 import <vector>;
-import cards;
+import card;
 namespace eter 
 {
-	export class Game: public eter::Cards
+	export class Game: public eter::Card
 	{
 	private:
-		std::vector<std::vector<eter::Cards>> board;
+	
 
 	};
 

@@ -130,7 +130,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cards.cppm" />
+    <ClCompile Include="board.cppm" />
+    <ClCompile Include="card.cppm" />
     <ClCompile Include="game.cppm" />
     <ClCompile Include="gamemods.cppm" />
     <ClCompile Include="player.cppm" />

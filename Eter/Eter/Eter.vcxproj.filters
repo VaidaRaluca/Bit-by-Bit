@@ -24,10 +24,13 @@
     <ClCompile Include="player.cppm">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="cards.cppm">
+    <ClCompile Include="card.cppm">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="gamemods.cppm">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="board.cppm">
       <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
