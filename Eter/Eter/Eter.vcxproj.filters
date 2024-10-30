@@ -27,5 +27,8 @@
     <ClCompile Include="cards.cppm">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="gamemods.cppm">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
