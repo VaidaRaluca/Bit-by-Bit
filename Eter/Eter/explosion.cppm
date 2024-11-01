@@ -11,7 +11,7 @@ namespace eter
 		Return,
 		Pit
 	};
-	export class Explosion : public Board
+	export class Explosion 
 	{
 	private:
 		std::vector<std::vector<Effect>>EffectsMatrix;//matricea de efecte
@@ -21,10 +21,10 @@ namespace eter
 		Explosion() = default;
 		Explosion(int dim);
 		void rorate90();
-		void applyEffects();
+		void applyEffects(uint8_t x,uint8_t y,Board &grid);
 		void display()const;
 		int GetSize()const;
 		void SetSize(uint8_t newSize);
-		~Explosion();
+		~Explosion()=default;
 	};
 }

@@ -63,5 +63,8 @@
     <ClCompile Include="mage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="explosion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

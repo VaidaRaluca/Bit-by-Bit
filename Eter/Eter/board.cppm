@@ -12,6 +12,7 @@ namespace eter {
 		Board()=default;
 		Board(std::vector<std::vector<std::optional<Card>>>grid, uint8_t rows, uint8_t cols);
 		Board(const Board& other); //constructor de copiere
+		bool isValidPosition(int x, int y) const;
 		~Board();
 
 		void drawBoard();//afisam grid

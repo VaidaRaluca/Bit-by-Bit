@@ -10,3 +10,9 @@ Board::Board(const Board & other)
 	, m_rows(other.m_rows)
 	, m_cols(other.m_cols)
 {}
+
+bool eter::Board::isValidPosition(int x, int y) const
+{
+	
+		return x >= 0 && x < m_rows && y >= 0 && y < m_cols;
+}
