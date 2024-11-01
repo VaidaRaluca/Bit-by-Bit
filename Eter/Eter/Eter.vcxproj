@@ -131,8 +131,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="amode.cppm" />
+    <ClCompile Include="board.cpp" />
     <ClCompile Include="board.cppm" />
     <ClCompile Include="card.cppm" />
+    <ClCompile Include="cardtype.cpp" />
+    <ClCompile Include="cardtype.cppm" />
     <ClCompile Include="game.cppm" />
     <ClCompile Include="gamemods.cppm" />
     <ClCompile Include="player.cppm" />

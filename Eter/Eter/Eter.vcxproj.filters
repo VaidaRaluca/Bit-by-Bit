@@ -36,5 +36,14 @@
     <ClCompile Include="amode.cppm">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="cardtype.cppm">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cardtype.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="board.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
