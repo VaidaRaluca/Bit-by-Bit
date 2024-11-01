@@ -1,0 +1,49 @@
+export module elementalpowercards;
+import board;
+import player;
+
+namespace eter {
+
+	export class ElementalPowerCards {
+	public:
+		enum class PowerAbility {
+			ControlledExplosion,
+			Destruction,
+			Flame,
+			Fire,
+			ASH,
+			Spark,
+			Squall,
+			Gale,
+			Hurricane,
+			Gust,
+			Mirage,
+			Storm,
+			Tide,
+			Mist,
+			Wave,
+			Whirlpool,
+			Blizzard,
+			Waterfall,
+			Support,
+			EarthQuake,
+			Crumble,
+			Border,
+			Avalanche,
+			Rock
+	};
+	private:
+		PowerAbility m_power;
+		bool m_used;
+
+	public:
+		ElementalPowerCards();
+		ElementalPowerCards(PowerAbility power,bool used);
+		bool setUsed(bool used);
+		bool getUsed();
+		PowerAbility setAbility(PowerAbility power);
+		PowerAbility getAility() const;
+		void activate(Player& player, Player& opponent, Board& board);
+		~ElementalPowerCards()=default;
+	};
+}

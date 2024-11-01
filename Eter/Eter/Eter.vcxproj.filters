@@ -45,5 +45,11 @@
     <ClCompile Include="board.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cmode.cppm">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="elementalpowercards.cppm">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -136,6 +136,8 @@
     <ClCompile Include="card.cppm" />
     <ClCompile Include="cardtype.cpp" />
     <ClCompile Include="cardtype.cppm" />
+    <ClCompile Include="cmode.cppm" />
+    <ClCompile Include="elementalpowercards.cppm" />
     <ClCompile Include="game.cppm" />
     <ClCompile Include="gamemods.cppm" />
     <ClCompile Include="player.cppm" />
