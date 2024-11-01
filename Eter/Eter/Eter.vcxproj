@@ -142,6 +142,7 @@
     <ClCompile Include="explosion.cppm" />
     <ClCompile Include="game.cppm" />
     <ClCompile Include="gamemods.cppm" />
+    <ClCompile Include="mage.cppm" />
     <ClCompile Include="player.cppm" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
