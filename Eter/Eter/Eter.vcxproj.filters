@@ -51,5 +51,8 @@
     <ClCompile Include="elementalpowercards.cppm">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="explosion.cppm">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
