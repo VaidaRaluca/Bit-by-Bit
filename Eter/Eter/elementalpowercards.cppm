@@ -39,10 +39,10 @@ namespace eter {
 	public:
 		ElementalPowerCards();
 		ElementalPowerCards(PowerAbility power,bool used);
-		bool setUsed(bool used);
-		bool getUsed();
-		PowerAbility setAbility(PowerAbility power);
-		PowerAbility getAility() const;
+		void setUsed(bool used);
+		bool getUsed() const;
+		void setAbility(PowerAbility power);
+		PowerAbility getAbility() const;
 		void activate(Player& player, Player& opponent, Board& board);
 		~ElementalPowerCards()=default;
 	};
