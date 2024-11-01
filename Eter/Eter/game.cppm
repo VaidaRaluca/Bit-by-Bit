@@ -4,7 +4,7 @@ import card;
 import player;
 import gamemods;
 import board;
-namespace eter 
+namespace eter
 {
 	export class Game
 	{
@@ -16,6 +16,15 @@ namespace eter
 	public:
 		Game();
 		Game(Player player1, Player player2, Board board, GameMods gameMode);
+		void SetPlayer1(Player player);
+		Player GetPlayer1();
+		void SetPlayer2(Player player);
+		Player GetPlayer2();
+		void SetBoard();
+		Board GetBoard();
+		void SetGameMods();
+		GameMods GetGameMOds();
+
 	};
 
 }
