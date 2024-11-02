@@ -1,14 +1,33 @@
 module bmode;
 using namespace eter;
+import game;
+import player;
+import card;
+import cardtype;
 import <random>;
 
 void BMode::applyModeRules()
 {
-
+    assignCardsInHand();
+    generateMage();
 }
 
-void eter::BMode::assignCardsForPlayers()
+void eter::BMode::assignCardsInHand()
 {
+    std::vector<Card>cardsForBMode{
+    Card(CardType::DigitCard,"red",1,0),
+    Card(CardType::DigitCard,"red",1,0) ,
+    Card(CardType::DigitCard,"red",1,0) ,
+    Card(CardType::DigitCard,"red",1,0) ,
+    Card(CardType::DigitCard,"red",1,0) ,
+    Card(CardType::DigitCard, "red",1,0),
+    Card(CardType::DigitCard,"red",1,0) ,
+    Card(CardType::DigitCard,"red",1,0) ,
+    Card(CardType::DigitCard,"red",1,0),
+    Card(CardType::DigitCard,"red",0,1)
+    };
+    //Game::GetPlayer1()->SetCardsInHand(cardsForBMode);
+    //Game::GetPlayer2()->SetCardsInHand(cardsForBMode);
 }
 
 void eter::BMode::generateMage()

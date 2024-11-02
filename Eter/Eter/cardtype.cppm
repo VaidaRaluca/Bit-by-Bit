@@ -1,4 +1,4 @@
-#include <cstdint>;
+#include <cstdint>
 export module cardtype;
 import <string>;
 namespace eter {

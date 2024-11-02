@@ -5,6 +5,7 @@ import gamemods;
 import mage;
 import player;
 import board;
+import card;
 import<vector>;
 
 namespace eter {
@@ -23,7 +24,7 @@ namespace eter {
 	public:
 		BMode();
 		void applyModeRules(); // override 
-		void assignCardsForPlayers(); //artibuie setul de carti pentru playeri
+		void assignCardsInHand(); //artibuie cate un set de carti pentru fiecare player
 		void generateMage();  // genereaza cate un vrajitor pentru fiecare player
 
 	};

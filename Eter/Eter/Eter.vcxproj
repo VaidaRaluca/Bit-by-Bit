@@ -135,6 +135,7 @@
     <ClCompile Include="bmode.cppm" />
     <ClCompile Include="board.cpp" />
     <ClCompile Include="board.cppm" />
+    <ClCompile Include="card.cpp" />
     <ClCompile Include="card.cppm" />
     <ClCompile Include="cardtype.cpp" />
     <ClCompile Include="cardtype.cppm" />
@@ -144,9 +145,11 @@
     <ClCompile Include="explosion.cpp" />
     <ClCompile Include="explosion.cppm" />
     <ClCompile Include="game.cppm" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="gamemods.cppm" />
     <ClCompile Include="mage.cpp" />
     <ClCompile Include="mage.cppm" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="player.cppm" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
