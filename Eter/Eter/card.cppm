@@ -1,32 +1,29 @@
-#include<cstdint>
+#include<cstdint>;
+#include <iostream>;
 export module card;
-import cardtype;
 import <variant>;
 import <vector>;
 import <string>;
 namespace eter {
 	export class Card {
 	public:
-		// Unde retinem valoarea cartii (1-4) ??
-		CardType m_type;
-		std::string m_color;
+		uint8_t m_value;
+		std::string m_color; 
 		bool m_position; //true = fata in sus
-		bool m_isEter;   //true = este carte eter
 		Card() = default;
-		Card(CardType type, const std::string& color, bool position,bool isEter);
+		Card(uint8_t value , const std::string& color, bool position);
 
-		CardType GetType();  
-		std::string GetColor();
-		bool GetPosition();
-		bool GetIsEter();
+		uint8_t GetValue() const;  
+		const std::string& GetColor() const;
+		bool GetPosition() const;
 
-		void SetType(CardType type);
+		void SetValue(uint8_t value);
 		void SetColor(std::string color);
 		void SetPosition(bool positon);
-		void SetIsEter(bool isEter);
-
 
 		~Card() = default;
 	};
+	export std::ostream& operator<<(std::ostream& os, const Card& card);
+
 
 };

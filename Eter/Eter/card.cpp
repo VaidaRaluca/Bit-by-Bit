@@ -1,36 +1,30 @@
 module card;
-import cardtype;
 import <string>;
-using namespace eter;
+using eter::Card;
+import <format>;
+Card::Card(uint8_t value, const std::string& color, bool position) :
+	m_value{value},m_color{color},m_position{position}
+{}
 
-Card::Card(CardType type, const std::string& color, bool position, bool isEter) :
-	m_type{type},m_color{color},m_position{position},m_isEter(isEter)
+uint8_t Card::GetValue() const
 {
+	return m_value;
 }
 
-CardType Card::GetType()
-{
-	return m_type;
-}
-
-std::string Card::GetColor()
+const std::string& Card::GetColor() const
 {
 	return m_color;
 }
 
-bool Card::GetPosition()
+bool Card::GetPosition() const
 {
 	return m_position;
 }
 
-bool Card::GetIsEter()
-{
-	return m_isEter;
-}
 
-void Card::SetType(CardType type)
+void Card::SetValue(uint8_t value)
 {
-	m_type = type;
+	m_value = value;
 }
 
 void Card::SetColor(std::string color)
@@ -38,13 +32,14 @@ void Card::SetColor(std::string color)
 	m_color = color;
 }
 
-void Card::SetPosition(bool positon)
+void Card::SetPosition(bool position)
 {
-	m_position = positon;
+	m_position = position;
 }
 
-void Card::SetIsEter(bool isEter)
-{
-	m_isEter = isEter;
-}
 
+std::ostream& operator<<(std::ostream& os, const Card& card)
+{
+	os << static_cast<int>(card.GetValue())<<" "<<card.GetColor()<< static_cast<int>(card.GetPosition());
+	return os;
+}

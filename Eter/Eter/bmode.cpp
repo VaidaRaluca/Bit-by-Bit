@@ -3,7 +3,7 @@ using namespace eter;
 import game;
 import player;
 import card;
-import cardtype;
+//import cardtype;
 import <random>;
 
 void BMode::applyModeRules()
@@ -14,18 +14,18 @@ void BMode::applyModeRules()
 
 void eter::BMode::assignCardsInHand()
 {
-    std::vector<Card>cardsForBMode{
-    Card(CardType::DigitCard,"red",1,0),
-    Card(CardType::DigitCard,"red",1,0) ,
-    Card(CardType::DigitCard,"red",1,0) ,
-    Card(CardType::DigitCard,"red",1,0) ,
-    Card(CardType::DigitCard,"red",1,0) ,
-    Card(CardType::DigitCard, "red",1,0),
-    Card(CardType::DigitCard,"red",1,0) ,
-    Card(CardType::DigitCard,"red",1,0) ,
-    Card(CardType::DigitCard,"red",1,0),
-    Card(CardType::DigitCard,"red",0,1)
-    };
+    //std::vector<Card>cardsForBMode{
+    //Card(CardType::DigitCard,"red",1,0),
+    //Card(CardType::DigitCard,"red",1,0) ,
+    //Card(CardType::DigitCard,"red",1,0) ,
+    //Card(CardType::DigitCard,"red",1,0) ,
+    //Card(CardType::DigitCard,"red",1,0) ,
+    //Card(CardType::DigitCard, "red",1,0),
+    //Card(CardType::DigitCard,"red",1,0) ,
+    //Card(CardType::DigitCard,"red",1,0) ,
+    //Card(CardType::DigitCard,"red",1,0),
+    //Card(CardType::DigitCard,"red",0,1)
+    //};
     //Game::GetPlayer1()->SetCardsInHand(cardsForBMode);
     //Game::GetPlayer2()->SetCardsInHand(cardsForBMode);
 }

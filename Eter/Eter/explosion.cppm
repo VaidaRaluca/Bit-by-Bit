@@ -1,7 +1,7 @@
 export module explosion;
 import board;
-#include<vector>
-#include<random>
+import <random>;
+import <vector>;
 namespace eter 
 {
 	enum class Effect : uint8_t
