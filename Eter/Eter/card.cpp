@@ -2,6 +2,7 @@ module card;
 import <string>;
 using eter::Card;
 import <format>;
+import <iostream>;
 Card::Card(uint8_t value, const std::string& color, bool position) :
 	m_value{value},m_color{color},m_position{position}
 {}
@@ -38,8 +39,8 @@ void Card::SetPosition(bool position)
 }
 
 
-std::ostream& operator<<(std::ostream& os, const Card& card)
+std::ostream& eter::operator<<(std::ostream& os, const Card& card)
 {
-	os << static_cast<int>(card.GetValue())<<" "<<card.GetColor()<< static_cast<int>(card.GetPosition());
+	os << static_cast<int>(card.GetValue())<<" "<<card.GetColor()<<" " << static_cast<int>(card.GetPosition());
 	return os;
 }

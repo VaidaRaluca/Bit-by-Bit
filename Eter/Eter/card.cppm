@@ -1,9 +1,9 @@
 #include<cstdint>;
-#include <iostream>;
 export module card;
 import <variant>;
 import <vector>;
 import <string>;
+import <iostream>;
 namespace eter {
 	export class Card {
 	public:

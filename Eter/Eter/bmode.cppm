@@ -28,4 +28,5 @@ namespace eter {
 		void generateMage();  // genereaza cate un vrajitor pentru fiecare player
 
 	};
+
 }

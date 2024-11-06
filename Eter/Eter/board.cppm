@@ -3,12 +3,13 @@ export module board;
 import <vector>;
 import <optional>;
 import <stack>;
-import card; 
+import <utility>;
+export import card; 
 namespace eter {
 	export class Board {
 	private:
 		std::vector<std::vector<std::optional<std::stack<Card>>>>m_grid;
-		uint8_t m_rows=7, m_cols=7;
+		uint8_t m_rows=7, m_cols=7; // size_t
 	public:
 		Board()=default;
 		Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint8_t rows, uint8_t cols);
@@ -20,9 +21,12 @@ namespace eter {
 		uint8_t GetCols() const;
 		const std::vector<std::vector<std::optional<std::stack<Card>>>>& GetGrid() const;
 
+		std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos);
+		const std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos) const;
+
 		bool isValidPosition(int x, int y) const;
 		~Board()=default;
 
 	};
-	//export std::ostream& operator<<(std::ostream& os, const Board& baord);
+	export std::ostream& operator<<(std::ostream& os, const Board& board);
 }

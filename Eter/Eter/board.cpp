@@ -1,6 +1,7 @@
 module board;
-using namespace eter;
-std::string_view kEmpyBoardCell{ "____" };
+using eter::Card;
+using eter::Board;
+const std::string_view kEmpyBoardCell{ "____" };
 
 Board::Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint8_t rows, uint8_t cols)
 	: m_grid{ rows, std::vector<std::optional<std::stack<Card>>>(cols, std::nullopt) }
@@ -37,13 +38,43 @@ const std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGrid(
 	return m_grid;
 }
 
+std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) {
+	int x = pos.first;
+	int y = pos.second;
+	if (isValidPosition(x, y)) {
+		return m_grid[x][y];
+	}
+	throw std::out_of_range("Invalid position");
+}
+
+const std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) const {
+	int x = pos.first;
+	int y = pos.second;
+	if (isValidPosition(x, y)) {
+		return m_grid[x][y];
+	}
+	throw std::out_of_range("Invalid position");
+}
+
 bool Board::isValidPosition(int x, int y) const
 {
 
 	return x >= 0 && x < m_rows && y >= 0 && y < m_cols;
 }
 
-//std::ostream& operator<<(std::ostream& os, const Board& baord)
-//{
-//	
-//}
+
+std::ostream& eter::operator<<(std::ostream& os, const Board& board)
+{
+	for (uint8_t line = 0;line < board.GetRows();++line)
+	{
+		for (uint8_t column = 0; column < board.GetCols();++column)
+		{
+			if (board.GetGrid()[line][column].has_value())
+				os << board.GetGrid()[line][column].value().top() << " ";
+			else
+				os << kEmpyBoardCell << " ";
+		}
+		os << '\n';
+	}
+	return os;
+}
