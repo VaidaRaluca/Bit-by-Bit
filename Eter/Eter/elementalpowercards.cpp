@@ -5,9 +5,9 @@ import <stdexcept>;
 
 using namespace eter;
 
-ElementalPowerCards::ElementalPowerCards(PowerAbility power, bool used) : 
+ElementalPowerCards::ElementalPowerCards(PowerAbility power) : 
 	m_power{power},
-	m_used{used}
+	m_used{false}
 {}
 
 void ElementalPowerCards:: setUsed(bool used)

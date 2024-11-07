@@ -37,8 +37,8 @@ namespace eter {
 		bool m_used;
 
 	public:
-		ElementalPowerCards();
-		ElementalPowerCards(PowerAbility power,bool used);
+		ElementalPowerCards()=default;
+		ElementalPowerCards(PowerAbility power);
 		void setUsed(bool used);
 		bool getUsed() const;
 		void setAbility(PowerAbility power);

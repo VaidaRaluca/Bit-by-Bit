@@ -137,6 +137,7 @@
     <ClCompile Include="board.cppm" />
     <ClCompile Include="card.cpp" />
     <ClCompile Include="card.cppm" />
+    <ClCompile Include="cmode.cpp" />
     <ClCompile Include="cmode.cppm" />
     <ClCompile Include="elementalpowercards.cpp" />
     <ClCompile Include="elementalpowercards.cppm" />
