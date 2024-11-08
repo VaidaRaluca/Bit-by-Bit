@@ -1,14 +1,25 @@
 export module amode;
-import gamemods;
+import player;
+import board;
+import game;
+import <iostream>;
+import <string>;
 
 namespace eter {
-	export class AMode: public GameMods {
+	export class AMode {
 	private:
-		enum class AModeRules {
-			
-		};
+		Player m_player1;
+		Player m_player2;
+		Board m_board;
+		bool m_isPlayerTurn;//true pentru Player 1, false pentru Player 2
+		int m_player1Wins;
+		int m_player2Wins;
+
 	public:
-		AMode();
-		void applyModeRules(); // override
+		AMode(Player player1, Player player2, const Board& board);
+		void startMatch();
+		void applyModeRules();
+		 
+
 	};
-}
+} // namespace eter

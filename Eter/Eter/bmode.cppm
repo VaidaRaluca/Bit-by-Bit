@@ -1,7 +1,7 @@
 export module bmode;
 
 import game;
-import gamemods;
+import <string>;
 import mage;
 import player;
 import board;
@@ -9,7 +9,7 @@ import card;
 import<vector>;
 
 namespace eter {
-	export class BMode : public GameMods {
+	export class BMode {
 	private:
 		std::vector<Mage> m_mages{ Mage(Mage::MagicAbility::removeOponnentCard),
 		Mage(Mage::MagicAbility::removeEntireRow),

@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="amode.cpp" />
     <ClCompile Include="amode.cppm" />
     <ClCompile Include="bmode.cpp" />
     <ClCompile Include="bmode.cppm" />
@@ -145,7 +146,6 @@
     <ClCompile Include="explosion.cppm" />
     <ClCompile Include="game.cppm" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="gamemods.cppm" />
     <ClCompile Include="mage.cpp" />
     <ClCompile Include="mage.cppm" />
     <ClCompile Include="player.cpp" />

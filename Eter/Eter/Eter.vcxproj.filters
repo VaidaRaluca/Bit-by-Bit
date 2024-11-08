@@ -27,9 +27,6 @@
     <ClCompile Include="card.cppm">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="gamemods.cppm">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="board.cppm">
       <Filter>Header Files</Filter>
     </ClCompile>
@@ -76,6 +73,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cmode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="amode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

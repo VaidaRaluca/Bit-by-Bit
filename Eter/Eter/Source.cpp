@@ -1,6 +1,4 @@
 import board;
-
-
 int main()
 {
 	using namespace eter;
@@ -15,5 +13,6 @@ int main()
 	}
 	stack->push(card);
 	std::cout << board;
+	
 	return 0;
 }

@@ -1,10 +1,10 @@
 export module cmode;
-import gamemods;
+import <string>;
 import elementalpowercards;
 import player;
 import <vector>;
 namespace eter {
-	export class CMode : public GameMods {
+	export class CMode  {
 	private:
 		std::vector<ElementalPowerCards>m_power{ ElementalPowerCards(ElementalPowerCards::PowerAbility::ControlledExplosion),
 		ElementalPowerCards(ElementalPowerCards::PowerAbility::Destruction),

@@ -81,7 +81,7 @@ bool eter::Player::placeCard(int x, int y, const Card& card, Board& board)
 
 	auto it = std::find(m_cardsInHand.begin(), m_cardsInHand.end(), card);//chair are ce vrea sa puna in mana??
 	if (it == m_cardsInHand.end()) {
-		std::cout << "Cartea nu este în mana jucatorului.\n";
+		std::cout << "Cartea nu este in mana jucatorului.\n";
 		return false; // nu are 
 	}
 
