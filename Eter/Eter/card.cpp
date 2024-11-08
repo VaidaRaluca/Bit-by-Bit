@@ -28,7 +28,7 @@ void Card::SetValue(uint8_t value)
 	m_value = value;
 }
 
-void Card::SetColor(std::string color)
+void Card::SetColor(const std::string& color)
 {
 	m_color = color;
 }
@@ -46,6 +46,6 @@ bool eter::Card::operator==(const Card& other) const
 
 std::ostream& eter::operator<<(std::ostream& os, const Card& card)
 {
-	os << static_cast<int>(card.GetValue())<<" "<<card.GetColor()<<" " << static_cast<int>(card.GetPosition());
+	os << std::format("Value: {}, Color: {}, Face-Up: {}", static_cast<int>(card.GetValue()), card.GetColor(), card.GetPosition());
 	return os;
 }

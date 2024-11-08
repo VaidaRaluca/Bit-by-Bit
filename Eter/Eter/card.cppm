@@ -3,6 +3,7 @@ export module card;
 import <variant>;
 import <vector>;
 import <string>;
+import <format>;
 import <iostream>;
 namespace eter {
 	export class Card {
@@ -18,7 +19,7 @@ namespace eter {
 		bool GetPosition() const;
 
 		void SetValue(uint8_t value);
-		void SetColor(std::string color);
+		void SetColor(const std::string& color); //for later color could be an enum : red/blue => reduces memory overhead and increases efficiency
 		void SetPosition(bool positon);
 
 		bool operator==(const Card& other) const;

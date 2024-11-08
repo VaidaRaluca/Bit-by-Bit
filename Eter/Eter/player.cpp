@@ -1,5 +1,6 @@
 module player;
 using namespace eter;
+constexpr std::pair<uint8_t, uint8_t> kInvalidPosition = { 255, 255 };
 Player::Player(const std::string& name, uint32_t score, const std::string& color, const std::vector<Card>& cards, bool hasUsedIllusion)
 	: m_name{ name }
 	, m_score{ score }
@@ -28,7 +29,7 @@ const std::vector<Card>& Player::GetCardsInHand() const
 	return m_cardsInHand;
 }
 
-bool Player::GetHasUsedIllusion() const
+bool Player::GetHasUsedIllusion() const //returns false if the illusion has not yet been used
 {
 	return m_hasUsedIllusion;
 }
@@ -67,13 +68,17 @@ std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board)
 {
 	for (uint8_t rows = 0; rows < board.GetRows(); rows++)
 		for (uint8_t cols = 0; cols < board.GetCols(); cols++)
-			if (board.isValidPosition(rows, cols) && board.GetGrid()[rows][cols] == std::nullopt)
+		{
+			auto& stack = board[{rows, cols}];
+			if (board.isValidPosition(rows, cols) && !stack)
 				return { rows,cols };
+		}
+	return kInvalidPosition;
 }
 
 bool eter::Player::placeCard(int x, int y, const Card& card, Board& board)
 {
-	
+
 	auto it = std::find(m_cardsInHand.begin(), m_cardsInHand.end(), card);//chair are ce vrea sa puna in mana??
 	if (it == m_cardsInHand.end()) {
 		std::cout << "Cartea nu este în mana jucatorului.\n";
@@ -82,7 +87,7 @@ bool eter::Player::placeCard(int x, int y, const Card& card, Board& board)
 
 	if (!board.canPlaceCard(x, y, card)) {
 		std::cout << "Nu poti plasa aceasta carte la pozitia (" << x << ", " << y << ").\n";
-		return false; 
+		return false;
 	}
 
 	board.placeCard(x, y, card);
@@ -95,11 +100,20 @@ bool eter::Player::placeCard(int x, int y, const Card& card, Board& board)
 	return true;
 }
 
-void Player::useIllusion(Board& board)
+void Player::useIllusion(Board& board, Card& illusion)
 {
-	if (GetHasUsedIllusion()==false)
+	if (GetHasUsedIllusion()) {
+		std::cout << "Illusion has already been used\n";
 		m_hasUsedIllusion = true;
+		return;
+	}
 	std::pair<uint8_t, uint8_t> position = findEmptyCell(board);
-
+	if (position == kInvalidPosition) {
+		std::cout << "No empty cell has been found on the board\n";
+		return;
+	}
+	auto& [line, column] = position;
+	illusion.SetPosition(false);
+	placeCard(line, column, illusion, board);
 }
 

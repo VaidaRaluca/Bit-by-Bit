@@ -4,7 +4,7 @@ using eter::Board;
 const std::string_view kEmpyBoardCell{ "____" };
 
 Board::Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint8_t rows, uint8_t cols)
-	: m_grid{ rows, std::vector<std::optional<std::stack<Card>>>(cols, std::nullopt) }
+	: m_grid{std::move(grid)}
 	, m_rows{ rows }
 	, m_cols{ cols }
 {}
@@ -58,7 +58,6 @@ const std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos
 
 bool Board::isValidPosition(int x, int y) const
 {
-
 	return x >= 0 && x < m_rows && y >= 0 && y < m_cols;
 }
 
@@ -81,7 +80,7 @@ bool eter::Board::isAdjacentToOccupiedSpace(int x, int y)const
 }
 
 
-bool eter::Board::canPlaceCard(int x, int y, const Card& card)const
+bool eter::Board::canPlaceCard(int x, int y, const Card& card) const
 {
 	if (!isValidPosition(x, y)) 
 	{
@@ -117,7 +116,6 @@ void eter::Board::placeCard(int x, int y, const Card& card)
 	std::cout << "Cartea cu valoarea " << card.m_value << " a fost plasata la (" << x << ", " << y << ").\n";
 }
 	
-
 
 std::ostream& eter::operator<<(std::ostream& os, const Board& board)
 {

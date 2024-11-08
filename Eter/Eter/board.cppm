@@ -9,7 +9,7 @@ namespace eter {
 	export class Board {
 	private:
 		std::vector<std::vector<std::optional<std::stack<Card>>>>m_grid;
-		uint8_t m_rows=7, m_cols=7; // size_t
+		size_t m_rows = { 7 }, m_cols = { 7 }; // size_t
 	public:
 		Board()=default;
 		Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint8_t rows, uint8_t cols);

@@ -15,16 +15,16 @@ namespace eter
 		bool m_isPlayerTurn;  // true pentru p1,false pentru p2
 
 	public:
-		Game()=default;
-		Game(Player player1, Player player2, Board board, GameMods gameMode); 
+		Game() = default;
+		Game(Player player1, Player player2, Board board, GameMods gameMode);
 
 		Player GetPlayer1();
 		Player GetPlayer2();
 		Board GetBoard();
 		GameMods GetGameMOds();
 
-		
-		void SetBoard(Board board); 
+
+		void SetBoard(Board board);
 		void SetGameMods(GameMods gameMode);
 		bool playTurn(int x, int y, const Card& card);
 		void nextTurn();

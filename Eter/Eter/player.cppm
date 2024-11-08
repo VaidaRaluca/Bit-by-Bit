@@ -3,7 +3,9 @@ export module player;
 import card;
 import board;
 import <vector>;
+import <optional>;
 import <string>;
+import <random>;
 import <utility>;
 namespace eter {
 	export class Player
@@ -35,7 +37,7 @@ namespace eter {
 		void SetCardsInHand(const std::vector<Card>& cards);
 		void AddPlayedCard(const Card& card);
 
-		void useIllusion(Board& board);
+		void useIllusion(Board& board, Card& illusion);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
 		bool placeCard(int x, int y, const Card& card, Board& board);
 	};
