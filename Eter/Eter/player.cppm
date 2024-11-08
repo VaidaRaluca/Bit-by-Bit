@@ -37,5 +37,6 @@ namespace eter {
 
 		void useIllusion(Board& board);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
+		bool placeCard(int x, int y, const Card& card, Board& board);
 	};
 }

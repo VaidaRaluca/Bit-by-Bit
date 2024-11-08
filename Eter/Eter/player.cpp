@@ -71,6 +71,30 @@ std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board)
 				return { rows,cols };
 }
 
+bool eter::Player::placeCard(int x, int y, const Card& card, Board& board)
+{
+	
+	auto it = std::find(m_cardsInHand.begin(), m_cardsInHand.end(), card);//chair are ce vrea sa puna in mana??
+	if (it == m_cardsInHand.end()) {
+		std::cout << "Cartea nu este în mana jucatorului.\n";
+		return false; // nu are 
+	}
+
+	if (!board.canPlaceCard(x, y, card)) {
+		std::cout << "Nu poti plasa aceasta carte la pozitia (" << x << ", " << y << ").\n";
+		return false; 
+	}
+
+	board.placeCard(x, y, card);
+
+	m_cardsInHand.erase(it);
+
+	m_playedCards.push_back(card);
+
+	std::cout << "Cartea cu valoarea " << card.m_value << " a fost plasata de " << m_name << " la (" << x << ", " << y << ").\n";
+	return true;
+}
+
 void Player::useIllusion(Board& board)
 {
 	if (GetHasUsedIllusion()==false)
