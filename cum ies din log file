@@ -1,0 +1,117 @@
+[33mcommit 885fb94ad94d782da298fa01912cf72d333ad04b[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: VaidaRaluca <ralucavda@yahoo.com>
+Date:   Fri Nov 1 20:24:28 2024 +0200
+
+    Am adaugat membrul cardsInhand de tip vector de carti clasei Player. Am implementat constructorul cu parametrii pentru clasa Player. Am implemenatat setteri si getteri pentru fiecare membru al clasei.
+
+[33mcommit 9d8eb58ccb92cd281ffcac0c9a8a4283ad6f8a36[m
+Author: VaidaRaluca <ralucavda@yahoo.com>
+Date:   Fri Nov 1 20:16:42 2024 +0200
+
+    Revert "Am adaugat membrul cardsInhand de tip vector de carti clasei Player. Am implementat constructorul cu parametrii pentru clasa Player. Am implemenatat setteri si getteri pentru fiecare membru al clasei."
+    
+    This reverts commit b324e3bfa7f55c13557ee0bf6d75cd80364edde4.
+
+[33mcommit b324e3bfa7f55c13557ee0bf6d75cd80364edde4[m
+Author: VaidaRaluca <ralucavda@yahoo.com>
+Date:   Fri Nov 1 19:10:17 2024 +0200
+
+    Am adaugat membrul cardsInhand de tip vector de carti clasei Player. Am implementat constructorul cu parametrii pentru clasa Player. Am implemenatat setteri si getteri pentru fiecare membru al clasei.
+
+[33mcommit d7d9e89d8e05750187174833d837138a553c2e62[m
+Author: Sonia151925 <sonia.kicsi@student.unitbv.ro>
+Date:   Fri Nov 1 18:40:50 2024 +0200
+
+    Am implementat metodele din clasa explosion si am adaugat functia isValidPosition in clasa board.
+
+[33mcommit 0f0478b467893aaa8b0ec6a89d391a0373d7670c[m
+Author: Munteanu Marius <iulian.munteanu@student.unitbv.ro>
+Date:   Fri Nov 1 17:59:39 2024 +0200
+
+    Am creat mage.cpp unde se gestioneaza activarea unei abilitati magice.
+    Am implementat constructorul cu parametri "Mage(MagicAbility ability)", unde seteaza abilitatea.
+    Am implementat metoda "isUsed" care indica daca o abilitate a fost deja folosita.
+    Am implementat getter-ul "GetAbility" care este folosit pentru a returna abilitatea specifica vrajitorului.
+    Metoda "activate" unde se verifica daca abilitatea a fost deja utilizata, daca nu se selecteaza functia corespunzatoare fiecarei abilitati.
+    Si am pregatit pentru implementare metodele specifice fiecarei abilitati unice a obiectului mage.
+
+[33mcommit 4bc91c0b3dced65da1d0dd40b41a9ecc0b2759c8[m
+Author: Munteanu Marius <iulian.munteanu@student.unitbv.ro>
+Date:   Fri Nov 1 16:46:04 2024 +0200
+
+    Am creat un enum class "MagicAbility" unde listez toate abilitatile posibile, deoarece codul este mai usor de citit, dar si de gestionat.
+    Am creat membrii private(MagicAbility m_ability, si bool m_used) pentru a putea retine abilitatea unui mage, repectiv pentru a putea verifica daca a fost utilizata sau nu.
+    Exista si metoda activate ce aplica abilitatea unui mage asupra obiectelor player si board.
+    Si metodele pentru fiecare abilitate. E bine ce am scris despre mage.cppm
+
+[33mcommit 26bcead038d6188226c82b819a71128485a099a1[m
+Author: Vanessa-unitbv <vanessa.palatka@student.unitbv.ro>
+Date:   Fri Nov 1 16:09:07 2024 +0200
+
+    Am creat elementalpowercards.cpp in care am implementat clasa ElementalPowerCards, declarând un constructor cu parametrii pentru m_power si m_used.  Am inclus funcții set și get pentru cele două variabile și o metodă pentru activarea puterii elementului, care gestionează erorile prin aruncarea excepțiilor pentru puterile deja folosite sau pentru cele necunoscute. Am schimbat si tipul functiilor set in void.
+
+[33mcommit b83aff7b61e152e58c120780e6a119216fda51cb[m
+Author: Sonia151925 <sonia.kicsi@student.unitbv.ro>
+Date:   Fri Nov 1 15:33:49 2024 +0200
+
+    Am creat clasa explosion.
+    Am definit enumul pentru efecte.Ca membrii am o matrice de efecte si dimensiunea acesteia.Am creat o functie privata care genereaza efectele in functie de marimea matricei(3x3 sau 4x4) care va fi aplelata in costructor.
+    Am adaugat getteri si setteri si respectiv functiile care adauga efecte si respectiv fuctia de rotire.
+
+[33mcommit 5c4e3e8568cd45b5e4b190ec87f625555d621341[m
+Author: Vanessa-unitbv <vanessa.palatka@student.unitbv.ro>
+Date:   Fri Nov 1 14:47:58 2024 +0200
+
+    Am implementat clasa CMode in care am declarat: un enum pentru regulile modului C, un constructor, o functie pentru aplicarea regulilor si un destructor. Am implementat si clasa ElementalPowerCards in care am declarat: un enum class PowerAbility, in care am scris puterile elementelor,o variabila pentru puterea elementului, o variabila pentru a indica daca puterea a fost folosita, un constructor fara parametrii, un constructor cu parametrii, functiile set si get pentru cele 2 variabile, o functie pentru a activa puterea elementului si un destructor.
+
+[33mcommit 25cc611c3c0c17c54b7ba349ba8dc2ce7c039994[m
+Author: VaidaRaluca <ralucavda@yahoo.com>
+Date:   Fri Nov 1 12:02:01 2024 +0200
+
+    Am creat enum class CardType in care am retinut cele 2 tipuri de carti: cu cifre si cu puteri. Pentru CardType am implementat si o functie care sa diferentieze cele doua tipuri de carti. Am adaugat membrul culoare atat pentru Card cat si pentru Player. Am implementat constructorul cu parametrii si cel de copiere pentru clasa Board.
+
+[33mcommit dce5c341d4b94bd6096a9667786c1265f62b3c87[m
+Author: Munteanu Marius <iulian.munteanu@student.unitbv.ro>
+Date:   Wed Oct 30 11:48:06 2024 +0200
+
+    Am creat clasa "amode" unde: am creat enum class AModeRules, am definit constructorul default si am creat functia applyModeRules.
+    In clasa "game" am declarat membrii si am creat contructorul default si constructorul cu parametrii.
+
+[33mcommit 30effcdd8ac10e611100a873ec6fc977293d49a3[m
+Author: Vanessa-unitbv <vanessa.palatka@student.unitbv.ro>
+Date:   Wed Oct 30 11:07:07 2024 +0200
+
+    Am implementat clasa Board, in care am creat matricea m_grid care retine tabla de joc.Matricea este de tip vector de vector de optional pentru a retine fie o carte de joc fie a marca absenta unei carti. Am declarat constructorii si destructorul. Am sters declararea tablei din clasa Game. Am facut enum-urile din clasa Card publice. Am modificat clasa Cards in Card.
+
+[33mcommit a62f6bf5afcadb9535c8debedaad0596d18b2d49[m
+Author: VaidaRaluca <ralucavda@yahoo.com>
+Date:   Wed Oct 30 10:12:25 2024 +0200
+
+    Am creat clasa gamemods in care am declarat membrii gameName si rulesList. Am declarat o functie care va implementa regulile fiecarui mod de joc in parte.
+
+[33mcommit 801a0bf2c36ab3779167b95139d8ce84886e17b3[m
+Author: valentina2304 <valentina.lixandru@student.unitbv.ro>
+Date:   Tue Oct 29 13:56:16 2024 +0200
+
+    Am declarat tabla in clasa Game ca un vector de vector de Cards.
+    Am implementat clasa Cards in care am declarat: un enum pentru cartile cu cifre, un enum pentru cartile cu puteri,o variabila care retine pozitia cartilor, un vector de carti, constructor si destructor.
+
+[33mcommit 7751037ddecff97a8eedff6658aa602ef7226292[m
+Author: Sonia151925 <sonia.kicsi@student.unitbv.ro>
+Date:   Tue Oct 29 13:02:47 2024 +0200
+
+    Am creat clasele player si game
+    In clasa player am declarat membrii:m_name,m_score,m_nrCardsLeft.
+    Am creat un constructor default si unul cu parametrii si un destructor default
+
+[33mcommit 13ad90e1105d8dc96f1d0851c9d841106b0171cb[m
+Author: VaidaRaluca <ralucavda@yahoo.com>
+Date:   Mon Oct 28 16:06:50 2024 +0200
+
+    Update README.md
+
+[33mcommit ba077a5f5eb80c2a390085d7c25186614e4b3baa[m
+Author: VaidaRaluca <ralucavda@yahoo.com>
+Date:   Tue Oct 22 17:14:50 2024 +0300
+
+    Initial commit

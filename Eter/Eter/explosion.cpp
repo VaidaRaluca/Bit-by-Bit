@@ -30,13 +30,13 @@ void eter::Explosion::applyEffects(uint8_t x, uint8_t y,Board &grid)
                 // Aplic efectele în functie de tip
                 switch (effect) {
                 case Effect::Eliminate:
-                    // cod pentru eliminarea cartii la poz(posX, posY)
+                    //  pentru eliminarea cartii la poz(posX, posY)
                     break;
                 case Effect::Return:
-                    // cod pentru a întoarce cartea la proprietar la (posX, posY)
+                    //  pentru a întoarce cartea la proprietar la (posX, posY)
                     break;
                 case Effect::Pit:
-                    // cod pentru a crea o groapa la (posX, posY)
+                    //  pentru a crea o groapa la (posX, posY)
                     break;
                 case Effect::None:
                     // niciun efect

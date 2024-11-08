@@ -25,6 +25,10 @@ namespace eter {
 		const std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos) const;
 
 		bool isValidPosition(int x, int y) const;
+		bool isAdjacentToOccupiedSpace(int x, int y)const;
+		bool canPlaceCard(int x, int y, const Card& card)const;
+		void placeCard(int x, int y, const Card& card);
+
 		~Board()=default;
 
 	};
