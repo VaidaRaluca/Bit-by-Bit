@@ -1,6 +1,7 @@
 module elementalpowercards;
 import board;
 import player;
+import card;
 import <stdexcept>;
 
 using namespace eter;
@@ -39,6 +40,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		//se va apela o functie pentru puterea respectiva
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Destruction:
+		activateDestruction(player, opponent, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Flame:
 		break;
@@ -89,4 +91,34 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		break;
 	}
 	m_used = true;
+}
+
+void ElementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board)
+{
+	const auto& opponentPlayedCards = opponent.GetPlayedCards();
+	if (opponentPlayedCards.empty()) {
+		throw std::invalid_argument("Adversarul nu are cãr?i jucate!\n");
+	}
+	Card lastCardPlayed = opponentPlayedCards.back();
+	auto& grid = board.GetGrid();
+	for (size_t i = 0; i < board.GetRows(); ++i)
+	{
+		for (size_t j = 0; j < board.GetCols(); ++j)
+		{
+			auto& stackOpt = grid[i][j]; 
+			if (stackOpt.has_value())
+			{
+				std::stack<Card> cardStack = stackOpt.value();
+				if (!cardStack.empty() && cardStack.top() == lastCardPlayed)
+				{
+					cardStack.pop();
+					std::cout << "Cartea cu valoarea " << lastCardPlayed.GetValue()
+						<< " ?i culoarea " << lastCardPlayed.GetColor()
+						<< " a fost eliminatã din joc!" << std::endl;
+					return; 
+				}
+			}
+		}
+	}
+	throw std::invalid_argument("Cartea nu a fost gãsitã pe tablã!");
 }

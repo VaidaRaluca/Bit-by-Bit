@@ -38,6 +38,11 @@ void Card::SetPosition(bool position)
 	m_position = position;
 }
 
+bool eter::Card::operator==(const Card& other) const
+{
+	return m_value == other.m_value && m_color == other.m_color && m_position == other.m_position;
+}
+
 
 std::ostream& eter::operator<<(std::ostream& os, const Card& card)
 {

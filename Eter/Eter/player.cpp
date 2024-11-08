@@ -33,6 +33,11 @@ bool Player::GetHasUsedIllusion() const
 	return m_hasUsedIllusion;
 }
 
+const std::vector<Card>& eter::Player::GetPlayedCards() const
+{
+	return m_playedCards;
+}
+
 void Player::SetName(const std::string& name)
 {
 	m_name = name;
@@ -51,6 +56,11 @@ void Player::SetColor(const std::string& color)
 void Player::SetCardsInHand(const std::vector<Card>& cards)
 {
 	m_cardsInHand = cards;
+}
+
+void Player::AddPlayedCard(const Card& card)
+{
+	m_playedCards.push_back(card);
 }
 
 std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board)

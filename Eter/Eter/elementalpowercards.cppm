@@ -45,5 +45,8 @@ namespace eter {
 		PowerAbility getAbility() const;
 		void activate(Player& player, Player& opponent, Board& board);
 		~ElementalPowerCards()=default;
+
+	private:
+		void activateDestruction(Player& player, Player& opponent, Board& board);
 	};
 }

@@ -14,6 +14,7 @@ namespace eter {
 		std::string m_color;
 		std::vector<Card> m_cardsInHand;
 		bool m_hasUsedIllusion = false;
+		std::vector<Card> m_playedCards;
 	public:
 		Player() = default;
 		Player(const std::string& name, uint32_t score, const std::string& color, const std::vector<Card>& cards, bool hasUsedIllusion);
@@ -25,12 +26,14 @@ namespace eter {
 		const std::string& GetColor() const;
 		const std::vector<Card>& GetCardsInHand() const;
 		bool GetHasUsedIllusion() const;
+		const std::vector<Card>& GetPlayedCards() const;
 
 		//Setteri
 		void SetName(const std::string& name);
 		void SetScore(uint32_t score);
 		void SetColor(const std::string& color);
 		void SetCardsInHand(const std::vector<Card>& cards);
+		void AddPlayedCard(const Card& card);
 
 		void useIllusion(Board& board);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);

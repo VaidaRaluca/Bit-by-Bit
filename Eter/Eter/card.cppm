@@ -21,6 +21,7 @@ namespace eter {
 		void SetColor(std::string color);
 		void SetPosition(bool positon);
 
+		bool operator==(const Card& other) const;
 		~Card() = default;
 	};
 	export std::ostream& operator<<(std::ostream& os, const Card& card);
