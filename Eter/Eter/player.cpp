@@ -3,9 +3,9 @@ using namespace eter;
 constexpr std::pair<uint8_t, uint8_t> kInvalidPosition = { 255, 255 };
 Player::Player(const std::string& name, const std::string& color)
 	: m_name{ name }
-	, m_score{0}
+	, m_score{ 0 }
 	, m_color{ color }
-	, m_hasUsedIllusion{false}
+	, m_hasUsedIllusion{ false }
 {}
 
 const std::string& Player::GetName() const
@@ -33,7 +33,7 @@ bool Player::GetHasUsedIllusion() const //returns false if the illusion has not 
 	return m_hasUsedIllusion;
 }
 
- std::vector<Card>& eter::Player::GetPlayedCards() 
+std::vector<Card>& eter::Player::GetPlayedCards()
 {
 	return m_playedCards;
 }

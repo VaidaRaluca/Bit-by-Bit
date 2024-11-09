@@ -9,8 +9,7 @@ import bmode;
 
 Game::Game(Player player1, Player player2, Board board, std::string gameMode):
 	m_player1{player1},m_player2{player2},m_board{board},m_gameMode{gameMode}, m_isPlayerTurn{true}
-{
-}
+{}
 
 Player Game::GetPlayer1()
 {

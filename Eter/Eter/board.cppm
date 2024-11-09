@@ -16,7 +16,7 @@ namespace eter {
 		Board(const Board& other); //constructor de copiere
 		Board& operator=(const Board& other);
 
-		//Getteri
+		//Getters
 		uint8_t GetRows() const;
 		uint8_t GetCols() const;
 		const std::vector<std::vector<std::optional<std::stack<Card>>>>& GetGrid() const;
@@ -29,8 +29,13 @@ namespace eter {
 		bool canPlaceCard(int x, int y, const Card& card)const;
 		void placeCard(int x, int y, const Card& card);
 
-		~Board()=default;
+		bool isVerticalLine(std::optional<std::string>& lineColor) const;
+		bool isPrimaryDiagonalLine(std::optional<std::string>& lineColor) const;
+		bool isSecondaryDiagonalLine(std::optional<std::string>& lineColor) const;
+		bool isHorizontalLine(std::optional<std::string>& lineColor) const;
 
+
+		~Board()=default;
 	};
 	export std::ostream& operator<<(std::ostream& os, const Board& board);
 }
