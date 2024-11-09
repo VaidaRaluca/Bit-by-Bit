@@ -2,6 +2,7 @@
 export module mage;
 import board;
 import player;
+import <optional>;
 
 namespace eter {
 	export class Mage {
@@ -43,5 +44,8 @@ namespace eter {
 		void moveOwnStack(Player& player, Board& board);
 		void moveOponnentStack(Player& oponnent, Board& board);
 		void shiftRowToEdge(Board& board);
+
+		//Cautarea unei carti pe tabla
+		std::optional<std::pair<size_t, size_t>> findCardPosition(const Card& card, Board& board);
 	};
 }

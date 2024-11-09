@@ -4,6 +4,9 @@ import board;
 import player;
 import<iostream>;
 import<stdexcept>;
+import<unordered_map>;
+import<functional>;
+import<optional>;
 
 namespace eter {
 	// seteaza abilitatea specificata
@@ -19,32 +22,49 @@ namespace eter {
 		return m_ability;
 	}
 
+	//cautarea unei carti pe tabla
+	std::optional<std::pair<size_t, size_t>> Mage::findCardPosition(const Card& card, Board& board) {
+		auto& grid = board.GetGrid();
+		for (size_t i = 0; i < board.GetRows(); ++i) {
+			for (size_t j = 0; j < board.GetCols(); ++j) {
+				const auto& cellOpt = grid[i][j];
+				if (cellOpt.has_value()) {
+					const auto& stack = cellOpt.value();
+					if (!stack.empty() && stack.top() == card) {
+						return std::make_pair(i, j);
+					}
+				}
+			}
+		}
+		return std::nullopt;
+	}
+
 	// activeaza abilitatea daca nu a fost deja folosita
 	void Mage::activate(Player& player, Player& oponnent, Board& board) {
 		if (m_used) {
 			throw std::runtime_error("The ability has already been used!");
 		}
 
-		switch (m_ability) {
-		case MagicAbility::removeOponnentCard:
-			break;
-		case MagicAbility::removeEntireRow:
-			break;
-		case MagicAbility::coverOponnetCard:
-			break;
-		case MagicAbility::createPit:
-			break;
-		case MagicAbility::moveOwnStack:
-			break;
-		case MagicAbility::extraEterCard:
-			break;
-		case MagicAbility::moveOponnentStack:
-			break;
-		case MagicAbility::shiftRowToEdge:
-			break;
-		default:
-			break;
+		static const std::unordered_map<MagicAbility, std::function<void()>> abilityMap = {
+			{ MagicAbility::removeOponnentCard, [&]() { removeOponnentCard(player, oponnent, board); } },
+			{ MagicAbility::removeEntireRow, [&]() { removeEntireRow(player, board); } },
+			{ MagicAbility::coverOponnetCard, [&]() { coverOponnentCard(player, oponnent, board); } },
+			{ MagicAbility::createPit, [&]() { createPit(board); } },
+			{ MagicAbility::moveOwnStack, [&]() { moveOwnStack(player, board); } },
+			{ MagicAbility::extraEterCard, [&]() { addExtraEterCard(player); } },
+			{ MagicAbility::moveOponnentStack, [&]() { moveOponnentStack(oponnent, board); } },
+			{ MagicAbility::shiftRowToEdge, [&]() { shiftRowToEdge(board); } }
+		};
+
+		//Cautarea abilitatii + executarea acesteia
+		auto it = abilityMap.find(m_ability);
+		if (it != abilityMap.end()) {
+			it->second();
 		}
+		else {
+			throw std::invalid_argument("Unknown ability!");
+		}
+
 		m_used = true;
 	}
 
@@ -56,23 +76,18 @@ namespace eter {
 			return;
 		}
 
-		Card lastCard = opponentCards.back();
-		auto& grid = board.GetGrid();
-
-		for (size_t i = 0; i < board.GetRows(); ++i) {
-			for (size_t j = 0; j < board.GetCols(); ++j) {
-				const auto& stackOpt = grid[i][j];
-				if (stackOpt.has_value()) {
-					auto& stack = const_cast<std::stack<Card>&>(stackOpt.value());
-					if (stack.empty() && stack.top() == lastCard) {
-						stack.pop();
-						std::cout << "The opponent's card has been removed!\n";
-						return;
-					}
-				}
+		const Card& lastCard = opponentCards.back();
+		if (auto position = findCardPosition(lastCard, board); position) {
+			auto& [row, col] = position.value();
+			auto& stack = board[{row, col}];
+			if (stack.has_value() && !stack->empty()) {
+				stack->pop();
+				std::cout << "The opponent's card has been removed from (" << row << ", " << col << ").\n";
 			}
 		}
-		std::cout << "The book was not found on the board.\n";
+		else {
+			std::cout << "The card was not found on the board.\n";
+		}
 	}
 
 	//Eliminare rand intreg
@@ -88,31 +103,28 @@ namespace eter {
 
 	//Acoperire carte a opnentului cu cartea proprie
 	void Mage::coverOponnentCard(Player& player, Player& oponnent, Board& board) {
-		auto position = player.findEmptyCell(board);
-		if (position.first != -1 && position.second != -1) {
-			Card card = player.GetCardsInHand().back();
+		if (auto position = player.findEmptyCell(board); position.first != -1) {
+			const Card& card = player.GetCardsInHand().back();
 			player.placeCard(position.first, position.second, card, board);
+			std::cout << "The opponent's card has been covered.\n";
 		}
-		std::cout << "The opponent's card has been covered.\n";
 	}
 
 	//Creeaza o groapa
 	void Mage::createPit(Board& board) {
-		auto position = std::make_pair(rand() % board.GetRows(), rand() % board.GetCols());
-		if (board.isValidPosition(position.first, position.second)) {
-			auto& stack = board[position];
-			if (stack.has_value()) {
+		auto [rows, cols] = std::make_pair(rand() % board.GetRows(), rand() % board.GetCols());
+		if (board.isValidPosition(rows, cols)) {
+			if (auto& stack = board[{rows, cols}]; stack.has_value()) {
 				stack.reset();
-				std::cout << "A pit was created at (" << position.first << ", " << position.second << ").\n";
+				std::cout << "A pit was created at (" << rows << ", " << cols << ").\n";
 			}
 		}
 	}
 
 	//Adaugare carte in plus
 	void  Mage::addExtraEterCard(Player& player) {
-		Card eterCard{ 1, "eter", true };
-		player.SetCardsInHand({ eterCard });
-		std::cout << "The player received an extra Ether card! \n";
+		player.AddCardToHand({ 1, "eter", true });
+		std::cout << "The player received an extra Ether card!\n";
 	}
 
 	//Mutare teanc propriu pe alta pozitie
@@ -123,7 +135,7 @@ namespace eter {
 			board[to] = board[from];
 			board[from].reset();
 			std::cout << "Own stack has been moved from (" << from.first << ", " << from.second
-				<<") to (" << to.first << ", " << to.second << ").\n";
+				<< ") to (" << to.first << ", " << to.second << ").\n";
 		}
 	}
 
@@ -141,8 +153,7 @@ namespace eter {
 	//Mutare rand la marginea tablei
 	void Mage::shiftRowToEdge(Board& board) {
 		for (size_t col = 0; col < board.GetCols(); ++col) {
-			auto& stack = board[{board.GetRows() - 1, col}];
-			if (stack.has_value()) {
+			if (auto& stack = board[{board.GetRows() - 1, col}]; stack.has_value()) {
 				board[{0, col}] = stack;
 				stack.reset();
 			}

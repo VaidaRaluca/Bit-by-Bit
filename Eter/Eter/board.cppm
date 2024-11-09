@@ -4,6 +4,7 @@ import <vector>;
 import <optional>;
 import <stack>;
 import <utility>;
+import <string>;
 export import card; 
 namespace eter {
 	export class Board {
