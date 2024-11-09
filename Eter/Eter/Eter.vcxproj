@@ -146,6 +146,8 @@
     <ClCompile Include="explosion.cppm" />
     <ClCompile Include="game.cppm" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gamemanager.cpp" />
+    <ClCompile Include="gamemanager.cppm" />
     <ClCompile Include="mage.cpp" />
     <ClCompile Include="mage.cppm" />
     <ClCompile Include="player.cpp" />

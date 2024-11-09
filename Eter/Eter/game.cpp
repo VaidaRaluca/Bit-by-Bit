@@ -5,6 +5,7 @@ import player;
 import <string>;
 import <iostream>;
 import amode;
+import bmode;
 
 Game::Game(Player player1, Player player2, Board board, std::string gameMode):
 	m_player1{player1},m_player2{player2},m_board{board},m_gameMode{gameMode}, m_isPlayerTurn{true}
@@ -26,13 +27,13 @@ Board Game::GetBoard()
 	return m_board;
 }
 
-std::string Game::GetGameMOds()
+std::string Game::GetGameMods()
 {
 	return m_gameMode;
 }
 
 
-void eter::Game::SetBoard(Board board)
+void Game::SetBoard(Board board)
 {
 	m_board = board;
 }
@@ -42,7 +43,7 @@ void Game::SetGameMods(std::string gameMode)
 	m_gameMode = gameMode;
 }
 
-bool eter::Game::playTurn(int x, int y, const Card& card)
+bool Game::playTurn(int x, int y, const Card& card)
 {
     if (m_isPlayerTurn) {
         if (m_player1.placeCard(x, y, card, m_board))
@@ -71,22 +72,27 @@ bool eter::Game::playTurn(int x, int y, const Card& card)
 	
 }
 
-void eter::Game::nextTurn()
+void Game::nextTurn()
 {
     m_isPlayerTurn = !m_isPlayerTurn;
 }
 
-void eter::Game::startGame()
+void Game::startGame()
 {
     if (m_gameMode == "AMode") 
     {
          AMode mode(m_player1, m_player2, m_board);
         mode.startMatch();   
     }
-    else {
+    else
+        if (m_gameMode == "BMode")
+        {
+
+        }
+        else {
          
-        std::cout << "Modul de joc necunoscut!" << std::endl;
-    }
+            std::cout << "Modul de joc necunoscut!" << std::endl;
+         }
 }
 
 

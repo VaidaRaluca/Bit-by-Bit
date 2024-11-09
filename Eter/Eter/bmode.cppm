@@ -6,6 +6,7 @@ import mage;
 import player;
 import board;
 import card;
+import gamemanager;
 import<vector>;
 
 namespace eter {
@@ -21,8 +22,10 @@ namespace eter {
 		Mage(Mage::MagicAbility::shiftRowToEdge) };
 		Mage m_magePlayer1;
 		Mage m_magePlayer2;
+		Game* m_game;
 	public:
-		BMode();
+		BMode()=default;
+		BMode(Game* game);
 		void applyModeRules(); // override 
 		void assignCardsInHand(); //artibuie cate un set de carti pentru fiecare player
 		void generateMage();  // genereaza cate un vrajitor pentru fiecare player

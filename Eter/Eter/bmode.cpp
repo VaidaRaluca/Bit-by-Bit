@@ -3,8 +3,13 @@ using namespace eter;
 import game;
 import player;
 import card;
-//import cardtype;
+import gamemanager;
 import <random>;
+
+BMode::BMode(Game* game):
+    m_game{game}
+{
+}
 
 void BMode::applyModeRules()
 {
@@ -12,25 +17,40 @@ void BMode::applyModeRules()
     generateMage();
 }
 
-void eter::BMode::assignCardsInHand()
+void BMode::assignCardsInHand()
 {
-    //std::vector<Card>cardsForBMode{
-    //Card(CardType::DigitCard,"red",1,0),
-    //Card(CardType::DigitCard,"red",1,0) ,
-    //Card(CardType::DigitCard,"red",1,0) ,
-    //Card(CardType::DigitCard,"red",1,0) ,
-    //Card(CardType::DigitCard,"red",1,0) ,
-    //Card(CardType::DigitCard, "red",1,0),
-    //Card(CardType::DigitCard,"red",1,0) ,
-    //Card(CardType::DigitCard,"red",1,0) ,
-    //Card(CardType::DigitCard,"red",1,0),
-    //Card(CardType::DigitCard,"red",0,1)
-    //};
-    //Game::GetPlayer1()->SetCardsInHand(cardsForBMode);
-    //Game::GetPlayer2()->SetCardsInHand(cardsForBMode);
-}
+    std::vector<Card>cardsForPlayer1{
+    Card(1,"red",true),
+    Card(1,"red",true),
+    Card(2,"red",true),
+    Card(2,"red",true),
+    Card(2,"red",true),
+    Card(3,"red",true),
+    Card(3,"red",true),
+    Card(3,"red",true),
+    Card(4,"red",true),
+    Card(0,"red",true),  //valoare=0 ->  Carte eter
+    };
+    std::vector<Card>cardsForPlayer2{
+    Card(1,"blue",true),
+    Card(1,"blue",true),
+    Card(2,"blue",true),
+    Card(2,"blue",true),
+    Card(2,"blue",true),
+    Card(3,"blue",true),
+    Card(3,"blue",true),
+    Card(3,"blue",true),
+    Card(4,"blue",true),
+    Card(0,"blue",true),  //valoare=0 ->  Carte eter
+    };
 
-void eter::BMode::generateMage()
+    if (m_game)
+    {
+        m_game->GetPlayer1().SetCardsInHand(cardsForPlayer1);
+        m_game->GetPlayer2().SetCardsInHand(cardsForPlayer2);
+    }
+}
+void BMode::generateMage()
 {
     std::random_device rd;
     std::mt19937 gen(rd());

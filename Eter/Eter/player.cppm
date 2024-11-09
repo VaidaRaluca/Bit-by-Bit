@@ -15,11 +15,11 @@ namespace eter {
 		uint32_t m_score;
 		std::string m_color;
 		std::vector<Card> m_cardsInHand;
-		bool m_hasUsedIllusion = false;
+		bool m_hasUsedIllusion;
 		std::vector<Card> m_playedCards;
 	public:
 		Player() = default;
-		Player(const std::string& name, uint32_t score, const std::string& color, const std::vector<Card>& cards, bool hasUsedIllusion);
+		Player(const std::string& name, const std::string& color);
 		~Player() = default;
 
 		//Getteri

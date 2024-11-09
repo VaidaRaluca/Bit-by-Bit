@@ -3,7 +3,6 @@ import card;
 import player;
 import <string>;
 import board;
-import<string>;
 namespace eter
 {
 	export class Game
@@ -22,8 +21,7 @@ namespace eter
 		Player GetPlayer1();
 		Player GetPlayer2();
 		Board GetBoard();
-		std::string GetGameMOds();
-
+		std::string GetGameMods();
 
 		void SetBoard(Board board);
 		void SetGameMods(std::string gameMode);

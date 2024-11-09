@@ -1,4 +1,7 @@
+import gamemanager;
+import game;
 import board;
+import player;
 int main()
 {
 	using namespace eter;
@@ -13,6 +16,13 @@ int main()
 	}
 	stack->push(card);
 	std::cout << board;
-	
+
+
+	Player player1("Mihai","red");
+	Player player2("Alina", "blue");
+    
+	GameManager gameManager;
+	gameManager.StartNewGame(player1, player2, board, "BMode");
+
 	return 0;
 }

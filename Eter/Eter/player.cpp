@@ -1,12 +1,11 @@
 module player;
 using namespace eter;
 constexpr std::pair<uint8_t, uint8_t> kInvalidPosition = { 255, 255 };
-Player::Player(const std::string& name, uint32_t score, const std::string& color, const std::vector<Card>& cards, bool hasUsedIllusion)
+Player::Player(const std::string& name, const std::string& color)
 	: m_name{ name }
-	, m_score{ score }
+	, m_score{0}
 	, m_color{ color }
-	, m_cardsInHand{ cards }
-	, m_hasUsedIllusion{ hasUsedIllusion }
+	, m_hasUsedIllusion{false}
 {}
 
 const std::string& Player::GetName() const
