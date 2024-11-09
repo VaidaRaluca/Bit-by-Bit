@@ -2,6 +2,9 @@ export module cmode;
 import <string>;
 import elementalpowercards;
 import player;
+import game;
+import gamemanager;
+import card;
 import <vector>;
 namespace eter {
 	export class CMode  {
@@ -32,10 +35,13 @@ namespace eter {
 		ElementalPowerCards(ElementalPowerCards::PowerAbility::Rock)};
 		ElementalPowerCards m_power1Player1,m_power2Player1;
 		ElementalPowerCards m_power1Player2,m_power2Player2;
+		Game* m_game;
 	public:
 		CMode();
+		CMode(Game* game);
 		void applyModeRules();
 		void generatePower();
+		void assignCardsInHand();
 		~CMode() = default;
 	};
 }

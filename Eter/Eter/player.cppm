@@ -28,7 +28,7 @@ namespace eter {
 		const std::string& GetColor() const;
 		const std::vector<Card>& GetCardsInHand() const;
 		bool GetHasUsedIllusion() const;
-		const std::vector<Card>& GetPlayedCards() const;
+		std::vector<Card>& GetPlayedCards();
 
 		//Setteri
 		void SetName(const std::string& name);
@@ -37,6 +37,7 @@ namespace eter {
 		void SetCardsInHand(const std::vector<Card>& cards);
 		void AddPlayedCard(const Card& card);
 
+		void AddCardToHand(const Card& card);//Adauga o carte in m_cardsInHand
 		void useIllusion(Board& board, Card& illusion);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
 		bool placeCard(int x, int y, const Card& card, Board& board);

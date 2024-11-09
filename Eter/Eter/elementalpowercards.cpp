@@ -33,7 +33,7 @@ ElementalPowerCards::PowerAbility ElementalPowerCards::getAbility() const
 void ElementalPowerCards::activate(Player& player, Player& opponent, Board& board) 
 {
 	if (m_used)
-		throw std::runtime_error("Puterea elementului a fost deja folosita!");
+		throw std::runtime_error("The elemental power has already been used!\n");
 	switch (m_power)
 	{
 	case eter::ElementalPowerCards::PowerAbility::ControlledExplosion:
@@ -51,6 +51,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 	case eter::ElementalPowerCards::PowerAbility::Spark:
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Squall:
+		activateSquall(opponent);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Gale:
 		break;
@@ -87,7 +88,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 	case eter::ElementalPowerCards::PowerAbility::Rock:
 		break;
 	default:
-		throw std::invalid_argument("Putere necunoscuta!");
+		throw std::invalid_argument("Unknown power!\n!");
 		break;
 	}
 	m_used = true;
@@ -97,7 +98,7 @@ void ElementalPowerCards::activateDestruction(Player& player, Player& opponent, 
 {
 	const auto& opponentPlayedCards = opponent.GetPlayedCards();
 	if (opponentPlayedCards.empty()) {
-		throw std::invalid_argument("Adversarul nu are cãr?i jucate!\n");
+		throw std::invalid_argument("The opponent has not played any cards!\n");
 	}
 	Card lastCardPlayed = opponentPlayedCards.back();
 	auto& grid = board.GetGrid();
@@ -112,13 +113,32 @@ void ElementalPowerCards::activateDestruction(Player& player, Player& opponent, 
 				if (!cardStack.empty() && cardStack.top() == lastCardPlayed)
 				{
 					cardStack.pop();
-					std::cout << "Cartea cu valoarea " << lastCardPlayed.GetValue()
-						<< " ?i culoarea " << lastCardPlayed.GetColor()
-						<< " a fost eliminatã din joc!" << std::endl;
+					std::cout << "The card with value " << lastCardPlayed.GetValue()
+						<< " and color " << lastCardPlayed.GetColor()
+						<< " has been removed from the game!\n";
 					return; 
 				}
 			}
 		}
 	}
-	throw std::invalid_argument("Cartea nu a fost gãsitã pe tablã!");
+	throw std::invalid_argument("The card was not found on the board!");
+}
+
+void ElementalPowerCards::activateSquall(Player& opponent)
+{
+	auto& playedCards = opponent.GetPlayedCards();
+	auto it = std::find_if(playedCards.begin(), playedCards.end(), [](const Card& card) {
+		return card.GetPosition() == true;
+		});
+	if (it != playedCards.end()) {
+		Card visibleCard = *it;
+		playedCards.erase(it);
+		opponent.AddCardToHand(visibleCard);
+		std::cout << "The card with value " << visibleCard.GetValue()
+			<< " and color " << visibleCard.GetColor()
+			<< " has been returned to the opponent's hand!\n";
+	}
+	else {
+		throw std::invalid_argument("There is no visible card that can be returned to the opponent's hand!\n");
+	}
 }

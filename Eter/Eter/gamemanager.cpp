@@ -3,6 +3,7 @@ import game;
 import player;
 import board;
 import bmode;
+import cmode;
 using namespace eter;
 
 GameManager::GameManager(const Game& game):
@@ -27,6 +28,11 @@ void GameManager::StartNewGame(Player player1, Player player2, Board board, cons
 		{
 			BMode bmode(&m_game); // Se trece referința la joc
 			bmode.applyModeRules(); // Aplică regulile pentru acest mod
+		}
+		if (gameMode == "CMode")
+		{
+			CMode cmode(&m_game);
+			cmode.applyModeRules();
 		}
 		m_game.startGame(); 
 }

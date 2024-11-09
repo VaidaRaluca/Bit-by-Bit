@@ -33,7 +33,7 @@ bool Player::GetHasUsedIllusion() const //returns false if the illusion has not 
 	return m_hasUsedIllusion;
 }
 
-const std::vector<Card>& eter::Player::GetPlayedCards() const
+ std::vector<Card>& eter::Player::GetPlayedCards() 
 {
 	return m_playedCards;
 }
@@ -73,6 +73,11 @@ std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board)
 				return { rows,cols };
 		}
 	return kInvalidPosition;
+}
+
+void eter::Player::AddCardToHand(const Card& card)
+{
+	m_cardsInHand.push_back(card);
 }
 
 bool eter::Player::placeCard(int x, int y, const Card& card, Board& board)

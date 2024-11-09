@@ -1,11 +1,17 @@
 module cmode;
 using namespace eter;
 import player;
+import game;
+import gamemanager;
 import <random>;
+
+CMode::CMode(Game* game): m_game{game}
+{}
 
 void CMode::applyModeRules()
 {
     generatePower();
+    assignCardsInHand();
 }
 void eter::CMode::generatePower()
 {
@@ -33,4 +39,35 @@ void eter::CMode::generatePower()
     m_power2Player1 = m_power[indexPower2Player1];
     m_power1Player2 = m_power[indexPower1Player2];
     m_power2Player2 = m_power[indexPower2Player2];
+}
+
+void CMode::assignCardsInHand()
+{
+    std::vector<Card>cardsForPlayer1{
+   Card(1,"red",true),
+   Card(2,"red",true),
+   Card(2,"red",true),
+   Card(2,"red",true),
+   Card(3,"red",true),
+   Card(3,"red",true),
+   Card(3,"red",true),
+   Card(4,"red",true),
+   Card(0,"red",true), 
+    };
+    std::vector<Card>cardsForPlayer2{
+    Card(1,"blue",true),
+    Card(2,"blue",true),
+    Card(2,"blue",true),
+    Card(2,"blue",true),
+    Card(3,"blue",true),
+    Card(3,"blue",true),
+    Card(3,"blue",true),
+    Card(4,"blue",true),
+    Card(0,"blue",true), 
+    };
+    if (m_game)
+    {
+        m_game->GetPlayer1().SetCardsInHand(cardsForPlayer1);
+        m_game->GetPlayer2().SetCardsInHand(cardsForPlayer2);
+    }
 }
