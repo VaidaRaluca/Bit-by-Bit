@@ -3,7 +3,6 @@ import <string>;
 import elementalpowercards;
 import player;
 import game;
-import gamemanager;
 import card;
 import <vector>;
 namespace eter {

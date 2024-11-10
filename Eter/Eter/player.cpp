@@ -58,6 +58,15 @@ void Player::SetCardsInHand(const std::vector<Card>& cards)
 	m_cardsInHand = cards;
 }
 
+void Player::PrintCardsInHand()
+{
+	for (const auto& it : m_cardsInHand)
+	{
+		std::cout << it << " ";
+	}
+}
+
+
 void Player::AddPlayedCard(const Card& card)
 {
 	m_playedCards.push_back(card);

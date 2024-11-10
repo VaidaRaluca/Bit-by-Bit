@@ -24,10 +24,15 @@ void GameManager::SetGame(Game game)
 void GameManager::StartNewGame(Player player1, Player player2, Board board, const std::string& gameMode)
 {
 		m_game = Game(player1, player2, board, gameMode);
+		if (gameMode == "AMode")
+		{
+			AMode amode(&m_game);
+			amode.applyModeRules();
+		}
 		if (gameMode == "BMode")
 		{
-			BMode bmode(&m_game); // Se trece referința la joc
-			bmode.applyModeRules(); // Aplică regulile pentru acest mod
+			m_bmode = std::make_unique<BMode>(&m_game); 
+			m_bmode->applyModeRules(); 
 		}
 		if (gameMode == "CMode")
 		{

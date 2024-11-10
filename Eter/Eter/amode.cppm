@@ -14,9 +14,10 @@ namespace eter {
 		bool m_isPlayerTurn;//true pentru Player 1, false pentru Player 2
 		int m_player1Wins;
 		int m_player2Wins;
-
+		Game* m_game;
 	public:
 		AMode(Player player1, Player player2, const Board& board);
+		AMode(Game* game);
 		void startMatch();
 		void applyModeRules();
 		 

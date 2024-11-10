@@ -8,7 +8,8 @@ import amode;
 import bmode;
 
 Game::Game(Player player1, Player player2, Board board, std::string gameMode):
-	m_player1{player1},m_player2{player2},m_board{board},m_gameMode{gameMode}, m_isPlayerTurn{true}
+	m_player1{player1},m_player2{player2},m_board{board},m_gameMode{gameMode}, m_isPlayerTurn{true},
+    m_player1Wins{0},m_player2Wins{0},m_nrRound{0}
 {}
 
 Player Game::GetPlayer1()
@@ -85,7 +86,9 @@ void Game::startGame()
     }
     else
         if (m_gameMode == "BMode")
-        {
+        {  
+             
+
 
         }
         else {

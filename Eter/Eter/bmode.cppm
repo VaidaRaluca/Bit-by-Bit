@@ -1,3 +1,4 @@
+#include<cstdint>
 export module bmode;
 
 import game;
@@ -6,7 +7,6 @@ import mage;
 import player;
 import board;
 import card;
-import gamemanager;
 import<vector>;
 
 namespace eter {
@@ -23,12 +23,15 @@ namespace eter {
 		Mage m_magePlayer1;
 		Mage m_magePlayer2;
 		Game* m_game;
+		const uint8_t knrRounds=5;
 	public:
 		BMode()=default;
 		BMode(Game* game);
-		void applyModeRules(); // override 
 		void assignCardsInHand(); //artibuie cate un set de carti pentru fiecare player
 		void generateMage();  // genereaza cate un vrajitor pentru fiecare player
+		void startMatch();   // porneste meciul
+		void startRound();  //porneste runda
+		void applyModeRules(); // aplica toate regulile jocului
 
 	};
 

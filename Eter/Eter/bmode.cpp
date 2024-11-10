@@ -5,6 +5,7 @@ import player;
 import card;
 import gamemanager;
 import <random>;
+import<iostream>;
 
 BMode::BMode(Game* game):
     m_game{game}
@@ -65,4 +66,19 @@ void BMode::generateMage()
     m_magePlayer1 = m_mages[index1];
     m_magePlayer2 = m_mages[index2];
     
+}
+
+void BMode::startMatch()
+{   
+    for (int round = 1; round <= 5; ++round) 
+    {
+        std::cout << "Round " << round << " from 3" << std::endl;
+        startRound(); 
+    }
+    std::cout << "Game over. \n";    
+}
+
+void BMode::startRound()
+{
+   
 }

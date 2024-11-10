@@ -9,6 +9,11 @@ namespace eter {
  	AMode::AMode(Player player1, Player player2, const Board& board)
 		: m_player1{ player1 }, m_player2{ player2 }, m_board{ board }, m_player1Wins{ 0 }, m_player2Wins{ 0 }
 	{}
+
+	AMode::AMode(Game * game):
+	  m_game{game}
+	{
+	}
 	 
 	void AMode::startMatch() 
 	{

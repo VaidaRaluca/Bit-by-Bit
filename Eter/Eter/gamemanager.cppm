@@ -1,9 +1,14 @@
 export module gamemanager;
 
+import <memory>;
 import card;
 import player;
 import game;
 import board;
+import bmode;
+import amode;
+import cmode;
+
 
 namespace eter
 {
@@ -11,6 +16,9 @@ namespace eter
 	{
 	private:
 		Game m_game;
+		std::unique_ptr<AMode> m_amode;
+		std::unique_ptr<BMode> m_bmode;
+		std::unique_ptr<CMode> m_cmode;
 	public:
 		GameManager() = default;
 		GameManager(const Game& game);

@@ -35,8 +35,9 @@ namespace eter {
 		void SetScore(uint32_t score);
 		void SetColor(const std::string& color);
 		void SetCardsInHand(const std::vector<Card>& cards);
-		void AddPlayedCard(const Card& card);
 
+		void PrintCardsInHand();
+		void AddPlayedCard(const Card& card);
 		void AddCardToHand(const Card& card);//Adauga o carte in m_cardsInHand
 		void useIllusion(Board& board, Card& illusion);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
