@@ -72,7 +72,7 @@ void BMode::startMatch()
 {   
     for (int round = 1; round <= 5; ++round) 
     {
-        std::cout << "Round " << round << " from 3" << std::endl;
+        std::cout << "Round " << round << " from 5" << std::endl;
         startRound(); 
     }
     std::cout << "Game over. \n";    

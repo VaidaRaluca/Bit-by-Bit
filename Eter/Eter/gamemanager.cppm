@@ -19,6 +19,8 @@ namespace eter
 		std::unique_ptr<AMode> m_amode;
 		std::unique_ptr<BMode> m_bmode;
 		std::unique_ptr<CMode> m_cmode;
+		// o idee pentru reducerea consumului de memorie ar fi 
+		// alocarea unui singur ptr<void> m_currentMode
 	public:
 		GameManager() = default;
 		GameManager(const Game& game);

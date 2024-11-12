@@ -39,8 +39,7 @@ namespace eter
 		void IncrementPlayer2Wins();
 		void IncrementNrRound();
 
-		bool playTurn(int x, int y, const Card& card);
-		void nextTurn();
+		void playTurn();
 		void startGame();
 
 	};
