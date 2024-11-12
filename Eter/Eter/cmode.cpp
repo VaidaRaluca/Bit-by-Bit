@@ -71,3 +71,17 @@ void CMode::assignCardsInHand()
         m_game->GetPlayer2().SetCardsInHand(cardsForPlayer2);
     }
 }
+
+void CMode::startRound()
+{
+
+}
+void CMode::startMatch()
+{
+    for (int round = 1; round <= 5; ++round)
+    {
+        std::cout << "Round " << round << " from 3" << std::endl;
+        startRound();
+    }
+    std::cout << "Game over. \n";
+}

@@ -49,5 +49,6 @@ namespace eter {
 	private:
 		void activateDestruction(Player& player, Player& opponent, Board& board);
 		void activateSquall(Player& opponent);
+		void activateFire(Player& player, Player& opponent, Board& board);
 	};
 }

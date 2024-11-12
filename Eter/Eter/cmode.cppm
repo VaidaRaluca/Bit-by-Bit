@@ -41,6 +41,8 @@ namespace eter {
 		void applyModeRules();
 		void generatePower();
 		void assignCardsInHand();
+		void startRound();
+		void startMatch();
 		~CMode() = default;
 	};
 }

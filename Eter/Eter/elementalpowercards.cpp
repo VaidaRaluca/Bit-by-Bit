@@ -3,6 +3,7 @@ import board;
 import player;
 import card;
 import <stdexcept>;
+import <unordered_map>;
 
 using namespace eter;
 
@@ -45,6 +46,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 	case eter::ElementalPowerCards::PowerAbility::Flame:
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Fire:
+		activateFire(player, opponent, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::ASH:
 		break;
@@ -140,5 +142,62 @@ void ElementalPowerCards::activateSquall(Player& opponent)
 	}
 	else {
 		throw std::invalid_argument("There is no visible card that can be returned to the opponent's hand!\n");
+	}
+}
+
+void ElementalPowerCards::activateFire(Player& player, Player& opponent, Board& board)
+{
+	std::unordered_map<uint8_t, uint8_t> visibleCardCounts;
+
+	for (size_t i = 0; i < board.GetRows(); ++i) 
+	{
+		for (size_t j = 0; j < board.GetCols(); ++j) 
+		{
+			auto& stackOpt = board.GetGrid()[i][j];
+			if (stackOpt.has_value() && !stackOpt.value().empty()) 
+			{
+				const Card& topCard = stackOpt.value().top();
+				if (topCard.GetPosition()) 
+					++visibleCardCounts[topCard.GetValue()];
+			}
+		}
+	}
+
+	uint8_t chosenNumber;
+	while (true)
+	{
+		std::cout << "Enter a number with at least two visible cards on the board: ";
+		std::cin >> chosenNumber;
+
+		if (visibleCardCounts[chosenNumber] >= 2) 
+			break; 
+		else 
+			std::cout << "Invalid choice. There are less than two visible cards with this number.\n";
+	}
+
+	for (size_t i = 0; i < board.GetRows(); ++i)
+	{
+		for (size_t j = 0; j < board.GetCols(); ++j)
+		{
+			auto& stackOpt = board.GetGrid()[i][j];
+			if (stackOpt.has_value() && !stackOpt.value().empty()) 
+			{
+				std::stack<Card> cardStack = stackOpt.value();
+				Card topCard = cardStack.top();
+
+				if (topCard.GetPosition() && topCard.GetValue() == chosenNumber)
+				{
+					cardStack.pop();
+					if (std::find(player.GetPlayedCards().begin(), player.GetPlayedCards().end(), topCard) != player.GetPlayedCards().end()) {
+						player.AddCardToHand(topCard);
+					}
+					else if (std::find(opponent.GetPlayedCards().begin(), opponent.GetPlayedCards().end(), topCard) != opponent.GetPlayedCards().end()) {
+						opponent.AddCardToHand(topCard);
+					}
+					std::cout << "The card with value " << static_cast<int>(topCard.GetValue())
+						<< " has been returned to its owner's hand.\n";
+				}
+			}
+		}
 	}
 }
