@@ -58,6 +58,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		activateSquall(opponent);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Gale:
+		activateGale(player, opponent, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Hurricane:
 		break;
@@ -70,6 +71,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 	case eter::ElementalPowerCards::PowerAbility::Tide:
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Mist:
+		activateMist(player, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Wave:
 		break;
@@ -82,6 +84,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 	case eter::ElementalPowerCards::PowerAbility::Support:
 		break;
 	case eter::ElementalPowerCards::PowerAbility::EarthQuake:
+		activateEarthQuake(player, opponent, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Crumble:
 		break;
@@ -255,13 +258,13 @@ void ElementalPowerCards::activateSpark(Player& player, Board& board)
 			if (board.GetGrid()[row][col].has_value()) 
 			{
 				std::stack<Card> stack = board.GetGrid()[row][col].value();
-				if (stack.top().GetOwnerName() != player.GetName())
+				if (stack.top().GetColor()!= player.GetColor())
 					continue; 
 				if (stack.size() > 1) 
 				{ 
 					cardFound = true;
 					int newRow, newCol;
-					std::cout << "Alege o pozitie noua pentru a juca cartea (X Y): ";
+					std::cout << "Choose a new position to play the card (row col):";
 					std::cin >> newRow >> newCol;
 
 					if (board.isValidPosition(newRow, newCol) && board.canPlaceCard(newRow, newCol, stack.top()))
@@ -271,15 +274,90 @@ void ElementalPowerCards::activateSpark(Player& player, Board& board)
 						break;
 					}
 					else 
-						std::cout << "Pozitia aleasa nu este valida sau nu se poate plasa cartea acolo.\n";
+						throw std::invalid_argument("The chosen position is not valid or the card cannot be placed there.\n");
 				}
 			}
 		}
 	}
-
-	// Dacã nu am gãsit nici o carte acoperitã, afi?ãm un mesaj
-	if (!cardFound) {
-		std::cout << "Nu exista carti proprii acoperite de adversar pe tabla.\n";
+	if (!cardFound) 
+	{
+		std::cout << "There are no own cards covered by the opponent on the board.\n";
 	}
 }
+
+void ElementalPowerCards::activateEarthQuake(Player& player, Player& opponent, Board& board)
+{
+	for (size_t row = 0; row < board.GetRows(); ++row)
+	{
+		for (size_t col = 0; col < board.GetCols(); ++col) 
+		{
+			auto& cell = board[{row, col}];
+			if (cell.has_value() && !cell->empty())
+			{
+				Card& topCard = cell->top();
+				if (topCard.GetValue() == 1)
+				{
+					Player* owner = nullptr;
+
+					if (topCard.GetColor() == player.GetColor()) 
+						owner = &player;
+
+					else if (topCard.GetColor() == opponent.GetColor())
+						owner = &opponent;
+
+					if (owner) 
+						owner->AddToEliminatedCards(topCard);
+
+					cell->pop();
+					std::cout << "Removed card with value 1 at position (" << row << ", " << col << ").\n";
+
+					if (cell->empty()) 
+						cell.reset();
+				}
+			}
+		}
+	}
+}
+
+void ElementalPowerCards::activateMist(Player& player, Board& board)
+{
+	Card illusion;
+	player.useIllusion(board, illusion);
+}
+
+void ElementalPowerCards::activateGale(Player& player, Player& opponent, Board& board)
+{
+	for (size_t row = 0; row < board.GetRows(); ++row)
+	{
+		for (size_t col = 0; col < board.GetCols(); ++col)
+		{
+			auto& cell = board[{row, col}];
+
+			if (cell.has_value() && cell->size() > 1)
+			{
+				std::stack<Card> tempStack;
+
+				Card topCard = cell->top();
+				cell->pop();
+
+				while (!cell->empty()) 
+				{
+					Card coveredCard = cell->top();
+					cell->pop();
+
+					if (coveredCard.GetColor() == player.GetColor()) 
+						player.AddCardToHand(coveredCard);
+
+					else if (coveredCard.GetColor() == opponent.GetColor()) 
+						opponent.AddCardToHand(coveredCard);
+				}
+
+				cell->push(topCard);
+			}
+		}
+	}
+}
+
+
+
 

@@ -8,7 +8,6 @@ import <iostream>;
 namespace eter {
 	export class Card {
 	public:
-		std::string m_ownerName;
 		uint8_t m_value;
 		std::string m_color; 
 		bool m_position; //true = fata in sus
@@ -18,12 +17,10 @@ namespace eter {
 		uint8_t GetValue() const;  
 		const std::string& GetColor() const;
 		bool GetPosition() const;
-		const std::string& GetOwnerName() const;
 
 		void SetValue(uint8_t value);
 		void SetColor(const std::string& color); //for later color could be an enum : red/blue => reduces memory overhead and increases efficiency
 		void SetPosition(bool positon);
-		void SetOwnerName(const std::string& ownerName);
 
 		bool operator==(const Card& other) const;
 		~Card() = default;
