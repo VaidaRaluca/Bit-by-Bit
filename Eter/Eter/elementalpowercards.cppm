@@ -50,5 +50,7 @@ namespace eter {
 		void activateDestruction(Player& player, Player& opponent, Board& board);
 		void activateSquall(Player& opponent);
 		void activateFire(Player& player, Player& opponent, Board& board);
+		void activateASH(Player& player, Board& board);
+		void activateSpark(Player& player, Board& board);
 	};
 }

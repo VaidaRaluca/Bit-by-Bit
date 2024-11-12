@@ -49,8 +49,10 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		activateFire(player, opponent, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::ASH:
+		activateASH(player, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Spark:
+		activateSpark(player, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Squall:
 		activateSquall(opponent);
@@ -201,3 +203,83 @@ void ElementalPowerCards::activateFire(Player& player, Player& opponent, Board& 
 		}
 	}
 }
+
+void ElementalPowerCards::activateASH(Player& player, Board& board)
+{
+	auto& eliminatedCards = player.GetEliminatedCards();
+
+	if (eliminatedCards.empty())
+		throw std::runtime_error("No eliminated cards to choose from!");
+
+	std::cout << "Choose a card to play from your eliminated cards:\n";
+	for (size_t i = 0; i < eliminatedCards.size(); ++i) 
+		std::cout << i + 1 << ". Card with value " << eliminatedCards[i].GetValue()
+			<< " and color " << eliminatedCards[i].GetColor() << '\n';
+
+	size_t choice;
+	std::cin >> choice;
+
+	Card chosenCard = eliminatedCards[choice - 1];
+
+	bool cardPlaced = false;
+	for (size_t row = 0; row < board.GetRows(); ++row)
+	{
+		for (size_t col = 0; col < board.GetCols(); ++col) 
+		{
+			if (board.canPlaceCard(row, col, chosenCard)) 
+			{
+				board.placeCard(row, col, chosenCard);
+				std::cout << "Card with value " << chosenCard.GetValue()
+					<< " and color " << chosenCard.GetColor()
+					<< " has been placed back on the board at position (" << row << ", " << col << ").\n";
+				cardPlaced = true;
+				break;
+			}
+		}
+		if (cardPlaced) break;
+	}
+
+	if (!cardPlaced) 
+		throw std::runtime_error("No valid position found to place the card!");
+
+	eliminatedCards.erase(eliminatedCards.begin() + (choice - 1));
+}
+
+void ElementalPowerCards::activateSpark(Player& player, Board& board)
+{
+	bool cardFound = false; 
+	for (size_t row = 0; row < board.GetRows(); ++row) 
+	{
+		for (size_t col = 0; col < board.GetCols(); ++col)
+		{
+			if (board.GetGrid()[row][col].has_value()) 
+			{
+				std::stack<Card> stack = board.GetGrid()[row][col].value();
+				if (stack.top().GetOwnerName() != player.GetName())
+					continue; 
+				if (stack.size() > 1) 
+				{ 
+					cardFound = true;
+					int newRow, newCol;
+					std::cout << "Alege o pozitie noua pentru a juca cartea (X Y): ";
+					std::cin >> newRow >> newCol;
+
+					if (board.isValidPosition(newRow, newCol) && board.canPlaceCard(newRow, newCol, stack.top()))
+					{
+						board.placeCard(newRow, newCol, stack.top());
+						stack.pop();
+						break;
+					}
+					else 
+						std::cout << "Pozitia aleasa nu este valida sau nu se poate plasa cartea acolo.\n";
+				}
+			}
+		}
+	}
+
+	// Dacã nu am gãsit nici o carte acoperitã, afi?ãm un mesaj
+	if (!cardFound) {
+		std::cout << "Nu exista carti proprii acoperite de adversar pe tabla.\n";
+	}
+}
+

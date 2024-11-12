@@ -22,6 +22,11 @@ bool Card::GetPosition() const
 	return m_position;
 }
 
+const std::string& eter::Card::GetOwnerName() const
+{
+	return m_ownerName;
+}
+
 
 void Card::SetValue(uint8_t value)
 {
@@ -36,6 +41,11 @@ void Card::SetColor(const std::string& color)
 void Card::SetPosition(bool position)
 {
 	m_position = position;
+}
+
+void Card::SetOwnerName(const std::string& ownerName)
+{
+	m_ownerName = ownerName;
 }
 
 bool eter::Card::operator==(const Card& other) const

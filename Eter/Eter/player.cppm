@@ -17,6 +17,7 @@ namespace eter {
 		std::vector<Card> m_cardsInHand;
 		bool m_hasUsedIllusion;
 		std::vector<Card> m_playedCards;
+		std::vector<Card> m_eliminatedCards;
 	public:
 		Player() = default;
 		Player(const std::string& name, const std::string& color);
@@ -29,6 +30,7 @@ namespace eter {
 		const std::vector<Card>& GetCardsInHand() const;
 		bool GetHasUsedIllusion() const;
 		std::vector<Card>& GetPlayedCards();
+		std::vector<Card>& GetEliminatedCards();
 
 		//Setteri
 		void SetName(const std::string& name);
@@ -37,6 +39,7 @@ namespace eter {
 		void SetCardsInHand(const std::vector<Card>& cards);
 
 		void PrintCardsInHand();
+		void AddToEliminatedCards(const Card& card);//Adauga o carte in m_eliminatedCards
 		void AddPlayedCard(const Card& card);
 		void AddCardToHand(const Card& card);//Adauga o carte in m_cardsInHand
 		void useIllusion(Board& board, Card& illusion);

@@ -38,6 +38,11 @@ std::vector<Card>& eter::Player::GetPlayedCards()
 	return m_playedCards;
 }
 
+std::vector<Card>& Player::GetEliminatedCards() 
+{
+	return m_eliminatedCards;
+}
+
 void Player::SetName(const std::string& name)
 {
 	m_name = name;
@@ -66,6 +71,10 @@ void Player::PrintCardsInHand()
 	}
 }
 
+void Player::AddToEliminatedCards(const Card& card)
+{
+	m_eliminatedCards.push_back(card);
+}
 
 void Player::AddPlayedCard(const Card& card)
 {
