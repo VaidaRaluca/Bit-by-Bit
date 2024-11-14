@@ -35,6 +35,8 @@ namespace eter {
 		bool isSecondaryDiagonalLine(std::optional<std::string>& lineColor) const;
 		bool isHorizontalLine(std::optional<std::string>& lineColor) const;
 
+		const std::string& findWinner();
+		bool isBoardFull();
 
 		~Board()=default;
 	};

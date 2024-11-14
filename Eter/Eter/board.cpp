@@ -228,6 +228,37 @@ bool eter::Board::isHorizontalLine(std::optional<std::string>& lineColor) const
 	return false;
 }
 
+const std::string& eter::Board::findWinner()
+{
+	std::optional<std::string> winnerColor;
+	if (isHorizontalLine(winnerColor))
+	{
+		return winnerColor.value();
+	}
+	if (isVerticalLine(winnerColor))
+	{
+		return winnerColor.value();
+	}
+	if (isPrimaryDiagonalLine(winnerColor))
+	{
+		return winnerColor.value();
+	}
+	if (isSecondaryDiagonalLine(winnerColor))
+	{
+		return winnerColor.value();
+	}
+	return "";
+}
+
+bool eter::Board::isBoardFull()
+{
+	for (uint8_t row = 0; row < m_rows; ++row) 
+		for(uint8_t col=0;col<m_cols;++col)
+			if (!m_grid[row][col].has_value())
+				return false;
+	return true;
+}
+
 
 std::ostream& eter::operator<<(std::ostream& os, const Board& board)
 {

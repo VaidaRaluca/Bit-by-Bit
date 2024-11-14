@@ -20,7 +20,5 @@ namespace eter {
 		AMode(Game* game);
 		void startMatch();
 		void applyModeRules();
-		 
-
 	};
 } // namespace eter

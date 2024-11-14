@@ -131,7 +131,7 @@ void Game::startGame()
 {
     if (m_gameMode == "AMode") 
     {
-         AMode mode(m_player1, m_player2, m_board);
+        AMode mode(m_player1, m_player2, m_board);
         mode.startMatch();   
     }
     else

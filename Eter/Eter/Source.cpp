@@ -22,7 +22,7 @@ int main()
 	Player player2("Alina", "blue");
     
 	GameManager gameManager;
-	gameManager.StartNewGame(player1, player2, board, "BMode");
+	gameManager.StartNewGame(player1, player2, board, "AMode");
 
 	return 0;
 }

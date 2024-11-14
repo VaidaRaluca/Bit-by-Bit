@@ -40,7 +40,6 @@ void Card::SetPosition(bool position)
 }
 
 
-
 bool eter::Card::operator==(const Card& other) const
 {
 	return m_value == other.m_value && m_color == other.m_color && m_position == other.m_position;
