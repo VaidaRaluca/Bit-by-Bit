@@ -16,7 +16,110 @@ namespace eter {
     {}
     void AMode::startMatch()
     {  
-    std::cout << "Starting a new match in Mode A!" << std::endl;
+        m_isPlayerTurn = true;  // Player 1 starts first
+        m_player1Wins = 0;
+        m_player2Wins = 0;
+
+        // Initialize the game object
+        m_game = std::make_unique<Game>(m_player1, m_player2, m_board, "Mode A");
+
+        // Display the initial setup
+        std::cout << "Starting a new match in Mode A!" << std::endl;
+        std::cout << "Player 1: " << m_player1.GetName() << " (" << m_player1.GetColor() << ")" << std::endl;
+        std::cout << "Player 2: " << m_player2.GetName() << " (" << m_player2.GetColor() << ")" << std::endl;
+        std::cout << "Game board: " << std::endl;
+        std::cout << m_board << std::endl;
+
+        applyModeRules();
+
+        // Game loop
+        while (true)
+        {
+            std::cout << "Round " << m_game->GetNrRound() << std::endl;
+
+            Player& currentPlayer = m_isPlayerTurn ? m_player1 : m_player2;
+            std::cout << currentPlayer.GetName() << "'s turn!" << std::endl;
+
+            // Prompt the player for an action
+            Action action = promptPlayerAction();
+            if (action == Action::Invalid)
+            {
+                continue;  // Reprompt on invalid input
+            }
+            Explosion* explosion = nullptr;
+            int explosionSize = 0;
+
+            // Hdl player action based on choice
+            switch (action) {
+            case Action::PlaceCard:
+                std::cout << currentPlayer.GetName() << " places a card on the board." << std::endl;
+                m_game->playTurn();
+                break;
+            case Action::ActivateIllusion:
+                std::cout << currentPlayer.GetName() << " activates an illusion." << std::endl;
+                // Implement illusion activation logic here
+                break;
+            case Action::ActivateExplosion:
+                std::cout << currentPlayer.GetName() << " activates an explosion." << std::endl;
+
+                // Prompt the player for the coordinates to place the explosion
+                uint8_t x, y;
+                std::cout << "Enter the X position for explosion (0-" << m_board.GetCols() - 1 << "): ";
+                std::cin >> x;
+                std::cout << "Enter the Y position for explosion (0-" << m_board.GetRows() - 1 << "): ";
+                std::cin >> y;
+
+                // Validate the coordinates
+                if (!m_board.isValidPosition(x, y)) {
+                    std::cout << "Invalid position. Please try again." << std::endl;
+                    break; // Exit the case if invalid coordinates are entered
+                }
+
+                // Now initialize explosionSize and create Explosion object
+                explosionSize = 3;  // You can change this size based on your needs
+                explosion = new Explosion(explosionSize); // Initialize Explosion object dynamically
+
+                // Apply explosion effects to the board at the selected position
+                std::cout << "Explosion activated at position (" << (int)x << ", " << (int)y << ")." << std::endl;
+                explosion->applyEffects(x, y, m_board);  // Apply explosion effects to the board
+
+                break;
+            default:
+                std::cout << "Unexpected action. Try again." << std::endl;
+                continue;
+            }
+
+            // Toggle player turn
+            m_isPlayerTurn = !m_isPlayerTurn;
+
+            // Check if the game is over
+            uint8_t gameOverStatus = m_game->VerifyGameOver();
+            if (gameOverStatus != 0) {
+                std::cout << "Game Over!" << std::endl;
+                if (gameOverStatus == 1) {
+                    std::cout << m_player1.GetName() << " wins!" << std::endl;
+                    m_player1Wins++;
+                }
+                else if (gameOverStatus == 2) {
+                    std::cout << m_player2.GetName() << " wins!" << std::endl;
+                    m_player2Wins++;
+                }
+                break;
+            }
+
+            // Check if the board is full
+            if (m_board.isBoardFull()) {
+                std::cout << "It's a tie!" << std::endl;
+                break;
+            }
+
+            // Increment the round number
+            m_game->IncrementNrRound();
+        }
+
+        // Display the total wins at the end of the match
+        std::cout << "Total Wins - Player 1: " << m_player1Wins << ", Player 2: " << m_player2Wins << std::endl;
+
     
     }
 
