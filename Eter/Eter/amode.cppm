@@ -30,6 +30,9 @@ namespace eter {
 		AMode(Game* game);
 		void startMatch();
 		void applyModeRules();
+		void AssignCardsInHandModeA();
+		Action promptPlayerAction();
+		~AMode() = default;
 		
 	};
 } // namespace eter
