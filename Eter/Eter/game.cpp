@@ -147,5 +147,34 @@ void Game::startGame()
          }
 }
 
+uint8_t Game::VerifyGameOver()
+{
+    const std::string winnerColor = m_board.findWinner();
+    if (GetIsPlayerTurn())
+    {
+        if (winnerColor == m_player1.GetColor())
+        {
+            IncrementPlayer1Wins();
+            return 1;
+        }
+        if (m_player1.GetCardsInHand().empty())
+            return 2;
+    }
+    else
+    {
+        if (winnerColor == m_player2.GetColor())
+        {
+            IncrementPlayer2Wins();
+            return 1;
+        }
+        if (m_player2.GetCardsInHand().empty())
+            return 2;
+    }
+    if (m_board.isBoardFull())
+        return 3;
+
+    return 0;
+}
+
 
 

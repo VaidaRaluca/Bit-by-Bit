@@ -23,7 +23,7 @@ namespace eter {
 		Mage m_magePlayer1;
 		Mage m_magePlayer2;
 		Game* m_game;
-		const uint8_t knrRounds=5;
+		const uint8_t knrRoundsForWin=3;
 	public:
 		BMode()=default;
 		BMode(Game* game);
@@ -31,6 +31,7 @@ namespace eter {
 		void generateMage();  // genereaza cate un vrajitor pentru fiecare player
 		void startMatch();   // porneste meciul
 		void startRound();  //porneste runda
+		void handleOption();  // afiseaza optiunile utilizatorului
 		void applyModeRules(); // aplica toate regulile jocului
 
 	};
