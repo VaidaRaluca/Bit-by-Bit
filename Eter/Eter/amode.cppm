@@ -2,10 +2,18 @@ export module amode;
 import player;
 import board;
 import game;
+import card;
 import <iostream>;
 import <string>;
+import <memory>;
 
 namespace eter {
+	enum class Action : uint8_t {
+		PlaceCard = 1,
+		ActivateIllusion,
+		ActivateExplosion,
+ 		Invalid  // For invalid input handling
+	};
 	export class AMode {
 	private:
 		Player m_player1;
@@ -14,11 +22,14 @@ namespace eter {
 		bool m_isPlayerTurn;//true pentru Player 1, false pentru Player 2
 		int m_player1Wins;
 		int m_player2Wins;
-		Game* m_game;
+		std::unique_ptr<Game> m_game;
+		bool isCardPlaceable(const Card& card);
+		bool checkWinningCondition();
 	public:
 		AMode(Player player1, Player player2, const Board& board);
 		AMode(Game* game);
 		void startMatch();
 		void applyModeRules();
+		
 	};
 } // namespace eter

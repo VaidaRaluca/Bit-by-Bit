@@ -2,6 +2,10 @@ import gamemanager;
 import game;
 import board;
 import player;
+import<vector>;
+import <stack>;
+import <optional>;
+import <iostream>;
 int main()
 {
 	using namespace eter;
@@ -23,6 +27,6 @@ int main()
     
 	GameManager gameManager;
 	//gameManager.StartNewGame(player1, player2, board, "AMode");
-
+	
 	return 0;
 }

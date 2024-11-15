@@ -27,7 +27,8 @@ void GameManager::StartNewGame(Player player1, Player player2, Board board, cons
 		if (gameMode == "AMode")
 		{
 			AMode amode(&m_game);
-			amode.applyModeRules();
+			std::cout << "Incepeti in modul A";
+			amode.startMatch();
 		}
 		if (gameMode == "BMode")
 		{

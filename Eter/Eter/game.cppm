@@ -41,6 +41,7 @@ namespace eter
 
 		void playTurn();
 		void startGame();
+		 
 		uint8_t VerifyGameOver();
 
 	};

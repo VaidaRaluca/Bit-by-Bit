@@ -124,13 +124,15 @@ bool eter::Player::placeCard(int x, int y, const Card& card, Board& board)
 
 void Player::useIllusion(Board& board, Card& illusion)
 {
-	if (GetHasUsedIllusion()) {
+	if (GetHasUsedIllusion()) 
+	{
 		std::cout << "Illusion has already been used\n";
 		m_hasUsedIllusion = true;
 		return;
 	}
 	std::pair<uint8_t, uint8_t> position = findEmptyCell(board);
-	if (position == kInvalidPosition) {
+	if (position == kInvalidPosition) 
+	{
 		std::cout << "No empty cell has been found on the board\n";
 		return;
 	}
