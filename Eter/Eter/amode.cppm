@@ -25,6 +25,13 @@ namespace eter {
 		std::unique_ptr<Game> m_game;
 		bool isCardPlaceable(const Card& card);
 		bool checkWinningCondition();
+
+		//Functii ajutatoare
+		void handlePlaceCard();
+		void handleActivateIllusion();
+		void handleActivateExplosion();
+		void handleGameOverCheck();
+
 	public:
 		AMode(Player player1, Player player2, const Board& board);
 		AMode(Game* game);
