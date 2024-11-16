@@ -16,6 +16,7 @@ void BMode::applyModeRules()
 {
     assignCardsInHand();
     generateMage();
+    startMatch();
 }
 
 void BMode::assignCardsInHand()
@@ -47,8 +48,8 @@ void BMode::assignCardsInHand()
 
     if (m_game)
     {
-        m_game->GetPlayer1().SetCardsInHand(cardsForPlayer1);
-        m_game->GetPlayer2().SetCardsInHand(cardsForPlayer2);
+        m_game->GetPlayer1Ref().SetCardsInHand(cardsForPlayer1);
+        m_game->GetPlayer2Ref().SetCardsInHand(cardsForPlayer2);
     }
 }
 void BMode::generateMage()
@@ -70,7 +71,7 @@ void BMode::generateMage()
 
 void BMode::startMatch()
 {   
-    uint8_t countRound = 1;
+    size_t countRound = 1;
     std::cout << "Jocul in modul B a inceput \n";
     while(m_game->GetPlayer2Wins() < knrRoundsForWin && m_game->GetPlayer1Wins() < knrRoundsForWin)
     {
@@ -91,11 +92,17 @@ void BMode::startRound()
     if (ok == 2 || ok == 3)
     {
         char choice;
-        std::cout << "Vrei sa mai contiuni jocul cu o singura mutare? (DA\NU) \n";
+        std::cout << "Vrei sa mai contiuni jocul cu o singura mutare? (DA sau NU) \n";
         std::cin >> choice;
         if (choice == 'DA')
             handleOption();
-        //aici trebuie si calculat scorul si sa se decida castigatorul
+        if (m_game->GetPlayer1().GetColor() == m_game->GetBoard().findWinnerByScore())
+            std::cout << "Felicitari " << m_game->GetPlayer1().GetName() << " ai castigat! \n ";
+        else
+            if (m_game->GetPlayer2().GetColor() == m_game->GetBoard().findWinnerByScore())
+                std::cout << "Felicitari " << m_game->GetPlayer2().GetName() << " ai castigat! \n ";
+            else
+                std::cout << "REMIZA \n";
     }
     else
     {
@@ -122,11 +129,11 @@ void BMode::handleOption()
 
 
     if (m_game->GetIsPlayerTurn())
-        std::cout << "Este randul jucatorului " << m_game->GetPlayer1().GetName();
+        std::cout << "Este randul jucatorului " << m_game->GetPlayer1().GetName()<<"\n";
     else
-        std::cout << "Este randul jucatorului " << m_game->GetPlayer2().GetName();
+        std::cout << "Este randul jucatorului " << m_game->GetPlayer2().GetName()<<"\n";
 
-    uint8_t key;
+    int key;
     std::cout << "Alege o optiune: \n";
     std::cout << "Apasa tasta 1 pentru a plasa o carte pe tabla \n";
     std::cout << "Apasa tasta 2 pentru a activa o iluzie \n";
@@ -146,10 +153,10 @@ void BMode::handleOption()
         //activare explozie
         break;
     case OPTION_4:
-        /*if (m_game->GetIsPlayerTurn())
-            m_magePlayer1.activate(m_game->GetPlayer1(), m_game->GetPlayer2(),m_game->GetBoard());
+        if (m_game->GetIsPlayerTurn())
+            m_magePlayer1.activate(m_game->GetPlayer1Ref(), m_game->GetPlayer2Ref(),m_game->GetBoardRef());
         else
-            m_magePlayer2.activate(m_game->GetPlayer2(),m_game->GetPlayer1(),m_game->GetBoard());*/
+            m_magePlayer2.activate(m_game->GetPlayer2Ref(),m_game->GetPlayer1Ref(),m_game->GetBoardRef());
         break;
     default:
         std::cout << "Optiune invalida.\n";

@@ -101,9 +101,11 @@ void Game::IncrementNrRound()
 
 void Game::playTurn() {
     if (m_isPlayerTurn) {
+        m_player1.PrintCardsInHand();
         handlePlayerTurn(m_player1);
     }
     else {
+        m_player2.PrintCardsInHand();
         handlePlayerTurn(m_player2);
     }
     SetIsPlayerTurn();
@@ -161,8 +163,7 @@ uint8_t Game::VerifyGameOver()
 //Functii ajutatoare
 
 //Gestionarea turei unui jucător
-void Game::handlePlayerTurn(Player& player) {
-    player.PrintCardsInHand();
+void Game::handlePlayerTurn(Player player) {
     std::cout << player.GetName() 
         << " introdu coordonatele pozitiei de pe tabla (x si y) si indexul cartii pe care doresti sa o plasezi ";
 
@@ -172,7 +173,7 @@ void Game::handlePlayerTurn(Player& player) {
     // Plaseaza cartea pe tabla
     bool ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
     while (!ok) {
-        std::cout << player.GetName() << " introdu coordonatele corecte.\n";
+        std::cout << player.GetName() << " incearca sa plasezi o carte din nou.\n";
         getInputCoordinates(x, y, cardIndex);
         ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
     }

@@ -58,7 +58,7 @@ const std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos
 
 bool Board::isValidPosition(int x, int y) const
 {
-	return x >= 0 && x < m_rows && y >= 0 && y < m_cols;
+	return x >= 0 && x < (int)m_rows && y >= 0 && y < (int)m_cols;
 }
 
 bool eter::Board::isAdjacentToOccupiedSpace(int x, int y)const
@@ -95,7 +95,10 @@ bool eter::Board::canPlaceCard(int x, int y, const Card& card) const
 		}
 		return false;
 	}
-	return isAdjacentToOccupiedSpace(x, y);
+	if(!m_grid.empty())   // daca tabla e goala putem plasa oriunde
+	   return isAdjacentToOccupiedSpace(x, y);
+
+	return true;
 }
 
 void eter::Board::placeCard(int x, int y, const Card& card)
@@ -248,6 +251,27 @@ const std::string& eter::Board::findWinner()
 		return winnerColor.value();
 	}
 	return "";
+}
+
+const std::string& eter::Board::findWinnerByScore()
+{
+	uint16_t score1{ 0 };
+	uint16_t score2{ 0 };
+	for (size_t line = 0; line< m_grid.size(); ++line) {
+		for (size_t col = 0; col < m_grid[line].size(); ++col) {
+			if (m_grid[line][col].has_value()) {
+				if(m_grid[line][col].value().top().GetColor()=="blue")
+				   score1+= m_grid[line][col].value().top().GetValue();
+				if (m_grid[line][col].value().top().GetColor() == "red")
+					score2 += m_grid[line][col].value().top().GetValue();
+			}
+		}
+	}
+	if (score1 > score2)
+		return"blue";
+	if (score2 > score1)
+		return "red";
+	return " ";
 }
 
 bool eter::Board::isBoardFull()

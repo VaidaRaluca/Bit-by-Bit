@@ -1,11 +1,11 @@
 #include <cstdint>
 export module board;
+export import card; 
 import <vector>;
 import <optional>;
 import <stack>;
 import <utility>;
 import <string>;
-export import card; 
 namespace eter {
 	export class Board {
 	private:
@@ -36,6 +36,7 @@ namespace eter {
 		bool isHorizontalLine(std::optional<std::string>& lineColor) const;
 
 		const std::string& findWinner();
+		const std::string& findWinnerByScore();
 		bool isBoardFull();
 
 		~Board()=default;

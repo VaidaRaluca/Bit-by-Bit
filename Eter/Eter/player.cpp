@@ -67,7 +67,7 @@ void Player::PrintCardsInHand()
 {
 	for (const auto& it : m_cardsInHand)
 	{
-		std::cout << it << " ";
+		std::cout << it << " \n ";
 	}
 }
 
@@ -101,15 +101,11 @@ void eter::Player::AddCardToHand(const Card& card)
 bool eter::Player::placeCard(int x, int y, const Card& card, Board& board)
 {
 
-	auto it = std::find(m_cardsInHand.begin(), m_cardsInHand.end(), card);//chair are ce vrea sa puna in mana??
+	auto it = std::find(m_cardsInHand.begin(), m_cardsInHand.end(), card);
+
 	if (it == m_cardsInHand.end()) {
 		std::cout << "Cartea nu este in mana jucatorului.\n";
-		return false; // nu are 
-	}
-
-	if (!board.canPlaceCard(x, y, card)) {
-		std::cout << "Nu poti plasa aceasta carte la pozitia (" << x << ", " << y << ").\n";
-		return false;
+		return false; 
 	}
 
 	board.placeCard(x, y, card);

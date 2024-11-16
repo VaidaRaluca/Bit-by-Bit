@@ -9,7 +9,8 @@ import <iostream>;
 int main()
 {
 	using namespace eter;
-	Card card{ 4,"red",true };
+
+	/*Card card{ 4,"red",true };
 	std::cout << card << "\n";
 	std::vector<std::vector<std::optional<std::stack<Card>>>> grid(3, std::vector<std::optional<std::stack<Card>>>(3, std::nullopt));
 	Board board(grid,3,3);
@@ -19,14 +20,23 @@ int main()
 		stack = std::stack<Card>();
 	}
 	stack->push(card);
-	std::cout << board;
+	std::cout << board;*/
 
 
 	Player player1("Mihai","red");
 	Player player2("Alina", "blue");
     
-	GameManager gameManager;
+	//GameManager gameManager;
 	/*gameManager.StartNewGame(player1, player2, board, "AMode");*/
+
+	//Test ModulB
+
+	std::vector<std::vector<std::optional<std::stack<Card>>>> gridB(4, std::vector<std::optional<std::stack<Card>>>(4, std::nullopt));
+	Board boardB(gridB, 4, 4);
+
+	GameManager gameBMode;
+	gameBMode.StartNewGame(player1, player2, boardB, "BMode");
+
 	
 	return 0;
 }
