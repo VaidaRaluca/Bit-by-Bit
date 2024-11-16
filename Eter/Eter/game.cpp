@@ -13,20 +13,35 @@ Game::Game(Player player1, Player player2, Board board, std::string gameMode):
     m_player1Wins{0},m_player2Wins{0},m_nrRound{0}
 {}
 
-Player Game::GetPlayer1()
+Player Game::GetPlayer1() const
 {
 	return m_player1;
 }
 
-Player Game::GetPlayer2() 
+Player Game::GetPlayer2() const
 {
 	return m_player2; 
 }
 
-Board Game::GetBoard()
+Board Game::GetBoard() const
 {
 	return m_board;
 }
+
+//Getter ce returneaza &
+
+Player& Game::GetPlayer1Ref() {
+    return m_player1;
+}
+
+Player& Game::GetPlayer2Ref() {
+    return m_player2;
+}
+
+Board& Game::GetBoardRef() {
+    return m_board;
+}
+
 
 std::string Game::GetGameMods()
 {
@@ -84,48 +99,14 @@ void Game::IncrementNrRound()
     ++m_nrRound;
 }
 
-void Game::playTurn()
-{
-    if (m_isPlayerTurn) 
-    {    
-        m_player1.PrintCardsInHand();
-        std::cout << m_player1.GetName() << " introdu coordonatele pozitiei de pe tabla (x si y) si indexul cartii pe care doresti sa o plasezi ";
-        int x, y;
-        int cardIndex; //indexul din vectorul CardsInHand
-        std::cout << "x= ";std::cin >> x;
-        std::cout << "y= ";std::cin >> y;
-        std::cout << "CardIndex= ";std::cin >> cardIndex;
-        bool ok = m_player1.placeCard(x, y, m_player1.GetCardsInHand().at(cardIndex), m_board);
-        while (!ok)
-        {
-            std::cout << m_player1.GetName() << " introdu coordonatele pozitiei de pe tabla (x si y) si indexul cartii pe care doresti sa o plasezi ";
-            std::cout << "x= ";std::cin >> x;
-            std::cout << "y= ";std::cin >> y;
-            std::cout << "CardIndex= ";std::cin >> cardIndex;
-            ok = m_player1.placeCard(x, y, m_player1.GetCardsInHand().at(cardIndex), m_board);
-        }
-        SetIsPlayerTurn();
+void Game::playTurn() {
+    if (m_isPlayerTurn) {
+        handlePlayerTurn(m_player1);
     }
-    else
-    {
-        m_player2.PrintCardsInHand();
-        std::cout << m_player2.GetName() << " introdu coordonatele pozitiei de pe tabla (x si y) si indexul cartii pe care doresti sa o plasezi ";
-        int x, y;
-        int cardIndex; //indexul din vectorul CardsInHand
-        std::cout << "x= ";std::cin >> x;
-        std::cout << "y= ";std::cin >> y;
-        std::cout << "CardIndex= ";std::cin >> cardIndex;
-        bool ok = m_player2.placeCard(x, y, m_player2.GetCardsInHand().at(cardIndex), m_board);
-        while (!ok)
-        {
-            std::cout << m_player2.GetName() << " introdu coordonatele pozitiei de pe tabla (x si y) si indexul cartii pe care doresti sa o plasezi ";
-            std::cout << "x= ";std::cin >> x;
-            std::cout << "y= ";std::cin >> y;
-            std::cout << "CardIndex= ";std::cin >> cardIndex;
-            ok = m_player1.placeCard(x, y, m_player1.GetCardsInHand().at(cardIndex), m_board);
-        }
-        SetIsPlayerTurn();
-    }	
+    else {
+        handlePlayerTurn(m_player2);
+    }
+    SetIsPlayerTurn();
 }
 
 void Game::startGame()
@@ -177,5 +158,30 @@ uint8_t Game::VerifyGameOver()
     return 0;
 }
 
+//Functii ajutatoare
 
+//Gestionarea turei unui jucător
+void Game::handlePlayerTurn(Player& player) {
+    player.PrintCardsInHand();
+    std::cout << player.GetName() 
+        << " introdu coordonatele pozitiei de pe tabla (x si y) si indexul cartii pe care doresti sa o plasezi ";
+
+    int x, y, cardIndex;
+    getInputCoordinates(x, y, cardIndex);
+
+    // Plaseaza cartea pe tabla
+    bool ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
+    while (!ok) {
+        std::cout << player.GetName() << " introdu coordonatele corecte.\n";
+        getInputCoordinates(x, y, cardIndex);
+        ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
+    }
+}
+
+//Obtinerea coordonatelor
+void Game::getInputCoordinates(int& x, int& y, int& cardIndex) {
+    std::cout << "x= "; std::cin >> x;
+    std::cout << "y= "; std::cin >> y;
+    std::cout << "CardIndex= "; std::cin >> cardIndex;
+}
 

@@ -18,13 +18,23 @@ namespace eter
 		uint8_t m_player2Wins;
 		uint8_t m_nrRound;   // numarul rundei in care ne aflam
 
+		//Functii ajutatoare
+		void handlePlayerTurn(Player& player);
+		void getInputCoordinates(int& x, int& y, int& cardIndex);
+
 	public:
 		Game() = default;
 		Game(Player player1, Player player2, Board board, std::string gameMode);
 
-		Player GetPlayer1();
-		Player GetPlayer2();
-		Board GetBoard();
+		Player GetPlayer1() const;
+		Player GetPlayer2() const;
+		Board GetBoard() const;
+
+		//Getter ce returneaza &
+		Player& GetPlayer1Ref();
+		Player& GetPlayer2Ref();
+		Board& GetBoardRef();
+
 		std::string GetGameMods();
 		bool GetIsPlayerTurn();
 		uint8_t GetPlayer1Wins();
