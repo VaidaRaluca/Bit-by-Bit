@@ -83,16 +83,16 @@ void BMode::startMatch()
 
 void BMode::startRound()
 {
-    uint8_t ok = 0;
-    while ( ok==0) 
+    uint8_t gameStatus = 0;
+    while (gameStatus == 0) 
     {
         handleOption();
-        ok=m_game->VerifyGameOver();
+        gameStatus = m_game->VerifyGameOver();
     }
-    if (ok == 2 || ok == 3)
+    if (gameStatus == 2 || gameStatus == 3)
     {
         char choice;
-        std::cout << "Vrei sa mai contiuni jocul cu o singura mutare? (DA sau NU) \n";
+        std::cout << "Vrei sa mai continui jocul cu o singura mutare? (DA sau NU) \n";
         std::cin >> choice;
         if (choice == 'DA')
             handleOption();
@@ -111,7 +111,6 @@ void BMode::startRound()
             std::cout << "Felicitari " << m_game->GetPlayer1().GetName() << " ai castigat! \n ";
         else
             std::cout << "Felicitari " << m_game->GetPlayer2().GetName() << " ai castigat! \n ";
-
     }
 }
 

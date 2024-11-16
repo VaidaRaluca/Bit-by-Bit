@@ -36,7 +36,7 @@ namespace eter {
 		ElementalPowerCards m_power1Player2,m_power2Player2;
 		Game* m_game;
 	public:
-		CMode();
+		CMode() =default;
 		CMode(Game* game);
 		void applyModeRules();
 		void generatePower();

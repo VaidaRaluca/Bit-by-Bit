@@ -2,6 +2,7 @@ module board;
 using eter::Card;
 using eter::Board;
 const std::string_view kEmpyBoardCell{ "____" };
+import <iostream>;
 
 Board::Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint8_t rows, uint8_t cols)
 	: m_grid{ std::move(grid) }
@@ -95,10 +96,16 @@ bool eter::Board::canPlaceCard(int x, int y, const Card& card) const
 		}
 		return false;
 	}
-	if(!m_grid.empty())   // daca tabla e goala putem plasa oriunde
-	   return isAdjacentToOccupiedSpace(x, y);
-
-	return true;
+	bool isBoardEmpty = true;
+	for (const auto& row : m_grid) {
+		for (const auto& cell : row) {
+			if (cell.has_value()) {
+				isBoardEmpty = false;
+				break;
+			}
+		}
+	}
+	return isBoardEmpty || isAdjacentToOccupiedSpace(x, y);
 }
 
 void eter::Board::placeCard(int x, int y, const Card& card)
@@ -116,7 +123,7 @@ void eter::Board::placeCard(int x, int y, const Card& card)
 	}
 
 	m_grid[x][y]->push(card);
-	std::cout << "Cartea cu valoarea " << card.m_value << " a fost plasata la (" << x << ", " << y << ").\n";
+	std::cout << "Cartea cu valoarea " << card.GetValue() << " a fost plasata la (" << x << ", " << y << ").\n";
 }
 
 bool eter::Board::isVerticalLine(std::optional<std::string>& lineColor) const
@@ -234,34 +241,22 @@ bool eter::Board::isHorizontalLine(std::optional<std::string>& lineColor) const
 const std::string& eter::Board::findWinner()
 {
 	std::optional<std::string> winnerColor;
-	if (isHorizontalLine(winnerColor))
-	{
+	if (isHorizontalLine(winnerColor) || isVerticalLine(winnerColor) || isPrimaryDiagonalLine(winnerColor) || isSecondaryDiagonalLine(winnerColor)) {
 		return winnerColor.value();
 	}
-	if (isVerticalLine(winnerColor))
-	{
-		return winnerColor.value();
-	}
-	if (isPrimaryDiagonalLine(winnerColor))
-	{
-		return winnerColor.value();
-	}
-	if (isSecondaryDiagonalLine(winnerColor))
-	{
-		return winnerColor.value();
-	}
-	return "";
+	static const std::string noWinner = "No winner yet";
+	return noWinner;
 }
 
 const std::string& eter::Board::findWinnerByScore()
 {
 	uint16_t score1{ 0 };
 	uint16_t score2{ 0 };
-	for (size_t line = 0; line< m_grid.size(); ++line) {
+	for (size_t line = 0; line < m_grid.size(); ++line) {
 		for (size_t col = 0; col < m_grid[line].size(); ++col) {
 			if (m_grid[line][col].has_value()) {
-				if(m_grid[line][col].value().top().GetColor()=="blue")
-				   score1+= m_grid[line][col].value().top().GetValue();
+				if (m_grid[line][col].value().top().GetColor() == "blue")
+					score1 += m_grid[line][col].value().top().GetValue();
 				if (m_grid[line][col].value().top().GetColor() == "red")
 					score2 += m_grid[line][col].value().top().GetValue();
 			}
@@ -276,8 +271,8 @@ const std::string& eter::Board::findWinnerByScore()
 
 bool eter::Board::isBoardFull()
 {
-	for (uint8_t row = 0; row < m_rows; ++row) 
-		for(uint8_t col=0;col<m_cols;++col)
+	for (uint8_t row = 0; row < m_rows; ++row)
+		for (uint8_t col = 0; col < m_cols; ++col)
 			if (!m_grid[row][col].has_value())
 				return false;
 	return true;

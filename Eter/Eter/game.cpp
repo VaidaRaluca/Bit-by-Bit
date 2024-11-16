@@ -139,24 +139,34 @@ uint8_t Game::VerifyGameOver()
         if (winnerColor == m_player1.GetColor())
         {
             IncrementPlayer1Wins();
+            std::cout << "Player " << m_player1.GetName() << " wins this round!" << std::endl;
             return 1;
         }
         if (m_player1.GetCardsInHand().empty())
+        {
+            std::cout << "Player " << m_player1.GetName() << " has no cards left!" << std::endl;
             return 2;
+        }
     }
     else
     {
         if (winnerColor == m_player2.GetColor())
         {
             IncrementPlayer2Wins();
+            std::cout << "Player " << m_player2.GetName() << " wins this round!" << std::endl;
             return 1;
         }
         if (m_player2.GetCardsInHand().empty())
+        {
+            std::cout << "Player " << m_player2.GetName() << " has no cards left!" << std::endl;
             return 2;
+        }
     }
     if (m_board.isBoardFull())
+    {
+        std::cout << "The board is full!" << std::endl;
         return 3;
-
+    }
     return 0;
 }
 

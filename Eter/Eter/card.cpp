@@ -48,6 +48,24 @@ bool eter::Card::operator==(const Card& other) const
 
 std::ostream& eter::operator<<(std::ostream& os, const Card& card)
 {
-	os << std::format("Value: {}, Color: {}, Face-Up: {}", static_cast<int>(card.GetValue()), card.GetColor(), card.GetPosition());
-	return os;
+    // Map colors to text color (foreground) and background color codes
+    std::string textColor, backgroundColor;
+
+    if (card.GetColor() == "red") {
+        textColor = "\033[38;5;9m";  // Red text
+        backgroundColor = "\033[48;5;0m";  // Black background
+    }
+    else if (card.GetColor() == "blue") {
+        textColor = "\033[38;5;12m";  // Blue text
+        backgroundColor = "\033[48;5;0m";  // Black background
+    }
+    std::string resetColor = "\033[0m";
+    os << backgroundColor << textColor
+        << std::format("Value: {}, Color: {}, Face-Up: {}",
+            static_cast<int>(card.GetValue()),
+            card.GetColor(),
+            card.GetPosition())
+        << resetColor;  // Reset to default color after the output
+
+    return os;
 }
