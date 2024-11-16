@@ -22,7 +22,7 @@ namespace eter {
 		bool m_isPlayerTurn;//true pentru Player 1, false pentru Player 2
 		int m_player1Wins;
 		int m_player2Wins;
-		std::unique_ptr<Game> m_game;
+		Game* m_game;
 		bool isCardPlaceable(const Card& card);
 		bool checkWinningCondition();
 

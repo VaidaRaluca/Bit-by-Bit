@@ -117,7 +117,6 @@ bool eter::Player::placeCard(int x, int y, const Card& card, Board& board)
 	m_cardsInHand.erase(it);
 
 	m_playedCards.push_back(card);
-
 	std::cout << "Cartea cu valoarea " << card.m_value << " a fost plasata de " << m_name << " la (" << x << ", " << y << ").\n";
 	return true;
 }
