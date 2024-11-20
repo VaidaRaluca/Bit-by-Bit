@@ -30,12 +30,12 @@ namespace eter {
 		bool canPlaceCard(int x, int y, const Card& card)const;
 		void placeCard(int x, int y, const Card& card);
 
-		bool isVerticalLine(std::optional<std::string>& lineColor) const;
-		bool isPrimaryDiagonalLine(std::optional<std::string>& lineColor) const;
-		bool isSecondaryDiagonalLine(std::optional<std::string>& lineColor) const;
-		bool isHorizontalLine(std::optional<std::string>& lineColor) const;
+		bool isVerticalLine(const std::string& lineColor) const;
+		bool isPrimaryDiagonalLine(const std::string& lineColor) const;
+		bool isSecondaryDiagonalLine(const std::string& lineColor) const;
+		bool isHorizontalLine(const std::string& lineColor) const;
 
-		const std::string& findWinner();
+		std::string findWinner();
 		const std::string& findWinnerByScore();
 		bool isBoardFull();
 

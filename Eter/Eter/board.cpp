@@ -126,126 +126,68 @@ void eter::Board::placeCard(int x, int y, const Card& card)
 	std::cout << "Cartea cu valoarea " << card.GetValue() << " a fost plasata la (" << x << ", " << y << ").\n";
 }
 
-bool eter::Board::isVerticalLine(std::optional<std::string>& lineColor) const
+bool eter::Board::isVerticalLine(const std::string& lineColor) const
 {
-	auto areCellsIdentical = [this](size_t row1, size_t row2, size_t col) {
-		return m_grid[row1][col].has_value() && m_grid[row2][col].has_value() &&
-			m_grid[row1][col].value().top() == m_grid[row2][col].value().top();
-		};
 	for (size_t col = 0; col < m_cols; ++col) {
-		std::optional<std::string> currentColor;
 		bool isLine = true;
-		for (size_t row = 1; row < m_rows; ++row) {
-			if (!areCellsIdentical(row, row - 1, col)) {
+		for (size_t row = 0; row < m_rows; ++row)
+			if (!m_grid[row][col] ||
+				m_grid[row][col]->top().GetColor() != lineColor) {
 				isLine = false;
 				break;
 			}
-			if (!currentColor && m_grid[row][col].has_value())
-				currentColor = m_grid[row][col].value().top().GetColor();
-			else if (m_grid[row][col].value().top().GetColor() != currentColor) {
-				isLine = false;
-				break;
-			}
-		}
-		if (isLine && currentColor) {
-			lineColor = currentColor;
+
+		if (isLine)
 			return true;
-		}
 	}
 	return false;
 }
 
 
-bool eter::Board::isPrimaryDiagonalLine(std::optional<std::string>& lineColor) const {
-	auto areCellsIdentical = [this](size_t row1, size_t row2) {
-		return m_grid[row1][row1].has_value() && m_grid[row2][row2].has_value() &&
-			m_grid[row1][row1].value().top() == m_grid[row2][row2].value().top();
-		};
-	std::optional<std::string> primaryDiagonalColor;
-	bool isLine = true;
-	for (size_t row = 1; row < m_rows; ++row) {
-		if (!areCellsIdentical(row, row - 1)) {
-			isLine = false;
-			break;
-		}
-		if (!primaryDiagonalColor && m_grid[row][row].has_value())
-			primaryDiagonalColor = m_grid[row][row].value().top().GetColor();
-		else if (m_grid[row][row].value().top().GetColor() != primaryDiagonalColor) {
-			isLine = false;
-			break;
-		}
-	}
-	if (isLine && primaryDiagonalColor) {
-		lineColor = primaryDiagonalColor;
-		return true;
-	}
-	return false;
+
+bool eter::Board::isPrimaryDiagonalLine(const std::string& lineColor) const {
+	if (m_rows != m_cols) 
+		return false;
+	for (size_t i = 0; i < m_rows; ++i) 
+		if (!m_grid[i][i] || m_grid[i][i]->top().GetColor() != lineColor) 
+			return false; 
+	return true; 
 }
 
 
-bool eter::Board::isSecondaryDiagonalLine(std::optional<std::string>& lineColor) const {
-	auto areCellsIdentical = [this](size_t row1, size_t row2) {
-		return m_grid[row1][m_cols - row1 - 1].has_value() && m_grid[row2][m_cols - row2 - 1].has_value() &&
-			m_grid[row1][m_cols - row1 - 1].value().top() == m_grid[row2][m_cols - row2 - 1].value().top();
-		};
-	std::optional<std::string> secondaryDiagonalColor;
-	bool isLine = true;
-	for (size_t row = 1; row < m_rows; ++row) {
-		if (!areCellsIdentical(row, row - 1)) {
-			isLine = false;
-			break;
-		}
-		if (!secondaryDiagonalColor && m_grid[row][m_cols - row - 1].has_value())
-			secondaryDiagonalColor = m_grid[row][m_cols - row - 1].value().top().GetColor();
-		else if (m_grid[row][m_cols - row - 1].value().top().GetColor() != secondaryDiagonalColor) {
-			isLine = false;
-			break;
-		}
-	}
-	if (isLine && secondaryDiagonalColor) {
-		lineColor = secondaryDiagonalColor;
-		return true;
-	}
-	return false;
+bool eter::Board::isSecondaryDiagonalLine(const std::string& lineColor) const {
+	if (m_rows != m_cols)
+		return false;
+	for (size_t i = 0; i < m_rows; ++i)
+		if (!m_grid[i][m_rows-1-i] || m_grid[i][m_rows-1-i]->top().GetColor() != lineColor)
+			return false;
+	return true;
 }
 
-bool eter::Board::isHorizontalLine(std::optional<std::string>& lineColor) const
+bool eter::Board::isHorizontalLine(const std::string& lineColor) const
 {
-	auto areCellsIdentical = [this](size_t col1, size_t col2, size_t row) {
-		return m_grid[row][col1].has_value() && m_grid[row][col2].has_value() &&
-			m_grid[row][col1].value().top() == m_grid[row][col2].value().top();
-		};
 	for (size_t row = 0; row < m_rows; ++row) {
-		std::optional<std::string> currentColor;
 		bool isLine = true;
-		for (size_t col = 1; col < m_cols; ++col) {
-			if (!areCellsIdentical(col, col - 1, row)) {
+		for (size_t col = 0; col < m_cols; ++col)
+			if (!m_grid[row][col] ||
+				m_grid[row][col]->top().GetColor() != lineColor) {
 				isLine = false;
 				break;
 			}
-			if (!currentColor && m_grid[row][col].has_value())
-				currentColor = m_grid[row][col].value().top().GetColor();
-			else if (m_grid[row][col].value().top().GetColor() != currentColor) {
-				isLine = false;
-				break;
-			}
-		}
-		if (isLine && currentColor) {
-			lineColor = currentColor;
+
+		if (isLine)
 			return true;
-		}
 	}
 	return false;
 }
 
-const std::string& eter::Board::findWinner()
+std::string eter::Board::findWinner()
 {
-	std::optional<std::string> winnerColor;
-	if (isHorizontalLine(winnerColor) || isVerticalLine(winnerColor) || isPrimaryDiagonalLine(winnerColor) || isSecondaryDiagonalLine(winnerColor)) {
-		return winnerColor.value();
-	}
-	static const std::string noWinner = "No winner yet";
-	return noWinner;
+	if (isHorizontalLine("red") || isVerticalLine("red") || isPrimaryDiagonalLine("red") || isSecondaryDiagonalLine("red")) 
+		return "red";
+	else if (isHorizontalLine("blue") || isVerticalLine("blue") || isPrimaryDiagonalLine("blue") || isSecondaryDiagonalLine("blue"))
+		return "blue";
+	return std::string{ "No winner yet" };
 }
 
 const std::string& eter::Board::findWinnerByScore()

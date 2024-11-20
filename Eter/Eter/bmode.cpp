@@ -83,11 +83,14 @@ void BMode::startMatch()
 
 void BMode::startRound()
 {
-    uint8_t gameStatus = 0;
+   uint8_t gameStatus = 0;
+   //std::cout << "error" << static_cast<int>(gameStatus) << '\n';
+
     while (gameStatus == 0) 
     {
         handleOption();
         gameStatus = m_game->VerifyGameOver();
+        //std::cout << "error" << static_cast<int>(gameStatus) << '\n';
     }
     if (gameStatus == 2 || gameStatus == 3)
     {

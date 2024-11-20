@@ -133,7 +133,8 @@ void Game::startGame()
 
 uint8_t Game::VerifyGameOver()
 {
-    const std::string winnerColor = m_board.findWinner();
+    std::string winnerColor = m_board.findWinner();
+    std::cout << winnerColor << '\n';
     if (GetIsPlayerTurn())
     {
         if (winnerColor == m_player1.GetColor())
