@@ -27,7 +27,7 @@ namespace eter {
 		const std::string& GetName() const;
 		uint32_t GetScore() const;
 		const std::string& GetColor() const;
-		const std::vector<Card>& GetCardsInHand() const;
+		std::vector<Card>& GetCardsInHand();
 		bool GetHasUsedIllusion() const;
 		std::vector<Card>& GetPlayedCards();
 		std::vector<Card>& GetEliminatedCards();

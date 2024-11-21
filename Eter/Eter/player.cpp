@@ -23,7 +23,7 @@ const std::string& Player::GetColor() const
 	return m_color;
 }
 
-const std::vector<Card>& Player::GetCardsInHand() const
+std::vector<Card>& Player::GetCardsInHand() 
 {
 	return m_cardsInHand;
 }

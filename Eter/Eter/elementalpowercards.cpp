@@ -68,6 +68,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 	case eter::ElementalPowerCards::PowerAbility::Mirage:
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Storm:
+		activateStorm(board, player, opponent);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Tide:
 		activateTide(board);
@@ -76,6 +77,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		activateMist(player, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Wave:
+		activateWave(board, player);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Whirlpool:
 		break;
@@ -289,9 +291,9 @@ void ElementalPowerCards::activateSpark(Player& player, Board& board)
 
 void ElementalPowerCards::activateEarthQuake(Player& player, Player& opponent, Board& board)
 {
-	for (size_t row = 0; row < board.GetRows(); ++row)
+	for (int row = 0; row < board.GetRows(); ++row)
 	{
-		for (size_t col = 0; col < board.GetCols(); ++col) 
+		for (int col = 0; col < board.GetCols(); ++col) 
 		{
 			auto& cell = board[{row, col}];
 			if (cell.has_value() && !cell->empty())
@@ -329,9 +331,9 @@ void ElementalPowerCards::activateMist(Player& player, Board& board)
 
 void ElementalPowerCards::activateGale(Player& player, Player& opponent, Board& board)
 {
-	for (size_t row = 0; row < board.GetRows(); ++row)
+	for (int row = 0; row < static_cast<int>(board.GetRows()); ++row)
 	{
-		for (size_t col = 0; col < board.GetCols(); ++col)
+		for (int col = 0; col < static_cast<int>(board.GetCols()); ++col)
 		{
 			auto& cell = board[{row, col}];
 
@@ -475,6 +477,86 @@ void ElementalPowerCards::activateTide(Board& board)
 	{
 		stack2.value().push(tempStack.top());
 		tempStack.pop();
+	}
+}
+
+void ElementalPowerCards::activateWave(Board& board, Player& player)
+{
+	int row, col;
+	std::cout << "Enter the coordinates of the stack to move (row, column): ";
+	std::cin >> row >> col;
+	if (row < 0 || row >= board.GetRows() || col < 0 || col >= board.GetCols())
+	{
+		std::cout << "Invalid position. Try again.\n";
+		return;
+	}
+	auto& stack = board[{row, col}];
+	if (!stack.has_value() || stack->size() <= 1)
+	{
+		std::cout << "Selected stack must contain more than one card.\n";
+		return;
+	}
+	int newRow, newCol;
+	bool foundEmptyAdjacent = false;
+	do {
+		std::cout << "Enter the coordinates for an empty adjacent position (row, column): ";
+		std::cin >> newRow >> newCol;
+		if (board.isValidPosition(newRow, newCol) && !board[{newRow, newCol}].has_value())
+			foundEmptyAdjacent = true;
+		else
+			std::cout << "The chosen position is not empty or is invalid. Try again.\n";
+	} while (!foundEmptyAdjacent);
+
+	board[{newRow, newCol}] = stack;
+	stack.reset();
+	if (player.GetCardsInHand().empty())
+	{
+		std::cout << "No cards available in hand to play.\n";
+		return;
+	}
+
+	std::cout << "Choose a card to play from your hand:\n";
+	for (size_t i = 0; i < player.GetCardsInHand().size(); ++i) 
+	{
+		std::cout << i + 1 << ": " << player.GetCardsInHand()[i].GetValue() << "\n";
+	}
+	int cardIndex;
+	std::cin >> cardIndex;
+	if (cardIndex < 1 || static_cast<size_t>(cardIndex) > player.GetCardsInHand().size())
+	{
+		std::cout << "Invalid choice.\n";
+		return;
+	}
+	Card chosenCard = player.GetCardsInHand()[cardIndex - 1];
+	board.placeCard(newRow, newCol, chosenCard);
+	player.AddPlayedCard(chosenCard);
+	player.GetCardsInHand().erase(player.GetCardsInHand().begin() + cardIndex - 1);
+}
+
+void ElementalPowerCards::activateStorm(Board& board, Player& player, Player& opponent)
+{
+	for (size_t row = 0; row < board.GetRows(); ++row)
+	{
+		for (size_t col = 0; col < board.GetCols(); ++col)
+		{
+			auto& stack = board[{row, col}];
+			if (stack.has_value() && stack.value().size() >= 2)
+			{
+				while (!stack.value().empty())
+				{
+					Card topCard = stack.value().top();
+					stack.value().pop();
+					if (topCard.GetColor() == player.GetColor())
+					{
+						player.AddToEliminatedCards(topCard);
+					}
+					else if (topCard.GetColor() == opponent.GetColor())
+					{
+						opponent.AddToEliminatedCards(topCard);
+					}
+				}
+			}
+		}
 	}
 }
 
