@@ -80,10 +80,12 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		activateWave(board, player);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Whirlpool:
+		activateWhirlpool(board, player);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Blizzard:
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Waterfall:
+		activateWaterfall(board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Support:
 		break;
@@ -539,7 +541,7 @@ void ElementalPowerCards::activateStorm(Board& board, Player& player, Player& op
 	{
 		for (size_t col = 0; col < board.GetCols(); ++col)
 		{
-			auto& stack = board[{row, col}];
+			auto& stack = board[{static_cast<int>(row), static_cast<int>(col)}];
 			if (stack.has_value() && stack.value().size() >= 2)
 			{
 				while (!stack.value().empty())
@@ -558,6 +560,144 @@ void ElementalPowerCards::activateStorm(Board& board, Player& player, Player& op
 			}
 		}
 	}
+}
+
+void ElementalPowerCards::activateWaterfall(Board& board)
+{
+	int row;
+	char direction;
+	std::cout << "Enter the row number with at least 3 occupied positions: ";
+	std::cin >> row;
+	if (row < 0 || row >= board.GetRows())
+	{
+		std::cout << "Invalid row. Try again.\n";
+		return;
+	}
+
+	int occupiedCount = 0;
+	for (size_t col = 0; col < board.GetCols(); ++col)
+		if (board[{row, static_cast<int>(col)}].has_value())
+			++occupiedCount;
+
+	if (occupiedCount < 3)
+	{
+		std::cout << "Selected row must have at least 3 occupied positions.\n";
+		return;
+	}
+
+	std::cout << "Enter the direction of the cascade (D for down, U for up): ";
+	std::cin >> direction;
+
+	if (direction != 'D' && direction != 'U') {
+		std::cout << "Invalid direction. Try again.\n";
+		return;
+	}
+
+	std::stack<Card> finalStack;
+	if (direction == 'D')
+	{
+		for (size_t col = 0; col < board.GetCols(); ++col)
+		{
+			if (board[{row, static_cast<int>(col)}].has_value())
+			{
+				auto& currentStack = board[{row, static_cast<int>(col)}].value();
+				while (!currentStack.empty())
+				{
+					finalStack.push(currentStack.top());
+					currentStack.pop();
+				}
+				board[{row, static_cast<int>(col)}].reset();
+			}
+		}
+		board[{row, 0}] = finalStack;
+	}
+	else if (direction == 'U')
+	{
+		for (int col = static_cast<int>(board.GetCols() - 1); col >= 0; --col)
+		{
+			if (board[{row, col}].has_value())
+			{
+				auto& currentStack = board[{row, col}].value();
+				while (!currentStack.empty())
+				{
+					finalStack.push(currentStack.top());
+					currentStack.pop();
+				}
+				board[{row, col}].reset();
+			}
+		}
+		board[{row, static_cast<int>(board.GetCols() - 1)}] = finalStack;
+	}
+}
+
+void ElementalPowerCards::activateWhirlpool(Board& board, Player& player)
+{
+	int row1, col1, row2, col2;
+	std::cout << "Enter the coordinates for the first card (row, column): ";
+	std::cin >> row1 >> col1;
+
+	std::cout << "Enter the coordinates for the second card (row, column): ";
+	std::cin >> row2 >> col2;
+
+	if ((abs(row1 - row2) == 1 && col1 == col2) || (abs(col1 - col2) == 1 && row1 == row2))
+	{
+		if (board[{row1, col1}].has_value() && board[{row2, col2}].has_value())
+		{
+			auto& stack1 = board[{row1, col1}].value();
+			auto& stack2 = board[{row2, col2}].value();
+			if (stack1.size() == 1 && stack2.size() == 1)
+			{
+				Card card1 = stack1.top();
+				Card card2 = stack2.top();
+
+				stack1.pop();
+				stack2.pop();
+				if (card1.GetValue() < card2.GetValue())
+				{
+					board[{row1, col1}].value().push(card1);
+					board[{row2, col2}].value().push(card2);
+				}
+				else if (card1.GetValue() > card2.GetValue())
+				{
+					board[{row1, col1}].value().push(card2);
+					board[{row2, col2}].value().push(card1);
+				}
+				else
+				{
+					char choice;
+					std::cout << "The cards have equal values. Do you want card1 or card2 on top? (1/2): ";
+					std::cin >> choice;
+					if (choice == '1')
+					{
+						board[{row1, col1}].value().push(card1);
+						board[{row2, col2}].value().push(card2);
+					}
+					else if (choice == '2')
+					{
+						board[{row1, col1}].value().push(card2);
+						board[{row2, col2}].value().push(card1);
+					}
+					else
+					{
+						std::cout << "Invalid choice. No change made.\n";
+						return;
+					}
+				}
+			}
+			else 
+			{
+				std::cout << "Both positions must contain exactly one card!\n";
+				return;
+			}
+		}
+		else
+		{
+			std::cout << "One or both positions do not contain any cards!\n";
+			return;
+		}
+	}
+	else
+		std::cout << "The positions are not adjacent. Please select adjacent positions.\n";
 }
 
 
