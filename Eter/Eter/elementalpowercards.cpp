@@ -1,4 +1,4 @@
-module elementalpowercards;
+﻿module elementalpowercards;
 import board;
 import player;
 import card;
@@ -63,12 +63,14 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 	case eter::ElementalPowerCards::PowerAbility::Hurricane:
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Gust:
+		activateGust(board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Mirage:
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Storm:
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Tide:
+		activateTide(board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Mist:
 		activateMist(player, board);
@@ -225,9 +227,9 @@ void ElementalPowerCards::activateASH(Player& player, Board& board)
 	Card chosenCard = eliminatedCards[choice - 1];
 
 	bool cardPlaced = false;
-	for (size_t row = 0; row < board.GetRows(); ++row)
+	for (int row = 0; row < board.GetRows(); ++row)
 	{
-		for (size_t col = 0; col < board.GetCols(); ++col) 
+		for (int col = 0; col < board.GetCols(); ++col) 
 		{
 			if (board.canPlaceCard(row, col, chosenCard)) 
 			{
@@ -355,6 +357,124 @@ void ElementalPowerCards::activateGale(Player& player, Player& opponent, Board& 
 				cell->push(topCard);
 			}
 		}
+	}
+}
+void ElementalPowerCards::activateGust(Board& board)
+{
+	int selectedRow, selectedCol;
+	bool validCardSelected = false;
+	while (!validCardSelected)
+	{
+		std::cout << "Select a visible card (row, column): ";
+		std::cin >> selectedRow >> selectedCol;
+		if (selectedRow < 0 || selectedRow >= board.GetRows() || selectedCol < 0 || selectedCol >= board.GetCols())
+		{
+			std::cout << "Invalid position. Try again.\n";
+			continue;
+		}
+		auto& selectedStack = board[{selectedRow, selectedCol}];
+		if (selectedStack.has_value() && !selectedStack->empty())
+			validCardSelected = true;
+		else
+			std::cout << "No visible card at this position. Try again.\n";
+	}
+
+	std::vector<std::pair<int, int>> adjacentPositions = {{selectedRow - 1, selectedCol},
+		{selectedRow + 1, selectedCol}, 
+		{selectedRow, selectedCol - 1},
+		{selectedRow, selectedCol + 1} 
+	};
+
+	std::vector<std::pair<int, int>> validPositions;
+
+	auto& selectedStack = board[{selectedRow, selectedCol}];
+	auto selectedCardValue = selectedStack->top().GetValue(); 
+
+	for (const auto& [adjRow, adjCol] : adjacentPositions)
+	{
+		if (adjRow >= 0 && adjRow < board.GetRows() && adjCol >= 0 && adjCol < board.GetCols())
+		{
+			auto& adjacentStack = board[{adjRow, adjCol}];
+			if (adjacentStack.has_value() && !adjacentStack->empty() &&
+				adjacentStack->top().GetValue() < selectedCardValue)
+			{
+				validPositions.push_back({ adjRow, adjCol });
+			}
+		}
+	}
+
+	if (validPositions.empty())
+	{
+		std::cout << "No valid move found for the selected card.\n";
+		return;
+	}
+	int chosenPositionIndex;
+	std::cout << "Choose a position to place the card (0 - " << validPositions.size() - 1 << "): ";
+	std::cin >> chosenPositionIndex;
+
+	if (chosenPositionIndex < 0 || chosenPositionIndex >= validPositions.size())
+	{
+		std::cout << "Invalid position chosen. Aborting move.\n";
+		return;
+	}
+	auto [chosenRow, chosenCol] = validPositions[chosenPositionIndex];
+	auto& destinationStack = board[{chosenRow, chosenCol}];
+	destinationStack->push(selectedStack->top());
+	selectedStack->pop(); 
+	std::cout << "Card placed successfully on position (" << chosenRow << ", " << chosenCol << ").\n";
+}
+
+void ElementalPowerCards::activateTide(Board& board)
+{
+	int row1, col1, row2, col2;
+	std::cout << "Enter the coordinates for the first stack (row, column): ";
+	std::cin >> row1 >> col1;
+	if (row1 < 0 || row1 >= board.GetRows() || col1 < 0 || col1 >= board.GetCols())
+	{
+		std::cout << "Invalid position for the first stack. Try again.\n";
+		return;
+	}
+	std::cout << "Enter the coordinates for the second stack (row, column): ";
+	std::cin >> row2 >> col2;
+
+	if (row2 < 0 || row2 >= board.GetRows() || col2 < 0 || col2 >= board.GetCols())
+	{
+		std::cout << "Invalid position for the second stack. Try again.\n";
+		return;
+	}
+
+	auto& stack1 = board[{row1, col1}];
+	auto& stack2 = board[{row2, col2}];
+
+	if (!stack1.has_value() || !stack2.has_value())
+	{
+		std::cout << "One or both of the positions do not contain any stacks of cards.\n";
+		return;
+	}
+
+	if (stack1.value().size() <= 1 || stack2.value().size() <= 1)
+	{
+		std::cout << "Both stacks must contain more than one card to be swapped.\n";
+		return;
+	}
+
+	std::stack<Card> tempStack;
+	while (!stack1.value().empty())
+	{
+		tempStack.push(stack1.value().top());
+		stack1.value().pop();
+	}
+
+	while (!stack2.value().empty())
+	{
+		stack1.value().push(stack2.value().top());
+		stack2.value().pop();
+	}
+
+	while (!tempStack.empty())
+	{
+		stack2.value().push(tempStack.top());
+		tempStack.pop();
 	}
 }
 

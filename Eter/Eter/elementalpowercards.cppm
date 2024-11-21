@@ -55,5 +55,7 @@ namespace eter {
 		void activateEarthQuake(Player& player, Player& opponent, Board& board);
 		void activateMist(Player& player, Board& board);
 		void activateGale(Player& player, Player& opponent, Board& board);
+		void activateGust(Board& board);
+		void activateTide(Board& board);
 	};
 }
