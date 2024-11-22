@@ -31,11 +31,11 @@ int main()
 
 	//Test ModulB
 
-	std::vector<std::vector<std::optional<std::stack<Card>>>> gridB(4, std::vector<std::optional<std::stack<Card>>>(4, std::nullopt));
-	Board boardB(gridB, 4, 4);
+	std::vector<std::vector<std::optional<std::stack<Card>>>> gridA(3, std::vector<std::optional<std::stack<Card>>>(3, std::nullopt));
+	Board boardA(gridA, 3, 3);
 
-	GameManager gameBMode;
-	gameBMode.StartNewGame(player1, player2, boardB, "BMode");
+	GameManager gameAMode;
+	gameAMode.StartNewGame(player1, player2, boardA, "AMode");
 
 	
 	return 0;

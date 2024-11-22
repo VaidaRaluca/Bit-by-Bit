@@ -23,20 +23,23 @@ namespace eter {
 		int m_player1Wins;
 		int m_player2Wins;
 		Game* m_game;
+		const uint8_t knrRoundsForWin = 2;
+
 
 		//Functii ajutatoare
- 		void handleActivateIllusion();
-		void handleActivateExplosion();
-		void handleGameOverCheck();
-
+ 		
+ 
 	public:
 		AMode() = default;
 		AMode(Game* game);
 		void assignCardsInHandModeA();
 		void startMatchModeA();
-		void startRoundModeA();  //porneste runda
 		void handleOptionModeA();  // afiseaza optiunile utilizatorului
-		void applyModeRulesModeaA();
+		void startRoundModeA();  //porneste runda
+		void applyModeRulesModeA(); // aplica toate regulile jocului
+		void handleActivateIllusionModeA();
+		void handleActivateExplosionModeA();
+
 
  		~AMode() = default;
 		

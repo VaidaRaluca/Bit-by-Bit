@@ -28,7 +28,7 @@ void GameManager::StartNewGame(Player player1, Player player2, Board board, cons
 		{
 			m_amode= std::make_unique<AMode>(&m_game);
 			std::cout << "Starting A mode game\n";
-			m_amode->startMatchModeA();
+			m_amode->applyModeRulesModeA();
 		}
 		if (gameMode == "BMode")
 		{
