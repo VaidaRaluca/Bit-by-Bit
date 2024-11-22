@@ -28,7 +28,7 @@ namespace eter {
 		bool isValidPosition(int x, int y) const;
 		bool isAdjacentToOccupiedSpace(int x, int y)const;
 		bool canPlaceCard(int x, int y, const Card& card)const;
-		void placeCard(int x, int y, const Card& card);
+		bool placeCard(int x, int y, const Card& card);
 
 		bool isVerticalLine(const std::string& lineColor) const;
 		bool isPrimaryDiagonalLine(const std::string& lineColor) const;

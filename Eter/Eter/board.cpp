@@ -108,13 +108,13 @@ bool eter::Board::canPlaceCard(int x, int y, const Card& card) const
 	return isBoardEmpty || isAdjacentToOccupiedSpace(x, y);
 }
 
-void eter::Board::placeCard(int x, int y, const Card& card)
+bool eter::Board::placeCard(int x, int y, const Card& card)
 {
 	if (!canPlaceCard(x, y, card))
 
 	{
-		std::cout << "Plasarea nu este permisa la (" << x << ", " << y << ").\n";
-		return;
+		std::cout << "Placement is not allowed at (" << x << ", " << y << "). It's not a valid position.\n";
+		return false;
 	}
 
 	if (!m_grid[x][y].has_value())
@@ -123,7 +123,9 @@ void eter::Board::placeCard(int x, int y, const Card& card)
 	}
 
 	m_grid[x][y]->push(card);
-	std::cout << "Cartea cu valoarea " << card.GetValue() << " a fost plasata la (" << x << ", " << y << ").\n";
+	std::cout << "The card with value " << static_cast<int>(card.GetValue())
+		<< " has been placed at (" << x << ", " << y << ").\n";
+	return true;
 }
 
 bool eter::Board::isVerticalLine(const std::string& lineColor) const

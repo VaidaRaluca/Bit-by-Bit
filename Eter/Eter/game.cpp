@@ -102,89 +102,29 @@ void Game::IncrementNrRound()
 void Game::playTurn() {
     if (m_isPlayerTurn) {
         m_player1.PrintCardsInHand();
-        handlePlayerTurn(m_player1);
+        handlePlayerTurn(GetPlayer1Ref());
     }
     else {
         m_player2.PrintCardsInHand();
-        handlePlayerTurn(m_player2);
+        handlePlayerTurn(GetPlayer2Ref());
     }
     SetIsPlayerTurn();
-}
-
-void Game::startGame()
-{
-    if (m_gameMode == "AMode") 
-    {
-        AMode mode(m_player1, m_player2, m_board);
-        mode.startMatch();   
-    }
-    else
-        if (m_gameMode == "BMode")
-        {  
-             
-
-
-        }
-        else {
-         
-            std::cout << "Modul de joc necunoscut!" << std::endl;
-         }
-}
-
-uint8_t Game::VerifyGameOver()
-{
-    std::string winnerColor = m_board.findWinner();
-    std::cout << winnerColor << '\n';
-    if (GetIsPlayerTurn())
-    {
-        if (winnerColor == m_player1.GetColor())
-        {
-            IncrementPlayer1Wins();
-            std::cout << "Player " << m_player1.GetName() << " wins this round!" << std::endl;
-            return 1;
-        }
-        if (m_player1.GetCardsInHand().empty())
-        {
-            std::cout << "Player " << m_player1.GetName() << " has no cards left!" << std::endl;
-            return 2;
-        }
-    }
-    else
-    {
-        if (winnerColor == m_player2.GetColor())
-        {
-            IncrementPlayer2Wins();
-            std::cout << "Player " << m_player2.GetName() << " wins this round!" << std::endl;
-            return 1;
-        }
-        if (m_player2.GetCardsInHand().empty())
-        {
-            std::cout << "Player " << m_player2.GetName() << " has no cards left!" << std::endl;
-            return 2;
-        }
-    }
-    if (m_board.isBoardFull())
-    {
-        std::cout << "The board is full!" << std::endl;
-        return 3;
-    }
-    return 0;
 }
 
 //Functii ajutatoare
 
 //Gestionarea turei unui jucător
-void Game::handlePlayerTurn(Player player) {
-    std::cout << player.GetName() 
-        << " introdu coordonatele pozitiei de pe tabla (x si y) si indexul cartii pe care doresti sa o plasezi ";
+void Game::handlePlayerTurn(Player& player) {
+    std::cout << player.GetName()
+        << "  enter the coordinates (x and y) of the position on the board and the index of the card you want to place.\n ";
 
     int x, y, cardIndex;
     getInputCoordinates(x, y, cardIndex);
 
-    // Plaseaza cartea pe tabla
-    bool ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
+    bool ok;
+    ok=player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
     while (!ok) {
-        std::cout << player.GetName() << " incearca sa plasezi o carte din nou.\n";
+        std::cout << player.GetName() << " try to place a card again\n";
         getInputCoordinates(x, y, cardIndex);
         ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
     }
@@ -194,6 +134,42 @@ void Game::handlePlayerTurn(Player player) {
 void Game::getInputCoordinates(int& x, int& y, int& cardIndex) {
     std::cout << "x= "; std::cin >> x;
     std::cout << "y= "; std::cin >> y;
-    std::cout << "CardIndex= "; std::cin >> cardIndex;
+    std::cout << "index of the card= "; std::cin >> cardIndex;
 }
+
+char Game::VerifyGameOver()
+{
+    std::string winnerColor = m_board.findWinner();
+    std::cout << winnerColor << '\n';
+    
+    if (winnerColor == m_player1.GetColor())
+        {
+            IncrementPlayer1Wins();
+            std::cout << "Player " << m_player1.GetName() << " wins this round!" << std::endl;
+            return '1';
+        }
+    if (winnerColor == m_player2.GetColor())
+    {
+        IncrementPlayer2Wins();
+        std::cout << "Player " << m_player2.GetName() << " wins this round!" << std::endl;
+        return '1';
+    }
+    if (m_player1.GetCardsInHand().empty())
+        {
+            std::cout << "Player " << m_player1.GetName() << " has no cards left!" << std::endl;
+            return'2';
+        }
+    if (m_player2.GetCardsInHand().empty())
+        {
+            std::cout << "Player " << m_player2.GetName() << " has no cards left!" << std::endl;
+            return '2';
+        }
+    if (m_board.isBoardFull())
+    {
+        std::cout << "The board is full!" << std::endl;
+        return '3';
+    }
+    return '0';
+}
+
 

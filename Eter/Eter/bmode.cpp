@@ -6,6 +6,7 @@ import card;
 import gamemanager;
 import <random>;
 import<iostream>;
+import <string>;
 
 BMode::BMode(Game* game):
     m_game{game}
@@ -31,7 +32,7 @@ void BMode::assignCardsInHand()
     Card(3,"red",true),
     Card(3,"red",true),
     Card(4,"red",true),
-    Card(0,"red",true),  //valoare=0 ->  Carte eter
+    Card(5,"red",true),  //valoare=5 ->  Carte eter
     };
     std::vector<Card>cardsForPlayer2{
     Card(1,"blue",true),
@@ -43,7 +44,7 @@ void BMode::assignCardsInHand()
     Card(3,"blue",true),
     Card(3,"blue",true),
     Card(4,"blue",true),
-    Card(0,"blue",true),  //valoare=0 ->  Carte eter
+    Card(5,"blue",true),  //valoare=5 ->  Carte eter
     };
 
     if (m_game)
@@ -72,49 +73,47 @@ void BMode::generateMage()
 void BMode::startMatch()
 {   
     size_t countRound = 1;
-    std::cout << "Jocul in modul B a inceput \n";
+    std::cout << "The game in B mode has started \n";
     while(m_game->GetPlayer2Wins() < knrRoundsForWin && m_game->GetPlayer1Wins() < knrRoundsForWin)
     {
-        std::cout << "Runda " << countRound << " din 5 \n";
+        std::cout << "Round " << countRound << " of 5 \n";
         startRound(); 
         countRound++;
+        std::cout << "The round has ended. \n";
+        std::cout << "Wins player 1: " <<static_cast<int> (m_game->GetPlayer1Wins())<<"\n";
+        std::cout << "Wins player 2: " << static_cast<int> (m_game->GetPlayer2Wins() )<< "\n";
+        // trebuie resetata tabla
     }
+    std::cout << "GAME OVER \n";
 }
 
 void BMode::startRound()
 {
-   uint8_t gameStatus = 0;
-   //std::cout << "error" << static_cast<int>(gameStatus) << '\n';
-
-    while (gameStatus == 0) 
+    char gameStatus = '0';
+    while (gameStatus == '0')
     {
         handleOption();
         gameStatus = m_game->VerifyGameOver();
-        //std::cout << "error" << static_cast<int>(gameStatus) << '\n';
+        std::cout <<"Game status: "<< gameStatus << "\n";
     }
-    if (gameStatus == 2 || gameStatus == 3)
+    std::cout << gameStatus << "\n";
+    if (gameStatus == '2' || gameStatus == '3')
     {
-        char choice;
-        std::cout << "Vrei sa mai continui jocul cu o singura mutare? (DA sau NU) \n";
+        std::string choice;
+        std::cout << "Do you want to continue the game with a single move? (YES or NO) \n";
         std::cin >> choice;
-        if (choice == 'DA')
+        if (choice == "YES")
             handleOption();
+
         if (m_game->GetPlayer1().GetColor() == m_game->GetBoard().findWinnerByScore())
-            std::cout << "Felicitari " << m_game->GetPlayer1().GetName() << " ai castigat! \n ";
+            std::cout << "Player " << m_game->GetPlayer1().GetName() << " wins this round!" << std::endl;
         else
             if (m_game->GetPlayer2().GetColor() == m_game->GetBoard().findWinnerByScore())
-                std::cout << "Felicitari " << m_game->GetPlayer2().GetName() << " ai castigat! \n ";
+                std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this round!" << std::endl;
             else
-                std::cout << "REMIZA \n";
+                std::cout << "DRAW \n";
     }
-    else
-    {
-        std::cout << "Jocul s-a terminat \n";
-        if (m_game->GetIsPlayerTurn())
-            std::cout << "Felicitari " << m_game->GetPlayer1().GetName() << " ai castigat! \n ";
-        else
-            std::cout << "Felicitari " << m_game->GetPlayer2().GetName() << " ai castigat! \n ";
-    }
+    std::cout << m_game->GetBoard();
 }
 
 void BMode::handleOption()
@@ -131,16 +130,16 @@ void BMode::handleOption()
 
 
     if (m_game->GetIsPlayerTurn())
-        std::cout << "Este randul jucatorului " << m_game->GetPlayer1().GetName()<<"\n";
+        std::cout << "It's " << m_game->GetPlayer1().GetName() << "'s turn\n";
     else
-        std::cout << "Este randul jucatorului " << m_game->GetPlayer2().GetName()<<"\n";
+        std::cout << "It's " << m_game->GetPlayer2().GetName() << "'s turn\n";
 
     int key;
-    std::cout << "Alege o optiune: \n";
-    std::cout << "Apasa tasta 1 pentru a plasa o carte pe tabla \n";
-    std::cout << "Apasa tasta 2 pentru a activa o iluzie \n";
-    std::cout << "Apasa tasta 3 pentru a activa o explozie \n";
-    std::cout << "Apasa tasta 4 pentru a activa vrajitorul \n";
+    std::cout << "Choose an option: \n";
+    std::cout << "Press 1 to place a card on the board \n";
+    std::cout << "Press 2 to activate an illusion \n";
+    std::cout << "Press 3 to activate an explosion \n";
+    std::cout << "Press 4 to activate the mage \n";
     std::cin >> key;
     Option option = static_cast<Option>(key);
 
@@ -161,7 +160,7 @@ void BMode::handleOption()
             m_magePlayer2.activate(m_game->GetPlayer2Ref(),m_game->GetPlayer1Ref(),m_game->GetBoardRef());
         break;
     default:
-        std::cout << "Optiune invalida.\n";
+        std::cout << "Invalid option.\n";
         break;
     }
   

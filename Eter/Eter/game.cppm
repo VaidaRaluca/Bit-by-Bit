@@ -19,7 +19,7 @@ namespace eter
 		uint8_t m_nrRound;   // numarul rundei in care ne aflam
 
 		//Functii ajutatoare
-		void handlePlayerTurn(Player player);
+		void handlePlayerTurn(Player& player);
 		void getInputCoordinates(int& x, int& y, int& cardIndex);
 
 	public:
@@ -50,9 +50,8 @@ namespace eter
 		void IncrementNrRound();
 
 		void playTurn();
-		void startGame();
 		 
-		uint8_t VerifyGameOver();
+		char VerifyGameOver();
 
 	};
 

@@ -98,23 +98,26 @@ void eter::Player::AddCardToHand(const Card& card)
 	m_cardsInHand.push_back(card);
 }
 
-bool eter::Player::placeCard(int x, int y, const Card& card, Board& board)
+bool Player::placeCard(int x, int y, const Card& card, Board& board)
 {
 
 	auto it = std::find(m_cardsInHand.begin(), m_cardsInHand.end(), card);
 
 	if (it == m_cardsInHand.end()) {
-		std::cout << "Cartea nu este in mana jucatorului.\n";
-		return false; 
+		std::cout << "The card is not in your hand.\n";
+		return false;
 	}
 
-	board.placeCard(x, y, card);
-
-	m_cardsInHand.erase(it);
-
-	m_playedCards.push_back(card);
-	std::cout << "Cartea cu valoarea " << card.m_value << " a fost plasata de " << m_name << " la (" << x << ", " << y << ").\n";
-	return true;
+	if (board.placeCard(x, y, card))
+	{
+		m_cardsInHand.erase(it);
+		m_playedCards.push_back(card);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void Player::useIllusion(Board& board, Card& illusion)

@@ -61,10 +61,10 @@ std::ostream& eter::operator<<(std::ostream& os, const Card& card)
     }
     std::string resetColor = "\033[0m";
     os << backgroundColor << textColor
-        << std::format("Value: {}, Color: {}, Face-Up: {}",
+        <<  static_cast<int>(card.GetValue())/* std::format("Value: {}, Color: {}, Face-Up: {}",
             static_cast<int>(card.GetValue()),
             card.GetColor(),
-            card.GetPosition())
+            card.GetPosition())*/
         << resetColor;  // Reset to default color after the output
 
     return os;
