@@ -52,6 +52,8 @@ namespace eter
 		void playTurn();
 		 
 		char VerifyGameOver();
+		void resetBoard();
+		void ReassignCardsToPlayers();
 
 	};
 

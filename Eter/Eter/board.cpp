@@ -1,4 +1,4 @@
-module board;
+﻿module board;
 using eter::Card;
 using eter::Board;
 const std::string_view kEmpyBoardCell{ "____" };
@@ -220,6 +220,15 @@ bool eter::Board::isBoardFull()
 			if (!m_grid[row][col].has_value())
 				return false;
 	return true;
+}
+
+void eter::Board::clear()
+{
+	for (auto& row : m_grid) {
+		for (auto& cell : row) {
+			cell.reset();  // `reset` resetează fiecare celulă la starea inițială
+		}
+	}
 }
 
 

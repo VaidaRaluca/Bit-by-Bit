@@ -38,7 +38,7 @@ namespace eter {
 		std::string findWinner();
 		const std::string& findWinnerByScore();
 		bool isBoardFull();
-
+		void clear();
 		~Board()=default;
 	};
 	export std::ostream& operator<<(std::ostream& os, const Board& board);

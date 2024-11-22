@@ -172,4 +172,25 @@ char Game::VerifyGameOver()
     return '0';
 }
 
+void eter::Game::resetBoard()
+{
+    m_board.clear();
+}
+
+void eter::Game::ReassignCardsToPlayers()
+{
+    if (m_gameMode == "AMode") {
+        // Creează o instanță de AMode și apelează funcția de asignare a cărților
+        AMode modeA(this);
+        modeA.assignCardsInHandModeA();
+    }
+    else if (m_gameMode == "BMode")
+    {
+        // Creează o instanță de BMode și apelează funcția de asignare a cărților
+        BMode modeB(this);
+        modeB.assignCardsInHand();
+    }
+}
+
+ 
 

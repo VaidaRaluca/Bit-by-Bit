@@ -50,12 +50,16 @@ namespace eter {
             startRoundModeA();
             countRound++;
             std::cout << "The round has ended. \n";
-            std::cout << "Wins player 1: " << static_cast<int> (m_game->GetPlayer1Wins()) << "\n";
-            std::cout << "Wins player 2: " << static_cast<int> (m_game->GetPlayer2Wins()) << "\n";
-            // trebuie resetata tabla
+            std::cout << "Wins player 1: " << static_cast<int>(m_game->GetPlayer1Wins()) << "\n";
+            std::cout << "Wins player 2: " << static_cast<int>(m_game->GetPlayer2Wins()) << "\n";
+
+            // Reset the board and reassign cards
+            m_game->resetBoard();
+            m_game->ReassignCardsToPlayers();
         }
         std::cout << "GAME OVER \n";
-    }void AMode::handleActivateIllusionModeA()
+    }
+    void AMode::handleActivateIllusionModeA()
     {
         Player& currentPlayer = m_isPlayerTurn ? m_player1 : m_player2;
         std::cout << currentPlayer.GetName() << " activates an illusion.\n";
