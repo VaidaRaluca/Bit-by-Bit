@@ -19,6 +19,45 @@ namespace eter {
         return m_ability;
     }
 
+    //Constructor de copiere
+    Mage::Mage(const Mage& other)
+        : m_ability(other.m_ability), m_used(other.m_used) {
+        std::cout << "Mage copied.\n";
+    }
+
+    //Operator de atribuire prin copiere
+    Mage& Mage::operator=(const Mage& other) {
+        if (this != &other) {
+            m_ability = other.m_ability;
+            m_used = other.m_used;
+        }
+        std::cout << "Mage assigned via copy.\n";
+        return *this;
+    }
+
+    // Constructor de mutare
+    Mage::Mage(Mage&& other) noexcept
+        : m_ability(std::move(other.m_ability)), m_used(other.m_used) {
+        other.m_used = false; // Resetez starea obiectului mutat
+        std::cout << "Mage moved.\n";
+    }
+
+    // Operator de atribuire prin mutare
+    Mage& Mage::operator=(Mage&& other) noexcept {
+        if (this != &other) {
+            m_ability = std::move(other.m_ability);
+            m_used = other.m_used;
+            other.m_used = false; // Resetez starea obiectului mutat
+        }
+        std::cout << "Mage assigned via move.\n";
+        return *this;
+    }
+
+    // Destructor
+    Mage::~Mage() {
+        std::cout << "Mage destroyed.\n";
+    }
+
     // Gasirea pozitiei unei carti pe tabla
     std::optional<std::pair<size_t, size_t>> Mage::findCardPosition(const Card& card, Board& board) {
         for (size_t i = 0; i < board.GetRows(); ++i) {
@@ -79,6 +118,7 @@ namespace eter {
 
     // Eliminare carte a oponentului
     void Mage::removeOponnentCard(Player& player, Player& oponnent, Board& board) {
+        std::cout << "Activating ability: Remove Opponent Card\n";
         if (oponnent.GetPlayedCards().empty()) {
             std::cout << "Opponent has no cards played.\n";
             return;
@@ -97,6 +137,7 @@ namespace eter {
 
     // Eliminare rand intreg
     void Mage::removeEntireRow(Player& player, Board& board) {
+        std::cout << "Activating ability: Remove Entire Row\n";
         for (size_t col = 0; col < board.GetCols(); ++col) {
             removeCardFromBoard(board[{0, col}]);
         }
@@ -105,6 +146,7 @@ namespace eter {
 
     // Acoperire carte adversar
     void Mage::coverOponnentCard(Player& player, Player& oponnent, Board& board) {
+        std::cout << "Activating ability: Cover Opponent Card\n";
         if (auto position = player.findEmptyCell(board); position != std::make_pair(255, 255)) {
             const Card& card = player.GetCardsInHand().back();
             player.placeCard(position.first, position.second, card, board);
@@ -114,6 +156,7 @@ namespace eter {
 
     // Creare groapa
     void Mage::createPit(Board& board) {
+        std::cout << "Activating ability: Create Pit\n";
         int row = rand() % board.GetRows();
         int col = rand() % board.GetCols();
         if (board.isValidPosition(row, col)) {
@@ -124,12 +167,14 @@ namespace eter {
 
     // Adaugare carte Eter
     void Mage::addExtraEterCard(Player& player) {
+        std::cout << "Activating ability: Add Extra Ether Card\n";
         player.AddCardToHand({ 1, "eter", true });
         std::cout << "Extra Ether card added to player's hand.\n";
     }
 
     // Mutare teanc propriu
     void Mage::moveOwnStack(Player& player, Board& board) {
+        std::cout << "Activating ability: Move Own Stack\n";
         auto from = player.findEmptyCell(board);
         auto to = player.findEmptyCell(board);
         moveStack(from, to, board);
@@ -137,6 +182,7 @@ namespace eter {
 
     // Mutare teanc adversar
     void Mage::moveOponnentStack(Player& oponnent, Board& board) {
+        std::cout << "Activating ability: Move Opponent Stack\n";
         auto from = oponnent.findEmptyCell(board);
         auto to = oponnent.findEmptyCell(board);
         moveStack(from, to, board);
@@ -144,6 +190,7 @@ namespace eter {
 
     // Mutare rand la marginea tablei
     void Mage::shiftRowToEdge(Board& board) {
+        std::cout << "Activating ability: Shift Row to Edge\n";
         for (size_t col = 0; col < board.GetCols(); ++col) {
             if (auto& stack = board[{board.GetRows() - 1, col}]; stack.has_value()) {
                 board[{0, col}] = stack;
@@ -153,3 +200,4 @@ namespace eter {
         std::cout << "Row moved to the edge.\n";
     }
 }
+

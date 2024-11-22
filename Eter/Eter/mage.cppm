@@ -28,6 +28,13 @@ namespace eter {
 		Mage() = default;
 		Mage(MagicAbility ability);
 
+		//Rule of Five
+		Mage(const Mage& other);    //constructor de copiere            
+		Mage& operator=(const Mage& other);    // operator de atribuire prin copiere
+		Mage(Mage&& other) noexcept;           //constructor de mutare
+		Mage& operator=(Mage&& other) noexcept;		//operator de atribuire prin mutare
+		~Mage(); //Destructorul
+
 		// daca abilitatea respectiva a mai fost folosita
 		bool isUsed();
 		MagicAbility GetAbility() const;
