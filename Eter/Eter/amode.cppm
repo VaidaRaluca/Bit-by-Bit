@@ -23,23 +23,23 @@ namespace eter {
 		int m_player1Wins;
 		int m_player2Wins;
 		Game* m_game;
-		bool isCardPlaceable(const Card& card);
-		bool checkWinningCondition();
 
 		//Functii ajutatoare
-		void handlePlaceCard();
-		void handleActivateIllusion();
+ 		void handleActivateIllusion();
 		void handleActivateExplosion();
 		void handleGameOverCheck();
 
 	public:
-		AMode(Player player1, Player player2, const Board& board);
+		AMode() = default;
 		AMode(Game* game);
-		void startMatch();
-		void applyModeRules();
-		void AssignCardsInHandModeA();
-		Action promptPlayerAction();
-		~AMode() = default;
+		void assignCardsInHandModeA();
+		void startMatchModeA();
+		void startRoundModeA();  //porneste runda
+		void handleOptionModeA();  // afiseaza optiunile utilizatorului
+		void applyModeRulesModeaA();
+
+ 		~AMode() = default;
 		
 	};
+	
 } // namespace eter
