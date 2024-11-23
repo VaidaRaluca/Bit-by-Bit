@@ -65,5 +65,14 @@ namespace eter {
 		bool isPositionValidForMove(const std::pair<int, int>& from, const std::pair<int, int>& to, Board& board);
 		void moveStack(const std::pair<int, int>& from, const std::pair<int, int>& to, Board& board);
 
+		//Functii ajutatoare
+		bool isAbilityUsed() const;
+		void displayAbilityDescription() const;
+		bool confirmAbilityActivation() const;
+		void cancelAbilityActivation() const;
+		void executeAbility(Player& player, Player& oponnent, Board& board);
+		void updateAbilityUsage();
+		void notifyAbilityActivated() const;
+
 	};
 }

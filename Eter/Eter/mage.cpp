@@ -103,57 +103,22 @@ namespace eter {
 
     // Activare abilitate
     void Mage::activate(Player& player, Player& oponnent, Board& board) {
-        if (m_used) {
+        if (isAbilityUsed()) {
             throw std::runtime_error("The ability has already been used!");
         }
 
-        // Afiseaza descrierea abilitatii
-        auto it = abilityDescriptions.find(m_ability);
-        if (it != abilityDescriptions.end()) {
-            std::cout << "You are about to activate the following ability:\n";
-            std::cout << it->second << "\n";
-        }
-        else {
-            std::cout << "Unknown ability. Proceeding with activation.\n";
-        }
+        displayAbilityDescription();  // Afiaeaza descrierea abilitatii
 
-        // Confirmarea utilizatorului
-        char confirmation;
-        std::cout << "Do you want to proceed with this ability? (Y/N): ";
-        std::cin >> confirmation;
-        if (std::toupper(confirmation) != 'Y') {
-            std::cout << "Ability activation canceled.\n";
+        if (!confirmAbilityActivation()) {  // Confirmarea utilizatorului
+            cancelAbilityActivation();
             return;
         }
 
-        // Activeaza abilitatea folosind harta de functii
-        static const std::unordered_map<MagicAbility, std::function<void()>> abilityMap = {
-            { MagicAbility::removeOponnentCard, [&]() { removeOponnentCard(player, oponnent, board); } },
-            { MagicAbility::removeEntireRow,    [&]() { removeEntireRow(player, board); } },
-            { MagicAbility::coverOponnetCard,   [&]() { coverOponnentCard(player, oponnent, board); } },
-            { MagicAbility::createPit,          [&]() { createPit(board); } },
-            { MagicAbility::moveOwnStack,       [&]() { moveOwnStack(player, board); } },
-            { MagicAbility::extraEterCard,      [&]() { addExtraEterCard(player); } },
-            { MagicAbility::moveOponnentStack,  [&]() { moveOponnentStack(oponnent, board); } },
-            { MagicAbility::shiftRowToEdge,     [&]() { shiftRowToEdge(board); } }
-        };
+        executeAbility(player, oponnent, board);  // Activeaza abilitatea
 
-        auto abilityIt = abilityMap.find(m_ability);
-        if (abilityIt != abilityMap.end()) {
-            abilityIt->second();
-        }
-        else {
-            throw std::invalid_argument("Unknown ability!");
-        }
+        updateAbilityUsage();  // Actualizeaza contorul utilizarii
 
-        // Incrementarea abilitatii
-        ++abilityUsage[m_ability];
-        m_used = true;
-
-        std::cout << "Ability successfully activated.\n";
-
-        // Afideaza statisticile utilizarii abilitatilor
-        displayAbilityUsage();
+        notifyAbilityActivated();  // Notificare de succes
     }
 
     // Eliminare carte a oponentului
@@ -256,11 +221,61 @@ namespace eter {
         }
     }
 
-    void Mage::displayAbilityUsage() {
-        std::cout << "Abilities usage statistics:\n";
-        for (const auto& [ability, count] : abilityUsage) {
-            std::cout << "- " << abilityToString(ability) << ": " << count << " times\n";
+    //Functii ajutatoare
+    bool Mage::isAbilityUsed() const {
+        return m_used;
+    }
+
+    void Mage::displayAbilityDescription() const {
+        auto it = abilityDescriptions.find(m_ability);
+        if (it != abilityDescriptions.end()) {
+            std::cout << "You are about to activate the following ability:\n";
+            std::cout << it->second << "\n";
         }
+        else {
+            std::cout << "Unknown ability. Proceeding with activation.\n";
+        }
+    }
+
+    bool Mage::confirmAbilityActivation() const {
+        char confirmation;
+        std::cout << "Do you want to proceed with this ability? (Y/N): ";
+        std::cin >> confirmation;
+        return std::toupper(confirmation) == 'Y';
+    }
+
+    void Mage::cancelAbilityActivation() const {
+        std::cout << "Ability activation canceled.\n";
+    }
+
+    void Mage::executeAbility(Player& player, Player& oponnent, Board& board) {
+        static const std::unordered_map<MagicAbility, std::function<void()>> abilityMap = {
+            { MagicAbility::removeOponnentCard, [&]() { removeOponnentCard(player, oponnent, board); } },
+            { MagicAbility::removeEntireRow,    [&]() { removeEntireRow(player, board); } },
+            { MagicAbility::coverOponnetCard,   [&]() { coverOponnentCard(player, oponnent, board); } },
+            { MagicAbility::createPit,          [&]() { createPit(board); } },
+            { MagicAbility::moveOwnStack,       [&]() { moveOwnStack(player, board); } },
+            { MagicAbility::extraEterCard,      [&]() { addExtraEterCard(player); } },
+            { MagicAbility::moveOponnentStack,  [&]() { moveOponnentStack(oponnent, board); } },
+            { MagicAbility::shiftRowToEdge,     [&]() { shiftRowToEdge(board); } }
+        };
+
+        auto abilityIt = abilityMap.find(m_ability);
+        if (abilityIt != abilityMap.end()) {
+            abilityIt->second();
+        }
+        else {
+            throw std::invalid_argument("Unknown ability!");
+        }
+    }
+
+    void Mage::updateAbilityUsage() {
+        ++abilityUsage[m_ability];
+        m_used = true;
+    }
+
+    void Mage::notifyAbilityActivated() const {
+        std::cout << "Ability successfully activated.\n";
     }
 
 }
