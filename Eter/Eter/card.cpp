@@ -64,6 +64,5 @@ std::ostream& eter::operator<<(std::ostream& os, const Card& card)
         <<static_cast<int>(card.GetValue());
     if (!card.GetPosition()) os << '\"';
     os << resetColor;
-
     return os;
 }

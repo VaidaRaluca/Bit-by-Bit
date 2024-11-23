@@ -15,7 +15,7 @@ namespace eter {
 		uint32_t m_score;
 		std::string m_color;
 		std::vector<Card> m_cardsInHand;
-		bool m_hasUsedIllusion;
+		bool m_hasUsedIllusion = false;
 		std::vector<Card> m_playedCards;
 		std::vector<Card> m_eliminatedCards;
 	public:

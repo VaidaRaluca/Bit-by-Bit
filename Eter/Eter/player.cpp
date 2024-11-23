@@ -5,7 +5,7 @@ Player::Player(const std::string& name, const std::string& color)
 	: m_name{ name }
 	, m_score{ 0 }
 	, m_color{ color }
-	, m_hasUsedIllusion{ false }
+	//, m_hasUsedIllusion{ false }
 {}
 
 const std::string& Player::GetName() const
@@ -95,7 +95,6 @@ bool Player::placeCard(int x, int y, const Card& card, Board& board)
 		std::cout << "The card is not in your hand.\n";
 		return false;
 	}
-
 	if (board.placeCard(x, y, card))
 	{
 		m_cardsInHand.erase(it);
@@ -116,15 +115,8 @@ std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board) // this function
 				return { rows,cols };
 }
 
-void Player::useIllusion(int x, int y,Board& board, Card& illusion)
+void Player::useIllusion(int x, int y, Board& board, Card& illusion)
 {
-	if (GetHasUsedIllusion()) 
-	{
-		std::cout << "Illusion has already been used\n";
-		m_hasUsedIllusion = true;
-		return;
-	}
-	std::cout << x<<" "<<y << '\n';
 	bool ok = board.isEmptyCell(x, y);
 	if (!ok) 
 	{
@@ -133,5 +125,6 @@ void Player::useIllusion(int x, int y,Board& board, Card& illusion)
 	}
 	illusion.SetPosition(false);
 	placeCard(x, y, illusion, board);
+	m_hasUsedIllusion = true;
 }
 

@@ -143,12 +143,16 @@ void Game::handlePlayerTurn(Player& player) {
 }
 
 void eter::Game::handlePlayerTurnWithIllusion(Player& player){
+    if (player.GetHasUsedIllusion())
+    {
+        std::cout << "Illusion has already been used\n";
+        return;
+    }
     std::cout << player.GetName()
         << " enter the coordinates (x and y) of the position on the board and the index of the card you want to use illusion on.\n";
 
     int x, y, cardIndex;
     getInputCoordinates(x, y, cardIndex);
-
     player.useIllusion(x, y, m_board, player.GetCardsInHand().at(cardIndex));
 }
 
