@@ -4,6 +4,7 @@ import board;
 import player;
 import <optional>;
 import <stack>;
+import <unordered_map>;
 
 namespace eter {
 	export class Mage {
@@ -24,6 +25,9 @@ namespace eter {
 		MagicAbility m_ability;
 		bool m_used;
 
+		static std::unordered_map<MagicAbility, int> abilityUsage;
+		static std::string abilityToString(MagicAbility ability);
+
 	public:
 		Mage() = default;
 		Mage(MagicAbility ability);
@@ -41,6 +45,8 @@ namespace eter {
 
 		// activare abilitate
 		void activate(Player& player, Player& oponnent, Board& board);
+
+		static void displayAbilityUsage();
 
 	private:
 		//metodele pentru activarea fiecarei abilitati
