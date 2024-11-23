@@ -64,7 +64,7 @@ namespace eter {
         Player& currentPlayer = m_isPlayerTurn ? m_player1 : m_player2;
         std::cout << currentPlayer.GetName() << " activates an illusion.\n";
         Card illusion;
-        currentPlayer.useIllusion(m_board, illusion);
+      //  currentPlayer.useIllusion(m_board, illusion);
 
     }
 

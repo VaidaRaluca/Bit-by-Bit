@@ -42,7 +42,7 @@ namespace eter {
 		void AddToEliminatedCards(const Card& card);//Adauga o carte in m_eliminatedCards
 		void AddPlayedCard(const Card& card);
 		void AddCardToHand(const Card& card);//Adauga o carte in m_cardsInHand
-		void useIllusion(Board& board, Card& illusion);
+		void useIllusion(int x, int y, Board& board, Card& illusion);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
 		bool placeCard(int x, int y, const Card& card, Board& board);
 	};

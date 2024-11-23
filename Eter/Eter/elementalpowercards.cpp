@@ -328,7 +328,7 @@ void ElementalPowerCards::activateEarthQuake(Player& player, Player& opponent, B
 void ElementalPowerCards::activateMist(Player& player, Board& board)
 {
 	Card illusion;
-	player.useIllusion(board, illusion);
+	// player.useIllusion(board, illusion);
 }
 
 void ElementalPowerCards::activateGale(Player& player, Player& opponent, Board& board)

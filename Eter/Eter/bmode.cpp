@@ -149,6 +149,7 @@ void BMode::handleOption()
         break;
     case OPTION_2:
         //activare iluzie
+        m_game->playIllusion();
         break;
     case OPTION_3:
         //activare explozie

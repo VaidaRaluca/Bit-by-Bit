@@ -23,7 +23,6 @@ bool Card::GetPosition() const
 }
 
 
-
 void Card::SetValue(uint8_t value)
 {
 	m_value = value;
@@ -59,13 +58,12 @@ std::ostream& eter::operator<<(std::ostream& os, const Card& card)
         textColor = "\033[38;5;12m";  // Blue text
         backgroundColor = "\033[48;5;0m";  // Black background
     }
+
     std::string resetColor = "\033[0m";
     os << backgroundColor << textColor
-        <<  static_cast<int>(card.GetValue())/* std::format("Value: {}, Color: {}, Face-Up: {}",
-            static_cast<int>(card.GetValue()),
-            card.GetColor(),
-            card.GetPosition())*/
-        << resetColor;  // Reset to default color after the output
+        <<static_cast<int>(card.GetValue());
+    if (!card.GetPosition()) os << '\"';
+    os << resetColor;
 
     return os;
 }

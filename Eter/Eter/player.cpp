@@ -67,7 +67,7 @@ void Player::PrintCardsInHand()
 {
 	for (const auto& it : m_cardsInHand)
 	{
-		std::cout << it << " \n ";
+		std::cout << it << "\n";
 	}
 }
 
@@ -79,18 +79,6 @@ void Player::AddToEliminatedCards(const Card& card)
 void Player::AddPlayedCard(const Card& card)
 {
 	m_playedCards.push_back(card);
-}
-
-std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board)
-{
-	for (uint8_t rows = 0; rows < board.GetRows(); rows++)
-		for (uint8_t cols = 0; cols < board.GetCols(); cols++)
-		{
-			auto& stack = board[{rows, cols}];
-			if (board.isValidPosition(rows, cols) && !stack)
-				return { rows,cols };
-		}
-	return kInvalidPosition;
 }
 
 void eter::Player::AddCardToHand(const Card& card)
@@ -120,7 +108,15 @@ bool Player::placeCard(int x, int y, const Card& card, Board& board)
 	}
 }
 
-void Player::useIllusion(Board& board, Card& illusion)
+std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board) // this function could be moved somewhere else perhaps
+{
+	for (uint8_t rows = 0; rows < board.GetRows(); rows++)
+		for (uint8_t cols = 0; cols < board.GetCols(); cols++)
+			if (board.isValidPosition(rows, cols) && board.GetGrid()[rows][cols] == std::nullopt)
+				return { rows,cols };
+}
+
+void Player::useIllusion(int x, int y,Board& board, Card& illusion)
 {
 	if (GetHasUsedIllusion()) 
 	{
@@ -128,14 +124,14 @@ void Player::useIllusion(Board& board, Card& illusion)
 		m_hasUsedIllusion = true;
 		return;
 	}
-	std::pair<uint8_t, uint8_t> position = findEmptyCell(board);
-	if (position == kInvalidPosition) 
+	std::cout << x<<" "<<y << '\n';
+	bool ok = board.isEmptyCell(x, y);
+	if (!ok) 
 	{
 		std::cout << "No empty cell has been found on the board\n";
 		return;
 	}
-	auto& [line, column] = position;
 	illusion.SetPosition(false);
-	placeCard(line, column, illusion, board);
+	placeCard(x, y, illusion, board);
 }
 

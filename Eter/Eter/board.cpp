@@ -9,6 +9,7 @@ Board::Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint
 	, m_rows{ rows }
 	, m_cols{ cols }
 {}
+
 Board::Board(const Board& other)
 	: m_grid{ other.m_grid }
 	, m_rows{ other.m_rows }
@@ -107,6 +108,7 @@ bool eter::Board::canPlaceCard(int x, int y, const Card& card) const
 	}
 	return isBoardEmpty || isAdjacentToOccupiedSpace(x, y);
 }
+
 
 bool eter::Board::placeCard(int x, int y, const Card& card)
 {
@@ -229,6 +231,17 @@ void eter::Board::clear()
 			cell.reset();  // `reset` resetează fiecare celulă la starea inițială
 		}
 	}
+}
+
+bool Board::isEmptyCell(int x, int y)
+{
+	for (uint8_t rows = 0; rows < m_rows; rows++)
+		for (uint8_t cols = 0; cols < m_cols; cols++)
+		{
+			if (isValidPosition(rows, cols) && !m_grid[rows][cols].has_value())
+				return true;
+		}
+	return false;
 }
 
 

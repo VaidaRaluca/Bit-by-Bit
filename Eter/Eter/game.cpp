@@ -111,12 +111,24 @@ void Game::playTurn() {
     SetIsPlayerTurn();
 }
 
+void Game::playIllusion(){
+    if (m_isPlayerTurn) {
+        m_player1.PrintCardsInHand();
+        handlePlayerTurnWithIllusion(GetPlayer1Ref());
+    }
+    else {
+        m_player2.PrintCardsInHand();
+        handlePlayerTurnWithIllusion(GetPlayer2Ref());
+    }
+    SetIsPlayerTurn();
+}
+
 //Functii ajutatoare
 
 //Gestionarea turei unui jucător
 void Game::handlePlayerTurn(Player& player) {
     std::cout << player.GetName()
-        << "  enter the coordinates (x and y) of the position on the board and the index of the card you want to place.\n ";
+        << " enter the coordinates (x and y) of the position on the board and the index of the card you want to place.\n";
 
     int x, y, cardIndex;
     getInputCoordinates(x, y, cardIndex);
@@ -130,11 +142,21 @@ void Game::handlePlayerTurn(Player& player) {
     }
 }
 
+void eter::Game::handlePlayerTurnWithIllusion(Player& player){
+    std::cout << player.GetName()
+        << " enter the coordinates (x and y) of the position on the board and the index of the card you want to use illusion on.\n";
+
+    int x, y, cardIndex;
+    getInputCoordinates(x, y, cardIndex);
+
+    player.useIllusion(x, y, m_board, player.GetCardsInHand().at(cardIndex));
+}
+
 //Obtinerea coordonatelor
 void Game::getInputCoordinates(int& x, int& y, int& cardIndex) {
-    std::cout << "x= "; std::cin >> x;
-    std::cout << "y= "; std::cin >> y;
-    std::cout << "index of the card= "; std::cin >> cardIndex;
+    std::cout << "x = "; std::cin >> x;
+    std::cout << "y = "; std::cin >> y;
+    std::cout << "index of the card = "; std::cin >> cardIndex;
 }
 
 char Game::VerifyGameOver()

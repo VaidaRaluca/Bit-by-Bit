@@ -20,6 +20,7 @@ namespace eter
 
 		//Functii ajutatoare
 		void handlePlayerTurn(Player& player);
+		void handlePlayerTurnWithIllusion(Player& player);
 		void getInputCoordinates(int& x, int& y, int& cardIndex);
 
 	public:
@@ -50,7 +51,8 @@ namespace eter
 		void IncrementNrRound();
 
 		void playTurn();
-		 
+		void playIllusion();
+
 		char VerifyGameOver();
 		void resetBoard();
 		void ReassignCardsToPlayers();
