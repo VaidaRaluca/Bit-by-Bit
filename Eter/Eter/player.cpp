@@ -8,6 +8,45 @@ Player::Player(const std::string& name, const std::string& color)
 	//, m_hasUsedIllusion{ false }
 {}
 
+Player::Player(const Player& other)
+	: m_name(other.m_name), m_score(other.m_score), m_color(other.m_color),
+	m_cardsInHand(other.m_cardsInHand), m_hasUsedIllusion(other.m_hasUsedIllusion),
+	m_playedCards(other.m_playedCards), m_eliminatedCards(other.m_eliminatedCards) 
+{
+}
+
+Player& eter::Player::operator=(const Player& rhs)
+{
+	if (this == &rhs) return *this;
+	m_name = rhs.m_name;
+	m_score = rhs.m_score;
+	m_color = rhs.m_color;
+	m_cardsInHand = rhs.m_cardsInHand;
+	m_hasUsedIllusion = rhs.m_hasUsedIllusion;
+	m_playedCards = rhs.m_playedCards;
+	m_eliminatedCards = rhs.m_eliminatedCards;
+	return *this;
+}
+
+Player::Player(Player&& other) noexcept
+	: m_name(std::move(other.m_name)), m_score(other.m_score), m_color(std::move(other.m_color)),
+	m_cardsInHand(std::move(other.m_cardsInHand)), m_hasUsedIllusion(other.m_hasUsedIllusion),
+	m_playedCards(std::move(other.m_playedCards)), m_eliminatedCards(std::move(other.m_eliminatedCards)) {
+}
+
+Player& eter::Player::operator=(Player&& rhs) noexcept
+{
+	if (this == &rhs) return *this;
+	m_name = std::move(rhs.m_name);
+	m_score = rhs.m_score;
+	m_color = std::move(rhs.m_color);
+	m_cardsInHand = std::move(rhs.m_cardsInHand);
+	m_hasUsedIllusion = rhs.m_hasUsedIllusion;
+	m_playedCards = std::move(rhs.m_playedCards);
+	m_eliminatedCards = std::move(rhs.m_eliminatedCards);
+	return *this;
+}
+
 const std::string& Player::GetName() const
 {
 	return m_name;
@@ -107,6 +146,18 @@ bool Player::placeCard(int x, int y, const Card& card, Board& board)
 	}
 }
 
+void eter::Player::swap(Player& other) noexcept
+{
+	using std::swap;
+	swap(m_name, other.m_name);
+	swap(m_score, other.m_score);
+	swap(m_color, other.m_color);
+	swap(m_cardsInHand, other.m_cardsInHand);
+	swap(m_hasUsedIllusion, other.m_hasUsedIllusion);
+	swap(m_playedCards, other.m_playedCards);
+	swap(m_eliminatedCards, other.m_eliminatedCards);
+}
+
 std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board) // this function could be moved somewhere else perhaps
 {
 	for (uint8_t rows = 0; rows < board.GetRows(); rows++)
@@ -128,3 +179,7 @@ void Player::useIllusion(int x, int y, Board& board, Card& illusion)
 	m_hasUsedIllusion = true;
 }
 
+void eter::swap(Player& first, Player& second) noexcept
+{
+	first.swap(second);
+}

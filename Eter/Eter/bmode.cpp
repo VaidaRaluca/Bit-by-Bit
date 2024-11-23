@@ -82,8 +82,14 @@ void BMode::startMatch()
         std::cout << "The round has ended. \n";
         std::cout << "Wins player 1: " <<static_cast<int> (m_game->GetPlayer1Wins())<<"\n";
         std::cout << "Wins player 2: " << static_cast<int> (m_game->GetPlayer2Wins() )<< "\n";
-        // trebuie resetata tabla
+        assignCardsInHand();
+        m_game->resetBoard();
     }
+    if (m_game->GetPlayer1Wins() > m_game->GetPlayer2Wins())
+        std::cout << "Player " << m_game->GetPlayer1().GetName() << " wins this game!" << std::endl;
+    else
+        std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this game!" << std::endl;
+
     std::cout << "GAME OVER \n";
 }
 
@@ -156,9 +162,15 @@ void BMode::handleOption()
         break;
     case OPTION_4:
         if (m_game->GetIsPlayerTurn())
-            m_magePlayer1.activate(m_game->GetPlayer1Ref(), m_game->GetPlayer2Ref(),m_game->GetBoardRef());
+        {
+            m_magePlayer1.activate(m_game->GetPlayer1Ref(), m_game->GetPlayer2Ref(), m_game->GetBoardRef());
+            m_game->SetIsPlayerTurn();
+        }
         else
-            m_magePlayer2.activate(m_game->GetPlayer2Ref(),m_game->GetPlayer1Ref(),m_game->GetBoardRef());
+        {
+            m_magePlayer2.activate(m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
+            m_game->SetIsPlayerTurn();
+        }
         break;
     default:
         std::cout << "Invalid option.\n";

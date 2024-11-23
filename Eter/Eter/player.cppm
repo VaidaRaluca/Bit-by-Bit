@@ -19,9 +19,14 @@ namespace eter {
 		std::vector<Card> m_playedCards;
 		std::vector<Card> m_eliminatedCards;
 	public:
+		//Rule of 5
 		Player() = default;
 		Player(const std::string& name, const std::string& color);
 		~Player() = default;
+		Player(const Player& other);
+		Player& operator=(const Player& rhs);
+		Player(Player&& other) noexcept;
+		Player& operator=(Player&& rhs) noexcept;
 
 		//Getteri
 		const std::string& GetName() const;
@@ -45,5 +50,11 @@ namespace eter {
 		void useIllusion(int x, int y, Board& board, Card& illusion);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
 		bool placeCard(int x, int y, const Card& card, Board& board);
+
+		void swap(Player& other) noexcept;
+
 	};
+
+	export void swap(Player& first, Player& second) noexcept;
+
 }
