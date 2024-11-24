@@ -25,6 +25,25 @@ Board& Board::operator=(const Board& other) {
 	return *this;
 }
 
+Board::Board(Board&& other) noexcept
+	: m_grid{std::move(other.m_grid)}, m_rows{ other.m_rows }, m_cols{ other.m_cols }
+{
+	other.m_rows = 0;
+	other.m_cols = 0;
+}
+
+Board& Board::operator=(Board&& other) noexcept
+{
+	if (this == &other) return *this; 
+	m_grid = std::move(other.m_grid);
+	m_rows = other.m_rows;
+	m_cols = other.m_cols;
+
+	other.m_rows = 0;
+	other.m_cols = 0;
+	return *this;
+}
+
 uint8_t Board::GetRows() const
 {
 	return m_rows;
@@ -92,7 +111,7 @@ bool eter::Board::canPlaceCard(int x, int y, const Card& card) const
 	if (m_grid[x][y].has_value())
 	{
 		const auto& stack = m_grid[x][y].value();
-		if (!stack.empty() && card.m_value > stack.top().m_value) {
+		if (!stack.empty() && card.GetValue() > stack.top().GetValue()) {
 			return true;
 		}
 		return false;
@@ -233,6 +252,14 @@ void eter::Board::clear()
 	}
 }
 
+void eter::Board::swap(Board& other) noexcept
+{
+	using std::swap;
+	swap(m_grid, other.m_grid);
+	swap(m_rows, other.m_rows);
+	swap(m_cols, other.m_cols);
+}
+
 bool Board::isEmptyCell(int x, int y)
 {
 	for (uint8_t rows = 0; rows < m_rows; rows++)
@@ -259,4 +286,8 @@ std::ostream& eter::operator<<(std::ostream& os, const Board& board)
 		os << '\n';
 	}
 	return os;
+}
+
+void eter::swap(Board& first, Board& second) noexcept {
+	first.swap(second);
 }

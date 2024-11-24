@@ -7,6 +7,38 @@ Card::Card(uint8_t value, const std::string& color, bool position) :
 	m_value{value},m_color{color},m_position{position}
 {}
 
+Card::Card(const Card & other)
+    : m_value{ other.m_value }, m_color{ other.m_color }, m_position{ other.m_position }
+{}
+
+Card& Card::operator=(const Card & other)
+{
+    if (this == &other) return *this; 
+    m_value = other.m_value;
+    m_color = other.m_color;
+    m_position = other.m_position;
+    return *this;
+}
+
+Card::Card(Card&& other) noexcept
+: m_value{ other.m_value }, m_color{std::move(other.m_color)}, m_position {other.m_position}
+{
+    other.m_value = 0;
+    other.m_position = true;
+}
+
+Card& Card::operator=(Card&& other) noexcept
+{
+    if (this == &other) return *this; 
+    m_value = other.m_value;
+    m_color = std::move(other.m_color);
+    m_position = other.m_position;
+
+    other.m_value = 0;
+    other.m_position = true;
+    return *this;
+}
+
 uint8_t Card::GetValue() const
 {
 	return m_value;
@@ -44,6 +76,14 @@ bool eter::Card::operator==(const Card& other) const
 	return m_value == other.m_value && m_color == other.m_color && m_position == other.m_position;
 }
 
+void eter::Card::swap(Card& other) noexcept
+{
+    using std::swap;
+    swap(m_value, other.m_value);
+    swap(m_color, other.m_color);
+    swap(m_position, other.m_position);
+}
+
 
 std::ostream& eter::operator<<(std::ostream& os, const Card& card)
 {
@@ -65,4 +105,9 @@ std::ostream& eter::operator<<(std::ostream& os, const Card& card)
     if (!card.GetPosition()) os << '\"';
     os << resetColor;
     return os;
+}
+
+void eter::swap(Card& first, Card& second) noexcept 
+{
+    first.swap(second);
 }

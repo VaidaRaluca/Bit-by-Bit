@@ -37,11 +37,11 @@ int main()
 	gameBMode.StartNewGame(player1, player2, boardB, "BMode");
 
 	// Test ModulA
-	//std::vector<std::vector<std::optional<std::stack<Card>>>> gridA(3, std::vector<std::optional<std::stack<Card>>>(3, std::nullopt));
-	//Board boardA(gridA, 3, 3);
+	/*std::vector<std::vector<std::optional<std::stack<Card>>>> gridA(3, std::vector<std::optional<std::stack<Card>>>(3, std::nullopt));
+	Board boardA(gridA, 3, 3);
 
-	//GameManager gameAMode;
-	//gameAMode.StartNewGame(player1, player2, boardA, "AMode");
+	GameManager gameAMode;
+	gameAMode.StartNewGame(player1, player2, boardA, "AMode");*/
 
 	
 	return 0;

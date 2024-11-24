@@ -12,10 +12,14 @@ namespace eter {
 		std::vector<std::vector<std::optional<std::stack<Card>>>>m_grid;
 		size_t m_rows = { 7 }, m_cols = { 7 }; // size_t
 	public:
+		//Rule of 5 
 		Board()=default;
 		Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint8_t rows, uint8_t cols);
 		Board(const Board& other); //constructor de copiere
 		Board& operator=(const Board& other);
+		Board(Board&& other) noexcept;
+		Board& operator=(Board&& other) noexcept;
+		~Board() = default;
 
 		//Getters
 		uint8_t GetRows() const;
@@ -40,7 +44,8 @@ namespace eter {
 		const std::string& findWinnerByScore();
 		bool isBoardFull();
 		void clear();
-		~Board()=default;
+		void swap(Board& other) noexcept;
 	};
 	export std::ostream& operator<<(std::ostream& os, const Board& board);
+	export void swap(Board& first, Board& second) noexcept;
 }

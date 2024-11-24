@@ -7,12 +7,19 @@ import <format>;
 import <iostream>;
 namespace eter {
 	export class Card {
-	public:
+	private:
 		uint8_t m_value;
 		std::string m_color; 
 		bool m_position; //true = fata in sus
+	public:
+		//Rule of 5
 		Card() = default;
 		Card(uint8_t value , const std::string& color, bool position);
+		Card(const Card& other);
+		Card& operator=(const Card& other);
+		Card(Card&& other) noexcept;
+		Card& operator=(Card&& other) noexcept;
+		~Card() = default;
 
 		uint8_t GetValue() const;  
 		const std::string& GetColor() const;
@@ -23,8 +30,8 @@ namespace eter {
 		void SetPosition(bool positon);
 
 		bool operator==(const Card& other) const;
-		~Card() = default;
+		void swap(Card& other) noexcept;
 	};
 	export std::ostream& operator<<(std::ostream& os, const Card& card);
-
+	export void swap(Card& first, Card& second) noexcept;
 };
