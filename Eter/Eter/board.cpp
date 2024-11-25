@@ -305,13 +305,10 @@ void eter::Board::swap(Board& other) noexcept
 
 bool Board::isEmptyCell(int x, int y)
 {
-	for (uint8_t rows = 0; rows < m_rows; rows++)
-		for (uint8_t cols = 0; cols < m_cols; cols++)
-		{
-			if (isValidPosition(rows, cols) && !m_grid[rows][cols].has_value())
-				return true;
-		}
-	return false;
+	if (!isValidPosition(x, y)) {
+		return false;
+	}
+	return !m_grid[x][y].has_value();
 }
 
 

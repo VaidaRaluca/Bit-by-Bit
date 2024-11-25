@@ -171,16 +171,23 @@ std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board) // this function
 
 void Player::useIllusion(int x, int y, Board& board, Card& illusion)
 {
-	bool ok = board.isEmptyCell(x, y);
-	if (!ok) 
-	{
-		std::cout << "No empty cell has been found on the board\n";
+	if (!board.isValidPosition(x, y)) {
+		std::cout << "The position (" << x << ", " << y << ") is not valid on the board.\n";
+		return;
+	}
+	if (!board.isEmptyCell(x, y)) {
+		std::cout << "Illusions can only be placed on empty cells. Position (" << x << ", " << y << ") is occupied.\n";
 		return;
 	}
 	illusion.SetPosition(false);
-	if(placeCard(x, y, illusion, board))
-	  m_hasUsedIllusion = true;
+	if (placeCard(x, y, illusion, board)) {
+		m_hasUsedIllusion = true;
+		std::cout << GetName() << " has placed an illusion at (" << x << ", " << y << ").\n";
+	}
+	else 
+		std::cout << "Failed to place the illusion at (" << x << ", " << y << ").\n";
 }
+
 
 void eter::swap(Player& first, Player& second) noexcept
 {

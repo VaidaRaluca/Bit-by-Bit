@@ -132,11 +132,15 @@ void Game::handlePlayerTurn(Player& player) {
 
 	int x, y, cardIndex;
 	getInputCoordinates(x, y, cardIndex);
+	if (cardIndex < 0 || cardIndex >= player.GetCardsInHand().size()) {
+		std::cout << "Invalid card index\n";
+		return;
+	}
 	std::optional<std::stack<Card>> targetCell;
 	if (m_board.isValidPosition(x, y))
 		targetCell = m_board[{x, y}];
 	else
-		std::cout << "Invalid position! \n";
+		std::cout << "Invalid position!\n";
 
 	if (targetCell.has_value() && !targetCell->empty() && targetCell.value().top().GetPosition() == false) {
 		Player& opponent = (player.GetName() == m_player1.GetName()) ? m_player2 : m_player1;
@@ -165,6 +169,10 @@ void eter::Game::handlePlayerTurnWithIllusion(Player& player) {
 
 	int x, y, cardIndex;
 	getInputCoordinates(x, y, cardIndex);
+	if (cardIndex < 0 || cardIndex >= player.GetCardsInHand().size()) {
+		std::cout << "Invalid card index.\n";
+		return;
+	}
 	player.useIllusion(x, y, m_board, player.GetCardsInHand().at(cardIndex));
 }
 
