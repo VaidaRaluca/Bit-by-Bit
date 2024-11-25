@@ -104,9 +104,11 @@ void Player::SetCardsInHand(const std::vector<Card>& cards)
 
 void Player::PrintCardsInHand()
 {
+	int index = 0;
 	for (const auto& it : m_cardsInHand)
 	{
-		std::cout << it << "\n";
+		std::cout <<"at "<< index << " is card " << it << "\n";
+		index++;
 	}
 }
 
@@ -176,8 +178,8 @@ void Player::useIllusion(int x, int y, Board& board, Card& illusion)
 		return;
 	}
 	illusion.SetPosition(false);
-	placeCard(x, y, illusion, board);
-	m_hasUsedIllusion = true;
+	if(placeCard(x, y, illusion, board))
+	  m_hasUsedIllusion = true;
 }
 
 void eter::swap(Player& first, Player& second) noexcept

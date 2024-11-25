@@ -8,9 +8,9 @@ import amode;
 import bmode;
 import board;
 
-Game::Game(Player player1, Player player2, Board board, std::string gameMode):
-	m_player1{player1},m_player2{player2},m_board{board},m_gameMode{gameMode}, m_isPlayerTurn{true},
-    m_player1Wins{0},m_player2Wins{0},m_nrRound{0}
+Game::Game(Player player1, Player player2, Board board, std::string gameMode) :
+	m_player1{ player1 }, m_player2{ player2 }, m_board{ board }, m_gameMode{ gameMode }, m_isPlayerTurn{ true },
+	m_player1Wins{ 0 }, m_player2Wins{ 0 }, m_nrRound{ 0 }
 {}
 
 Player Game::GetPlayer1() const
@@ -20,7 +20,7 @@ Player Game::GetPlayer1() const
 
 Player Game::GetPlayer2() const
 {
-	return m_player2; 
+	return m_player2;
 }
 
 Board Game::GetBoard() const
@@ -31,15 +31,15 @@ Board Game::GetBoard() const
 //Getter ce returneaza &
 
 Player& Game::GetPlayer1Ref() {
-    return m_player1;
+	return m_player1;
 }
 
 Player& Game::GetPlayer2Ref() {
-    return m_player2;
+	return m_player2;
 }
 
 Board& Game::GetBoardRef() {
-    return m_board;
+	return m_board;
 }
 
 
@@ -50,22 +50,22 @@ std::string Game::GetGameMods()
 
 bool Game::GetIsPlayerTurn()
 {
-    return m_isPlayerTurn;
+	return m_isPlayerTurn;
 }
 
 uint8_t Game::GetPlayer1Wins()
 {
-    return m_player1Wins;
+	return m_player1Wins;
 }
 
 uint8_t Game::GetPlayer2Wins()
 {
-    return m_player2Wins;
+	return m_player2Wins;
 }
 
 uint8_t Game::GetNrRound()
 {
-    return m_nrRound;
+	return m_nrRound;
 }
 
 
@@ -81,187 +81,189 @@ void Game::SetGameMods(std::string gameMode)
 
 void Game::SetIsPlayerTurn()
 {
-    m_isPlayerTurn = !m_isPlayerTurn;
+	m_isPlayerTurn = !m_isPlayerTurn;
 }
 
 void Game::IncrementPlayer1Wins()
 {
-    ++m_player1Wins;
+	++m_player1Wins;
 }
 
 void Game::IncrementPlayer2Wins()
 {
-    ++m_player2Wins;
+	++m_player2Wins;
 }
 
 void Game::IncrementNrRound()
 {
-    ++m_nrRound;
+	++m_nrRound;
 }
 
 void Game::playTurn() {
-    if (m_isPlayerTurn) {
-        m_player1.PrintCardsInHand();
-        handlePlayerTurn(GetPlayer1Ref());
-    }
-    else {
-        m_player2.PrintCardsInHand();
-        handlePlayerTurn(GetPlayer2Ref());
-    }
-    SetIsPlayerTurn();
+	if (m_isPlayerTurn) {
+		m_player1.PrintCardsInHand();
+		handlePlayerTurn(GetPlayer1Ref());
+	}
+	else {
+		m_player2.PrintCardsInHand();
+		handlePlayerTurn(GetPlayer2Ref());
+	}
+	SetIsPlayerTurn();
 }
 
-void Game::playIllusion(){
-    if (m_isPlayerTurn) {
-        m_player1.PrintCardsInHand();
-        handlePlayerTurnWithIllusion(GetPlayer1Ref());
-    }
-    else {
-        m_player2.PrintCardsInHand();
-        handlePlayerTurnWithIllusion(GetPlayer2Ref());
-    }
-    SetIsPlayerTurn();
+void Game::playIllusion() {
+	if (m_isPlayerTurn) {
+		m_player1.PrintCardsInHand();
+		handlePlayerTurnWithIllusion(GetPlayer1Ref());
+	}
+	else {
+		m_player2.PrintCardsInHand();
+		handlePlayerTurnWithIllusion(GetPlayer2Ref());
+	}
+	SetIsPlayerTurn();
 }
 
 //Functii ajutatoare
 
 //Gestionarea turei unui jucător
 void Game::handlePlayerTurn(Player& player) {
-    std::cout << player.GetName()
-        << " enter the coordinates (x and y) of the position on the board and the index of the card you want to place.\n";
+	std::cout << player.GetName()
+		<< " enter the coordinates (x and y) of the position on the board and the index of the card you want to place.\n";
 
-    int x, y, cardIndex;
-    getInputCoordinates(x, y, cardIndex);
-    std::optional<std::stack<Card>> targetCell;
-    if (m_board.isValidPosition(x, y))
-        targetCell = m_board[{x, y}];
-    else
-        std::cout << "Invalid position! \n";
+	int x, y, cardIndex;
+	getInputCoordinates(x, y, cardIndex);
+	std::optional<std::stack<Card>> targetCell;
+	if (m_board.isValidPosition(x, y))
+		targetCell = m_board[{x, y}];
+	else
+		std::cout << "Invalid position! \n";
 
-    if (targetCell.has_value() && !targetCell->empty()) {
-        Player& opponent = (player.GetName() == m_player1.GetName()) ? m_player2 : m_player1;
-        handleCardCover(player, opponent, x, y, cardIndex);
-    }
-    else
-    {
-        bool ok;
-        ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
-        while (!ok) {
-            std::cout << player.GetName() << " try to place a card again\n";
-            getInputCoordinates(x, y, cardIndex);
-            ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
-        }
-    }
+	if (targetCell.has_value() && !targetCell->empty() && targetCell.value().top().GetPosition() == false) {
+		Player& opponent = (player.GetName() == m_player1.GetName()) ? m_player2 : m_player1;
+		handleCardCover(player, opponent, x, y, cardIndex);
+	}
+	else
+	{
+		bool ok;
+		ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
+		while (!ok) {
+			std::cout << player.GetName() << " try to place a card again\n";
+			getInputCoordinates(x, y, cardIndex);
+			ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
+		}
+	}
 }
 
-void eter::Game::handlePlayerTurnWithIllusion(Player& player){
-    if (player.GetHasUsedIllusion())
-    {
-        std::cout << "Illusion has already been used\n";
-        return;
-    }
-    std::cout << player.GetName()
-        << " enter the coordinates (x and y) of the position on the board and the index of the card you want to use illusion on.\n";
+void eter::Game::handlePlayerTurnWithIllusion(Player& player) {
+	if (player.GetHasUsedIllusion())
+	{
+		std::cout << "Illusion has already been used\n";
+		return;
+	}
+	std::cout << player.GetName()
+		<< " enter the coordinates (x and y) of the position on the board and the index of the card you want to use illusion on.\n";
 
-    int x, y, cardIndex;
-    getInputCoordinates(x, y, cardIndex);
-    player.useIllusion(x, y, m_board, player.GetCardsInHand().at(cardIndex));
+	int x, y, cardIndex;
+	getInputCoordinates(x, y, cardIndex);
+	player.useIllusion(x, y, m_board, player.GetCardsInHand().at(cardIndex));
 }
 
 //Obtinerea coordonatelor
 void Game::getInputCoordinates(int& x, int& y, int& cardIndex) {
-    std::cout << "x = "; std::cin >> x;
-    std::cout << "y = "; std::cin >> y;
-    std::cout << "index of the card = "; std::cin >> cardIndex;
+	std::cout << "x = "; std::cin >> x;
+	std::cout << "y = "; std::cin >> y;
+	std::cout << "index of the card = "; std::cin >> cardIndex;
 }
 
 char Game::VerifyGameOver()
 {
-    std::string winnerColor = m_board.findWinner();
-    std::cout << winnerColor << '\n';
-    
-    if (winnerColor == m_player1.GetColor())
-        {
-            IncrementPlayer1Wins();
-            std::cout << "Player " << m_player1.GetName() << " wins this round!" << std::endl;
-            return '1';
-        }
-    if (winnerColor == m_player2.GetColor())
-    {
-        IncrementPlayer2Wins();
-        std::cout << "Player " << m_player2.GetName() << " wins this round!" << std::endl;
-        return '1';
-    }
-    if (m_player1.GetCardsInHand().empty())
-        {
-            std::cout << "Player " << m_player1.GetName() << " has no cards left!" << std::endl;
-            return'2';
-        }
-    if (m_player2.GetCardsInHand().empty())
-        {
-            std::cout << "Player " << m_player2.GetName() << " has no cards left!" << std::endl;
-            return '2';
-        }
-    if (m_board.isBoardFull())
-    {
-        std::cout << "The board is full!" << std::endl;
-        return '3';
-    }
-    return '0';
+	std::string winnerColor = m_board.findWinner();
+	std::cout << winnerColor << '\n';
+
+	if (winnerColor == m_player1.GetColor())
+	{
+		IncrementPlayer1Wins();
+		std::cout << "Player " << m_player1.GetName() << " wins this round!" << std::endl;
+		return '1';
+	}
+	if (winnerColor == m_player2.GetColor())
+	{
+		IncrementPlayer2Wins();
+		std::cout << "Player " << m_player2.GetName() << " wins this round!" << std::endl;
+		return '1';
+	}
+	if (m_player1.GetCardsInHand().empty())
+	{
+		std::cout << "Player " << m_player1.GetName() << " has no cards left!" << std::endl;
+		return'2';
+	}
+	if (m_player2.GetCardsInHand().empty())
+	{
+		std::cout << "Player " << m_player2.GetName() << " has no cards left!" << std::endl;
+		return '2';
+	}
+	if (m_board.isBoardFull())
+	{
+		std::cout << "The board is full!" << std::endl;
+		return '3';
+	}
+	return '0';
 }
 
 void eter::Game::resetBoard()
 {
-    m_board.clear();
+	m_board.clear();
 }
 
 void eter::Game::ReassignCardsToPlayers()
 {
-    if (m_gameMode == "AMode") {
-        // Creează o instanță de AMode și apelează funcția de asignare a cărților
-        AMode modeA(this);
-        modeA.assignCardsInHandModeA();
-    }
-    else if (m_gameMode == "BMode")
-    {
-        // Creează o instanță de BMode și apelează funcția de asignare a cărților
-        BMode modeB(this);
-        modeB.assignCardsInHand();
-    }
+	if (m_gameMode == "AMode") {
+		// Creează o instanță de AMode și apelează funcția de asignare a cărților
+		AMode modeA(this);
+		modeA.assignCardsInHandModeA();
+	}
+	else if (m_gameMode == "BMode")
+	{
+		// Creează o instanță de BMode și apelează funcția de asignare a cărților
+		BMode modeB(this);
+		modeB.assignCardsInHand();
+	}
 }
 
 void Game::handleCardCover(Player& currentPlayer, Player& opponent, int x, int y, int cardIndex) {
-    auto& targetCell = m_board[{x, y}];
-    if (!targetCell.has_value() || targetCell->empty()) {
-        std::cout << "Invalid action. There's no card to cover at (" << x << ", " << y << ").\n";
-        return;
-    }
-
-    Card& existingCard = targetCell->top();
-
-    if (!existingCard.GetPosition()) {
-        existingCard.SetPosition(true);
-        std::cout << "Revealed card: " << existingCard << "\n";
-
-        Card& newCard = currentPlayer.GetCardsInHand().at(cardIndex);
-
-        if (newCard.GetValue() > existingCard.GetValue()) {
-            std::cout << "The opponent's card covers the revealed card.\n";
-            currentPlayer.placeCard(x, y, newCard, m_board); // Place the card
-        }
-        else {
-            std::cout << "The opponent's card is not stronger. It is removed from the game.\n";
-            currentPlayer.GetCardsInHand().erase(currentPlayer.GetCardsInHand().begin() + cardIndex);
-            currentPlayer.AddToEliminatedCards(newCard);
-            std::cout << currentPlayer.GetName() << " loses their turn.\n";
-            return;
-        }
-    }
-    else {
-        std::cout << "The card at (" << x << ", " << y << ") is already revealed. Normal placement applies.\n";
-        currentPlayer.placeCard(x, y, currentPlayer.GetCardsInHand().at(cardIndex), m_board);
-    }
+	auto& targetCell = m_board[{x, y}];
+	if (!targetCell.has_value() || targetCell->empty()) {
+		std::cout << "Invalid action. There's no card to cover at (" << x << ", " << y << ").\n";
+		return;
+	}
+	Card& newCard = currentPlayer.GetCardsInHand().at(cardIndex);
+	Card& existingCard = targetCell->top();
+	if (existingCard.GetColor() == currentPlayer.GetColor()) {
+		std::cout << "Cannot place card over your own illusion.\n";
+		bool ok;
+		ok = currentPlayer.placeCard(x, y, currentPlayer.GetCardsInHand().at(cardIndex), m_board);
+		while (!ok) {
+			std::cout << currentPlayer.GetName() << " try to place a card again\n";
+			getInputCoordinates(x, y, cardIndex);
+			ok = currentPlayer.placeCard(x, y, currentPlayer.GetCardsInHand().at(cardIndex), m_board);
+		}
+		return;
+	}
+	if (!existingCard.GetPosition()) {
+		existingCard.SetPosition(true);
+		if (newCard.GetValue() > existingCard.GetValue()) {
+			std::cout << "The opponent's card covers the revealed card.\n";
+			currentPlayer.placeCard(x, y, newCard, m_board); // Place the card
+		}
+		else {
+			std::cout << "The opponent's card is not stronger. It is removed from the game.\n";
+			currentPlayer.GetCardsInHand().erase(currentPlayer.GetCardsInHand().begin() + cardIndex);
+			currentPlayer.AddToEliminatedCards(newCard);
+			std::cout << currentPlayer.GetName() << " loses their turn.\n";
+			return;
+		}
+	}
 }
 
- 
+
 
