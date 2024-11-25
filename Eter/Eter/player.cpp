@@ -125,6 +125,7 @@ void eter::Player::AddCardToHand(const Card& card)
 	m_cardsInHand.push_back(card);
 }
 
+
 bool Player::placeCard(int x, int y, const Card& card, Board& board)
 {
 

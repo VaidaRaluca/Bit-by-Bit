@@ -111,6 +111,9 @@ bool eter::Board::canPlaceCard(int x, int y, const Card& card) const
 	if (m_grid[x][y].has_value())
 	{
 		const auto& stack = m_grid[x][y].value();
+		if (!stack.empty() && card.GetColor() == stack.top().GetColor()){ // cannot put card over your own illusion
+			return false;
+		}
 		if (!stack.empty() && card.GetValue() > stack.top().GetValue()) {
 			return true;
 		}

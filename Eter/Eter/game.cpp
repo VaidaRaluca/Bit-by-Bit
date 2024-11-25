@@ -132,13 +132,20 @@ void Game::handlePlayerTurn(Player& player) {
 
     int x, y, cardIndex;
     getInputCoordinates(x, y, cardIndex);
-
-    bool ok;
-    ok=player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
-    while (!ok) {
-        std::cout << player.GetName() << " try to place a card again\n";
-        getInputCoordinates(x, y, cardIndex);
+    auto& targetCell = m_board[{x, y}];
+    if (targetCell.has_value() && !targetCell->empty()) {
+        Player& opponent = (player.GetName() == m_player1.GetName()) ? m_player2 : m_player1;
+        handleCardCover(player, opponent, x, y, cardIndex);
+    }
+    else
+    {
+        bool ok;
         ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
+        while (!ok) {
+            std::cout << player.GetName() << " try to place a card again\n";
+            getInputCoordinates(x, y, cardIndex);
+            ok = player.placeCard(x, y, player.GetCardsInHand().at(cardIndex), m_board);
+        }
     }
 }
 
@@ -215,6 +222,39 @@ void eter::Game::ReassignCardsToPlayers()
         // Creează o instanță de BMode și apelează funcția de asignare a cărților
         BMode modeB(this);
         modeB.assignCardsInHand();
+    }
+}
+
+void Game::handleCardCover(Player& currentPlayer, Player& opponent, int x, int y, int cardIndex) {
+    auto& targetCell = m_board[{x, y}];
+    if (!targetCell.has_value() || targetCell->empty()) {
+        std::cout << "Invalid action. There's no card to cover at (" << x << ", " << y << ").\n";
+        return;
+    }
+
+    Card& existingCard = targetCell->top();
+
+    if (!existingCard.GetPosition()) {
+        existingCard.SetPosition(true);
+        std::cout << "Revealed card: " << existingCard << "\n";
+
+        Card& newCard = currentPlayer.GetCardsInHand().at(cardIndex);
+
+        if (newCard.GetValue() > existingCard.GetValue()) {
+            std::cout << "The opponent's card covers the revealed card.\n";
+            currentPlayer.placeCard(x, y, newCard, m_board); // Place the card
+        }
+        else {
+            std::cout << "The opponent's card is not stronger. It is removed from the game.\n";
+            currentPlayer.GetCardsInHand().erase(currentPlayer.GetCardsInHand().begin() + cardIndex);
+            currentPlayer.AddToEliminatedCards(newCard);
+            std::cout << currentPlayer.GetName() << " loses their turn.\n";
+            return;
+        }
+    }
+    else {
+        std::cout << "The card at (" << x << ", " << y << ") is already revealed. Normal placement applies.\n";
+        currentPlayer.placeCard(x, y, currentPlayer.GetCardsInHand().at(cardIndex), m_board);
     }
 }
 

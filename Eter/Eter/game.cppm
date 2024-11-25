@@ -56,6 +56,7 @@ namespace eter
 		char VerifyGameOver();
 		void resetBoard();
 		void ReassignCardsToPlayers();
+		void handleCardCover(Player& currentPlayer, Player& opponent, int x, int y, int cardIndex);
 
 	};
 

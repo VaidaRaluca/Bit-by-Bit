@@ -4,39 +4,39 @@ using eter::Card;
 import <format>;
 import <iostream>;
 Card::Card(uint8_t value, const std::string& color, bool position) :
-	m_value{value},m_color{color},m_position{position}
+	m_value{ value }, m_color{ color }, m_position{ position }
 {}
 
-Card::Card(const Card & other)
-    : m_value{ other.m_value }, m_color{ other.m_color }, m_position{ other.m_position }
+Card::Card(const Card& other)
+	: m_value{ other.m_value }, m_color{ other.m_color }, m_position{ other.m_position }
 {}
 
-Card& Card::operator=(const Card & other)
+Card& Card::operator=(const Card& other)
 {
-    if (this == &other) return *this; 
-    m_value = other.m_value;
-    m_color = other.m_color;
-    m_position = other.m_position;
-    return *this;
+	if (this == &other) return *this;
+	m_value = other.m_value;
+	m_color = other.m_color;
+	m_position = other.m_position;
+	return *this;
 }
 
 Card::Card(Card&& other) noexcept
-: m_value{ other.m_value }, m_color{std::move(other.m_color)}, m_position {other.m_position}
+	: m_value{ other.m_value }, m_color{ std::move(other.m_color) }, m_position{ other.m_position }
 {
-    other.m_value = 0;
-    other.m_position = true;
+	other.m_value = 0;
+	other.m_position = true;
 }
 
 Card& Card::operator=(Card&& other) noexcept
 {
-    if (this == &other) return *this; 
-    m_value = other.m_value;
-    m_color = std::move(other.m_color);
-    m_position = other.m_position;
+	if (this == &other) return *this;
+	m_value = other.m_value;
+	m_color = std::move(other.m_color);
+	m_position = other.m_position;
 
-    other.m_value = 0;
-    other.m_position = true;
-    return *this;
+	other.m_value = 0;
+	other.m_position = true;
+	return *this;
 }
 
 uint8_t Card::GetValue() const
@@ -78,36 +78,36 @@ bool eter::Card::operator==(const Card& other) const
 
 void eter::Card::swap(Card& other) noexcept
 {
-    using std::swap;
-    swap(m_value, other.m_value);
-    swap(m_color, other.m_color);
-    swap(m_position, other.m_position);
+	using std::swap;
+	swap(m_value, other.m_value);
+	swap(m_color, other.m_color);
+	swap(m_position, other.m_position);
 }
 
 
 std::ostream& eter::operator<<(std::ostream& os, const Card& card)
 {
-    // Map colors to text color (foreground) and background color codes
-    std::string textColor, backgroundColor;
+	// Map colors to text color (foreground) and background color codes
+	std::string textColor, backgroundColor;
 
-    if (card.GetColor() == "red") {
-        textColor = "\033[38;5;9m";  // Red text
-        backgroundColor = "\033[48;5;0m";  // Black background
-    }
-    else if (card.GetColor() == "blue") {
-        textColor = "\033[38;5;12m";  // Blue text
-        backgroundColor = "\033[48;5;0m";  // Black background
-    }
-
-    std::string resetColor = "\033[0m";
-    os << backgroundColor << textColor
-        <<static_cast<int>(card.GetValue());
-    if (!card.GetPosition()) os << '\"';
-    os << resetColor;
-    return os;
+	if (card.GetColor() == "red") {
+		textColor = "\033[38;5;9m";  // Red text
+		backgroundColor = "\033[48;5;0m";  // Black background
+	}
+	else if (card.GetColor() == "blue") {
+		textColor = "\033[38;5;12m";  // Blue text
+		backgroundColor = "\033[48;5;0m";  // Black background
+	}
+	std::string resetColor = "\033[0m";
+	if (!card.GetPosition()) os << backgroundColor << textColor << '\"';
+	else
+		os << backgroundColor << textColor
+		<< static_cast<int>(card.GetValue());
+	os << resetColor;
+	return os;
 }
 
-void eter::swap(Card& first, Card& second) noexcept 
+void eter::swap(Card& first, Card& second) noexcept
 {
-    first.swap(second);
+	first.swap(second);
 }
