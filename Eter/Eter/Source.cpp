@@ -26,22 +26,18 @@ int main()
 	Player player1("Mihai","red");
 	Player player2("Alina", "blue");
     
-	//GameManager gameManager;
-	/*gameManager.StartNewGame(player1, player2, board, "AMode");*/
+	std::vector<std::vector<std::optional<std::stack<Card>>>> gridA(7, std::vector<std::optional<std::stack<Card>>>(7, std::nullopt));
+	Board boardA(gridA, 7, 7);
 
-	//Test ModulB
-	std::vector<std::vector<std::optional<std::stack<Card>>>> gridB(4, std::vector<std::optional<std::stack<Card>>>(4, std::nullopt));
-	Board boardB(gridB, 4, 4);
+	// Test AMode
+	GameManager game;
+	//game.StartNewGame(player1, player2, boardA, "AMode");
 
-	GameManager gameBMode;
-	gameBMode.StartNewGame(player1, player2, boardB, "BMode");
 
-	// Test ModulA
-	/*std::vector<std::vector<std::optional<std::stack<Card>>>> gridA(3, std::vector<std::optional<std::stack<Card>>>(3, std::nullopt));
-	Board boardA(gridA, 3, 3);
+	// Test BMode
 
-	GameManager gameAMode;
-	gameAMode.StartNewGame(player1, player2, boardA, "AMode");*/
+	game.StartNewGame(player1, player2, boardA, "BMode");
+
 
 	
 	return 0;

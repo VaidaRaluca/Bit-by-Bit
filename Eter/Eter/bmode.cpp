@@ -15,6 +15,7 @@ BMode::BMode(Game* game):
 
 void BMode::applyModeRules()
 {
+    m_game->GetBoardRef().SetDimMax((uint8_t)4);
     assignCardsInHand();
     generateMage();
     startMatch();

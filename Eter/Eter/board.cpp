@@ -59,6 +59,11 @@ const std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGrid(
 	return m_grid;
 }
 
+const uint8_t eter::Board::GetDimMax() const
+{
+	return m_dimMax;
+}
+
 std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) {
 	int x = pos.first;
 	int y = pos.second;
@@ -77,9 +82,29 @@ const std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos
 	throw std::out_of_range("Invalid position");
 }
 
+void eter::Board::SetDimMax(uint8_t dim)
+{
+	m_dimMax = dim;
+}
+
 bool Board::isValidPosition(int x, int y) const
 {
-	return x >= 0 && x < (int)m_rows && y >= 0 && y < (int)m_cols;
+	if (x < 0 || y < 0 || x >= m_rows || y >= m_cols) {
+		return false;
+	}
+
+	// Dacă tabla este goală, orice poziție este validă
+	if (indexLineMin == -1 && indexLineMax == -1 && indexColMin == -1 && indexColMax == -1) {
+		return true;
+	}
+
+	int newLineMin = std::min(indexLineMin, x);
+	int newLineMax = std::max(indexLineMax, x);
+	int newColMin = std::min(indexColMin, y);
+	int newColMax = std::max(indexColMax, y);
+
+	return (newLineMax - newLineMin < m_dimMax) && (newColMax - newColMin < m_dimMax);
+
 }
 
 bool eter::Board::isAdjacentToOccupiedSpace(int x, int y)const
@@ -101,7 +126,7 @@ bool eter::Board::isAdjacentToOccupiedSpace(int x, int y)const
 }
 
 
-bool eter::Board::canPlaceCard(int x, int y, const Card& card) const
+bool eter::Board::canPlaceCard(int x, int y, const Card& card)
 {
 	if (!isValidPosition(x, y))
 	{
@@ -128,6 +153,14 @@ bool eter::Board::canPlaceCard(int x, int y, const Card& card) const
 			}
 		}
 	}
+	if (isBoardEmpty) {
+		// Daca tabla este goala, initializeaza limitele
+		indexLineMin = x;
+		indexLineMax = x;
+		indexColMin = y;
+		indexColMax = y;
+	}
+
 	return isBoardEmpty || isAdjacentToOccupiedSpace(x, y);
 }
 
@@ -147,6 +180,13 @@ bool eter::Board::placeCard(int x, int y, const Card& card)
 	}
 
 	m_grid[x][y]->push(card);
+
+	// Daca s-a inserat o carte actualizez indecsi
+	indexLineMin = std::min(indexLineMin, x);
+	indexLineMax = std::max(indexLineMax, x);
+	indexColMin = std::min(indexColMin, y);
+	indexColMax = std::max(indexColMax, y);
+
 	std::cout << "The card with value " << static_cast<int>(card.GetValue())
 		<< " has been placed at (" << x << ", " << y << ").\n";
 	return true;
@@ -284,7 +324,7 @@ std::ostream& eter::operator<<(std::ostream& os, const Board& board)
 			if (board.GetGrid()[line][column].has_value())
 				os << board.GetGrid()[line][column].value().top() << " ";
 			else
-				os << kEmpyBoardCell << " ";
+				os<<"  ";
 		}
 		os << '\n';
 	}

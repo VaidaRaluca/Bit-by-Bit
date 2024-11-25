@@ -132,7 +132,12 @@ void Game::handlePlayerTurn(Player& player) {
 
     int x, y, cardIndex;
     getInputCoordinates(x, y, cardIndex);
-    auto& targetCell = m_board[{x, y}];
+    std::optional<std::stack<Card>> targetCell;
+    if (m_board.isValidPosition(x, y))
+        targetCell = m_board[{x, y}];
+    else
+        std::cout << "Invalid position! \n";
+
     if (targetCell.has_value() && !targetCell->empty()) {
         Player& opponent = (player.GetName() == m_player1.GetName()) ? m_player2 : m_player1;
         handleCardCover(player, opponent, x, y, cardIndex);
