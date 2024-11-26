@@ -132,10 +132,10 @@ void Game::handlePlayerTurn(Player& player) {
 
 	size_t x, y, cardIndex;
 	getInputCoordinates(x, y, cardIndex);
-	if (cardIndex < 0 || cardIndex >= player.GetCardsInHand().size()) {
+	/*if (cardIndex < 0 || cardIndex >= player.GetCardsInHand().size()) { // gotta work on this
 		std::cout << "Invalid card index\n";
 		return;
-	}
+	}*/
 	std::optional<std::stack<Card>> targetCell;
 	if (m_board.isValidPosition(x, y))
 		targetCell = m_board[{x, y}];

@@ -81,8 +81,8 @@ void BMode::startMatch()
         startRound(); 
         countRound++;
         std::cout << "The round has ended. \n";
-        std::cout << "Wins player 1: " <<static_cast<int> (m_game->GetPlayer1Wins())<<"\n";
-        std::cout << "Wins player 2: " << static_cast<int> (m_game->GetPlayer2Wins() )<< "\n";
+        std::cout << m_game->GetPlayer1().GetName()<<" wins: " <<static_cast<int> (m_game->GetPlayer1Wins())<<"\n";
+        std::cout << m_game->GetPlayer2().GetName() << " wins: " << static_cast<int> (m_game->GetPlayer2Wins())<< "\n";
         assignCardsInHand();
         m_game->resetBoard();
     }
@@ -134,7 +134,6 @@ void BMode::handleOption()
     };
  
     std::cout << m_game->GetBoard();
-
 
     if (m_game->GetIsPlayerTurn())
         std::cout << "It's " << m_game->GetPlayer1().GetName() << "'s turn\n";

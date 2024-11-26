@@ -301,14 +301,20 @@ const std::string& eter::Board::findWinnerByScore()
 		for (size_t col = 0; col < m_grid[line].size(); ++col) {
 			if (m_grid[line][col].has_value()) {
 				if (m_grid[line][col].value().top().GetColor() == "blue")
-					score1 += m_grid[line][col].value().top().GetValue();
+					if (m_grid[line][col].value().top().GetPosition() == true)
+						score1 += m_grid[line][col].value().top().GetValue();
+					else
+						score1 += 1;
 				if (m_grid[line][col].value().top().GetColor() == "red")
-					score2 += m_grid[line][col].value().top().GetValue();
+					if (m_grid[line][col].value().top().GetPosition() == true)
+						score2 += m_grid[line][col].value().top().GetValue();
+					else
+						score2 += 1;
 			}
 		}
 	}
 	if (score1 > score2)
-		return"blue";
+		return "blue";
 	if (score2 > score1)
 		return "red";
 	return " ";
@@ -316,11 +322,14 @@ const std::string& eter::Board::findWinnerByScore()
 
 bool eter::Board::isBoardFull()
 {
-	for (uint8_t row = 0; row < m_rows; ++row)
-		for (uint8_t col = 0; col < m_cols; ++col)
-			if (!m_grid[row][col].has_value())
-				return false;
-	return true;
+	size_t occupiedSpaces = 0;
+	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row){
+		for (size_t col = m_indexColMin; col <= m_indexColMax; ++col){
+			if (m_grid[row][col].has_value())
+				occupiedSpaces++;
+		}
+	}
+	return (occupiedSpaces == m_dimMax * m_dimMax);
 }
 
 void eter::Board::clear()
