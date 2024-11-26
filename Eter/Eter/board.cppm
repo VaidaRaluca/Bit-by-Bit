@@ -11,12 +11,12 @@ namespace eter {
 	private:
 		std::vector<std::vector<std::optional<std::stack<Card>>>>m_grid;
 		size_t m_rows = { 7 }, m_cols = { 7 }; 
-		uint8_t m_dimMax = 3;
-		int indexLineMin{ -1 }, indexColMin{ -1 };
-		int indexLineMax{ -1 }, indexColMax{ -1 };
+		size_t m_indexMax;
+		size_t m_dimMax;
+		size_t m_indexLineMin, m_indexColMin, m_indexLineMax, m_indexColMax;
 	public:
 		//Rule of 5 
-		Board()=default;
+		Board();
 		Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint8_t rows, uint8_t cols);
 		Board(const Board& other); //constructor de copiere
 		Board& operator=(const Board& other);
@@ -34,17 +34,17 @@ namespace eter {
 
 		void SetDimMax(uint8_t dim);
 
-		bool isValidPosition(int x, int y) const;
-		bool isAdjacentToOccupiedSpace(int x, int y)const;
-		bool canPlaceCard(int x, int y, const Card& card);
-		bool placeCard(int x, int y, const Card& card);
+		bool isValidPosition(size_t x, size_t y) const;
+		bool isAdjacentToOccupiedSpace(size_t x, size_t y)const;
+		bool canPlaceCard(size_t x, size_t y, const Card& card);
+		bool placeCard(size_t x, size_t y, const Card& card);
 
 		bool isVerticalLine(const std::string& lineColor) const;
 		bool isPrimaryDiagonalLine(const std::string& lineColor) const;
 		bool isSecondaryDiagonalLine(const std::string& lineColor) const;
 		bool isHorizontalLine(const std::string& lineColor) const;
 
-		bool isEmptyCell(int x, int y);
+		bool isEmptyCell(size_t x, size_t y);
 		std::string findWinner();
 		const std::string& findWinnerByScore();
 		bool isBoardFull();

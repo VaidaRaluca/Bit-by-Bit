@@ -21,11 +21,11 @@ namespace eter
 		//Functii ajutatoare
 		void handlePlayerTurn(Player& player);
 		void handlePlayerTurnWithIllusion(Player& player);
-		void getInputCoordinates(int& x, int& y, int& cardIndex);
+		void getInputCoordinates(size_t& x, size_t& y, size_t& cardIndex);
 
 	public:
 		Game() = default;
-		Game(Player player1, Player player2, Board board, std::string gameMode);
+		Game(Player player1, Player player2, std::string gameMode);
 
 		Player GetPlayer1() const;
 		Player GetPlayer2() const;
@@ -56,7 +56,7 @@ namespace eter
 		char VerifyGameOver();
 		void resetBoard();
 		void ReassignCardsToPlayers();
-		void handleCardCover(Player& currentPlayer, Player& opponent, int x, int y, int cardIndex);
+		void handleCardCover(Player& currentPlayer, Player& opponent, size_t x, size_t y, size_t cardIndex);
 
 	};
 

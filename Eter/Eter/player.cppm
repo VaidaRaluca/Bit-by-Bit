@@ -49,7 +49,7 @@ namespace eter {
 		void AddCardToHand(const Card& card);//Adauga o carte in m_cardsInHand
 		void useIllusion(int x, int y, Board& board, Card& illusion);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
-		bool placeCard(int x, int y, const Card& card, Board& board);
+		bool placeCard(size_t x, size_t y, const Card& card, Board& board);
 
 		void swap(Player& other) noexcept;
 

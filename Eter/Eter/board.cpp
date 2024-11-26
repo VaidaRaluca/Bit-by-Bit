@@ -4,6 +4,15 @@ using eter::Board;
 const std::string_view kEmpyBoardCell{ "____" };
 import <iostream>;
 
+eter::Board::Board()
+	: m_dimMax{3},m_indexMax{7},
+	m_indexLineMin{ 10 }, m_indexLineMax{ 10 },
+	m_indexColMin{ 10 }, m_indexColMax{ 10 }
+{
+	// Inițializează grila
+	m_grid.resize(m_indexMax, std::vector<std::optional<std::stack<Card>>>(m_indexMax));
+}
+
 Board::Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint8_t rows, uint8_t cols)
 	: m_grid{ std::move(grid) }
 	, m_rows{ rows }
@@ -87,27 +96,27 @@ void eter::Board::SetDimMax(uint8_t dim)
 	m_dimMax = dim;
 }
 
-bool Board::isValidPosition(int x, int y) const
+bool Board::isValidPosition(size_t x, size_t y) const
 {
 	if (x < 0 || y < 0 || x >= m_rows || y >= m_cols) {
 		return false;
 	}
 
 	// Dacă tabla este goală, orice poziție este validă
-	if (indexLineMin == -1 && indexLineMax == -1 && indexColMin == -1 && indexColMax == -1) {
+	if (m_indexLineMin == 10 && m_indexLineMax == 10 && m_indexColMin == 10 && m_indexColMax == 10) {
 		return true;
 	}
 
-	int newLineMin = std::min(indexLineMin, x);
-	int newLineMax = std::max(indexLineMax, x);
-	int newColMin = std::min(indexColMin, y);
-	int newColMax = std::max(indexColMax, y);
+	size_t newLineMin = std::min(m_indexLineMin, x);
+	size_t newLineMax = std::max(m_indexLineMax, x);
+	size_t newColMin = std::min(m_indexColMin, y);
+	size_t newColMax = std::max(m_indexColMax, y);
 
 	return (newLineMax - newLineMin < m_dimMax) && (newColMax - newColMin < m_dimMax);
 
 }
 
-bool eter::Board::isAdjacentToOccupiedSpace(int x, int y)const
+bool eter::Board::isAdjacentToOccupiedSpace(size_t x, size_t y)const
 {
 	static const std::vector<std::pair<int, int>> directions = {
 		{-1, -1}, {-1, 0}, {-1, 1},
@@ -126,7 +135,7 @@ bool eter::Board::isAdjacentToOccupiedSpace(int x, int y)const
 }
 
 
-bool eter::Board::canPlaceCard(int x, int y, const Card& card)
+bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 {
 	if (!isValidPosition(x, y))
 	{
@@ -136,7 +145,7 @@ bool eter::Board::canPlaceCard(int x, int y, const Card& card)
 	if (m_grid[x][y].has_value())
 	{
 		const auto& stack = m_grid[x][y].value();
-		if (!stack.empty() && card.GetColor() == stack.top().GetColor()){ // cannot put card over your own illusion
+		if (!stack.empty() && card.GetColor() == stack.top().GetColor() && !stack.top().GetPosition()){ // cannot put card over your own illusion
 			return false;
 		}
 		if (!stack.empty() && card.GetValue() > stack.top().GetValue()) {
@@ -155,17 +164,17 @@ bool eter::Board::canPlaceCard(int x, int y, const Card& card)
 	}
 	if (isBoardEmpty) {
 		// Daca tabla este goala, initializeaza limitele
-		indexLineMin = x;
-		indexLineMax = x;
-		indexColMin = y;
-		indexColMax = y;
+		m_indexLineMin = x;
+		m_indexLineMax = x;
+		m_indexColMin = y;
+		m_indexColMax = y;
 	}
 
 	return isBoardEmpty || isAdjacentToOccupiedSpace(x, y);
 }
 
 
-bool eter::Board::placeCard(int x, int y, const Card& card)
+bool eter::Board::placeCard(size_t x, size_t y, const Card& card)
 {
 	if (!canPlaceCard(x, y, card))
 
@@ -182,70 +191,98 @@ bool eter::Board::placeCard(int x, int y, const Card& card)
 	m_grid[x][y]->push(card);
 
 	// Daca s-a inserat o carte actualizez indecsi
-	indexLineMin = std::min(indexLineMin, x);
-	indexLineMax = std::max(indexLineMax, x);
-	indexColMin = std::min(indexColMin, y);
-	indexColMax = std::max(indexColMax, y);
+	m_indexLineMin = std::min(m_indexLineMin, x);
+	m_indexLineMax = std::max(m_indexLineMax, x);
+	m_indexColMin = std::min(m_indexColMin, y);
+	m_indexColMax = std::max(m_indexColMax, y);
 
 	std::cout << "The card with value " << static_cast<int>(card.GetValue())
 		<< " has been placed at (" << x << ", " << y << ").\n";
 	return true;
 }
 
-bool eter::Board::isVerticalLine(const std::string& lineColor) const
-{
-	for (size_t col = 0; col < m_cols; ++col) {
-		bool isLine = true;
-		for (size_t row = 0; row < m_rows; ++row)
-			if (!m_grid[row][col] ||
-				m_grid[row][col]->top().GetColor() != lineColor) {
-				isLine = false;
-				break;
+bool eter::Board::isVerticalLine(const std::string& lineColor) const {
+	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
+		size_t consecutiveCount = 0;
+		for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
+			if (m_grid[row][col].has_value() && m_grid[row][col]->top().GetColor() == lineColor) {
+				++consecutiveCount;
 			}
-
-		if (isLine)
-			return true;
+			else {
+				consecutiveCount = 0;
+			}
+			if (consecutiveCount >= m_dimMax) {
+				return true;
+			}
+		}
 	}
 	return false;
 }
-
-
 
 bool eter::Board::isPrimaryDiagonalLine(const std::string& lineColor) const {
-	if (m_rows != m_cols) 
+	if ((m_indexLineMax - m_indexLineMin) != (m_indexColMax - m_indexColMin)) {
 		return false;
-	for (size_t i = 0; i < m_rows; ++i) 
-		if (!m_grid[i][i] || m_grid[i][i]->top().GetColor() != lineColor) 
-			return false; 
-	return true; 
-}
+	}
 
+	size_t consecutiveCount = 0;
+	for (size_t i = 0; i <= m_indexLineMax - m_indexLineMin; ++i) {
+		size_t row = m_indexLineMin + i;
+		size_t col = m_indexColMin + i;
 
-bool eter::Board::isSecondaryDiagonalLine(const std::string& lineColor) const {
-	if (m_rows != m_cols)
-		return false;
-	for (size_t i = 0; i < m_rows; ++i)
-		if (!m_grid[i][m_rows-1-i] || m_grid[i][m_rows-1-i]->top().GetColor() != lineColor)
-			return false;
-	return true;
-}
-
-bool eter::Board::isHorizontalLine(const std::string& lineColor) const
-{
-	for (size_t row = 0; row < m_rows; ++row) {
-		bool isLine = true;
-		for (size_t col = 0; col < m_cols; ++col)
-			if (!m_grid[row][col] ||
-				m_grid[row][col]->top().GetColor() != lineColor) {
-				isLine = false;
-				break;
-			}
-
-		if (isLine)
+		if (m_grid[row][col].has_value() && m_grid[row][col]->top().GetColor() == lineColor) {
+			++consecutiveCount;
+		}
+		else {
+			consecutiveCount = 0;
+		}
+		if (consecutiveCount >= m_dimMax) {
 			return true;
+		}
 	}
 	return false;
 }
+
+bool eter::Board::isSecondaryDiagonalLine(const std::string& lineColor) const {
+	if ((m_indexLineMax - m_indexLineMin) != (m_indexColMax - m_indexColMin)) {
+		return false;
+	}
+
+	size_t consecutiveCount = 0;
+	for (size_t i = 0; i <= m_indexLineMax - m_indexLineMin; ++i) {
+		size_t row = m_indexLineMin + i;
+		size_t col = m_indexColMax - i;
+
+		if (m_grid[row][col].has_value() && m_grid[row][col]->top().GetColor() == lineColor) {
+			++consecutiveCount;
+		}
+		else {
+			consecutiveCount = 0;
+		}
+		if (consecutiveCount >= m_dimMax) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool eter::Board::isHorizontalLine(const std::string& lineColor) const {
+	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
+		size_t consecutiveCount = 0;
+		for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
+			if (m_grid[row][col].has_value() && m_grid[row][col]->top().GetColor() == lineColor) {
+				++consecutiveCount;
+			}
+			else {
+				consecutiveCount = 0;
+			}
+			if (consecutiveCount >= m_dimMax) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 
 std::string eter::Board::findWinner()
 {
@@ -303,7 +340,7 @@ void eter::Board::swap(Board& other) noexcept
 	swap(m_cols, other.m_cols);
 }
 
-bool Board::isEmptyCell(int x, int y)
+bool Board::isEmptyCell(size_t x, size_t y)
 {
 	if (!isValidPosition(x, y)) {
 		return false;

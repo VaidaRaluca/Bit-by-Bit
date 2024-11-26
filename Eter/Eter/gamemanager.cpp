@@ -23,7 +23,7 @@ void GameManager::SetGame(Game game)
 
 void GameManager::StartNewGame(Player player1, Player player2, Board board, const std::string& gameMode)
 {
-		m_game = Game(player1, player2, board, gameMode);
+		m_game = Game(player1, player2, gameMode);
 		if (gameMode == "AMode")
 		{
 			m_amode= std::make_unique<AMode>(&m_game);
@@ -40,5 +40,4 @@ void GameManager::StartNewGame(Player player1, Player player2, Board board, cons
 			CMode cmode(&m_game);
 			cmode.applyModeRules();
 		}
-		//m_game.startGame(); 
 }

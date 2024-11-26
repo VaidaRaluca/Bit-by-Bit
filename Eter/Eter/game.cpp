@@ -8,8 +8,8 @@ import amode;
 import bmode;
 import board;
 
-Game::Game(Player player1, Player player2, Board board, std::string gameMode) :
-	m_player1{ player1 }, m_player2{ player2 }, m_board{ board }, m_gameMode{ gameMode }, m_isPlayerTurn{ true },
+Game::Game(Player player1, Player player2,std::string gameMode) :
+	m_player1{ player1 }, m_player2{ player2 }, m_gameMode{ gameMode }, m_isPlayerTurn{ true },
 	m_player1Wins{ 0 }, m_player2Wins{ 0 }, m_nrRound{ 0 }
 {}
 
@@ -128,9 +128,9 @@ void Game::playIllusion() {
 //Gestionarea turei unui jucător
 void Game::handlePlayerTurn(Player& player) {
 	std::cout << player.GetName()
-		<< " enter the coordinates (x and y) of the position on the board and the index of the card you want to place.\n";
+		<< " enter the coordinates (x and y) >=0 of the position on the board and the index of the card (>=0) you want to place.\n";
 
-	int x, y, cardIndex;
+	size_t x, y, cardIndex;
 	getInputCoordinates(x, y, cardIndex);
 	if (cardIndex < 0 || cardIndex >= player.GetCardsInHand().size()) {
 		std::cout << "Invalid card index\n";
@@ -167,7 +167,7 @@ void eter::Game::handlePlayerTurnWithIllusion(Player& player) {
 	std::cout << player.GetName()
 		<< " enter the coordinates (x and y) of the position on the board and the index of the card you want to use illusion on.\n";
 
-	int x, y, cardIndex;
+	size_t x, y, cardIndex;
 	getInputCoordinates(x, y, cardIndex);
 	if (cardIndex < 0 || cardIndex >= player.GetCardsInHand().size()) {
 		std::cout << "Invalid card index.\n";
@@ -177,7 +177,7 @@ void eter::Game::handlePlayerTurnWithIllusion(Player& player) {
 }
 
 //Obtinerea coordonatelor
-void Game::getInputCoordinates(int& x, int& y, int& cardIndex) {
+void Game::getInputCoordinates(size_t& x, size_t& y, size_t& cardIndex) {
 	std::cout << "x = "; std::cin >> x;
 	std::cout << "y = "; std::cin >> y;
 	std::cout << "index of the card = "; std::cin >> cardIndex;
@@ -238,7 +238,7 @@ void eter::Game::ReassignCardsToPlayers()
 	}
 }
 
-void Game::handleCardCover(Player& currentPlayer, Player& opponent, int x, int y, int cardIndex) {
+void Game::handleCardCover(Player& currentPlayer, Player& opponent, size_t x, size_t y, size_t cardIndex) {
 	auto& targetCell = m_board[{x, y}];
 	if (!targetCell.has_value() || targetCell->empty()) {
 		std::cout << "Invalid action. There's no card to cover at (" << x << ", " << y << ").\n";

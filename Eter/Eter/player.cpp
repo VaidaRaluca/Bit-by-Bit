@@ -128,7 +128,7 @@ void eter::Player::AddCardToHand(const Card& card)
 }
 
 
-bool Player::placeCard(int x, int y, const Card& card, Board& board)
+bool Player::placeCard(size_t x, size_t y, const Card& card, Board& board)
 {
 
 	auto it = std::find(m_cardsInHand.begin(), m_cardsInHand.end(), card);
