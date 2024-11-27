@@ -27,7 +27,7 @@ namespace eter
 
 		const Game& GetGame()const;
 		void SetGame(Game game);
-		void StartNewGame(Player player1, Player player2, Board board, const std::string& gameMode);
+		void StartNewGame(Player player1, Player player2, const std::string& gameMode);
 		void LoadGame();   // Metoda pentru incarcarea unui joc anterior 
 	};
 }

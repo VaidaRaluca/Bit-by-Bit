@@ -148,6 +148,10 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 		if (!stack.empty() && card.GetColor() == stack.top().GetColor() && !stack.top().GetPosition()){ // cannot put card over your own illusion
 			return false;
 		}
+		if (stack.top().GetValue() == static_cast<int>('/')) //pentru gropi///create pit in board
+		{
+			return false;
+		}
 		if (!stack.empty() && card.GetValue() > stack.top().GetValue()) {
 			return true;
 		}

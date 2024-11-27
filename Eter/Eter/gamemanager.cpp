@@ -21,7 +21,7 @@ void GameManager::SetGame(Game game)
 	m_game=Game( game) ;
 }
 
-void GameManager::StartNewGame(Player player1, Player player2, Board board, const std::string& gameMode)
+void GameManager::StartNewGame(Player player1, Player player2, const std::string& gameMode)
 {
 		m_game = Game(player1, player2, gameMode);
 		if (gameMode == "AMode")
