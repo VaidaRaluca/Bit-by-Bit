@@ -111,13 +111,12 @@ void BMode::startRound()
         std::cin >> choice;
         if (choice == "YES")
             handleOption();
-
         if (m_game->GetPlayer1().GetColor() == m_game->GetBoard().findWinnerByScore())
             std::cout << "Player " << m_game->GetPlayer1().GetName() << " wins this round!" << std::endl;
         else
             if (m_game->GetPlayer2().GetColor() == m_game->GetBoard().findWinnerByScore())
                 std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this round!" << std::endl;
-            else
+        else
                 std::cout << "DRAW \n";
     }
     std::cout << m_game->GetBoard();

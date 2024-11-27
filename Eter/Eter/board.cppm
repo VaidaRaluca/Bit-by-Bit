@@ -46,7 +46,7 @@ namespace eter {
 
 		bool isEmptyCell(size_t x, size_t y);
 		std::string findWinner();
-		const std::string& findWinnerByScore();
+		std::string findWinnerByScore();
 		bool isBoardFull();
 		void clear();
 		void swap(Board& other) noexcept;

@@ -293,7 +293,7 @@ std::string eter::Board::findWinner()
 	return std::string{ "No winner yet" };
 }
 
-const std::string& eter::Board::findWinnerByScore()
+std::string eter::Board::findWinnerByScore()
 {
 	uint16_t score1{ 0 };
 	uint16_t score2{ 0 };
