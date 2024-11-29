@@ -6,6 +6,7 @@ import <string>;
 import <iostream>;
 import amode;
 import bmode;
+import cmode;
 import board;
 
 Game::Game(Player player1, Player player2,std::string gameMode) :
@@ -235,6 +236,12 @@ void eter::Game::ReassignCardsToPlayers()
 		// Creează o instanță de BMode și apelează funcția de asignare a cărților
 		BMode modeB(this);
 		modeB.assignCardsInHand();
+	}
+	else if (m_gameMode == "CMode")
+	{
+		// Creează o instanță de CMode și apelează funcția de asignare a cărților
+		CMode modeC(this);
+		modeC.assignCardsInHand();
 	}
 }
 

@@ -13,8 +13,9 @@ CMode::CMode(Game* game): m_game{game}
 
 void CMode::applyModeRules()
 {
-    generatePower();
+    m_game->GetBoardRef().SetDimMax((uint8_t)4);
     assignCardsInHand();
+    generatePower();
     startMatch();
 }
 void eter::CMode::generatePower()
@@ -71,14 +72,43 @@ void CMode::assignCardsInHand()
     };
     if (m_game)
     {
-        m_game->GetPlayer1().SetCardsInHand(cardsForPlayer1);
-        m_game->GetPlayer2().SetCardsInHand(cardsForPlayer2);
+        m_game->GetPlayer1Ref().SetCardsInHand(cardsForPlayer1);
+        m_game->GetPlayer2Ref().SetCardsInHand(cardsForPlayer2);
     }
 }
 
 void CMode::startRound()
 {
-
+    char gameStatus = '0';
+    while (gameStatus == '0')
+    {
+        handleOption();
+        gameStatus = m_game->VerifyGameOver();
+        std::cout << "Game status: " << gameStatus << "\n";
+    }
+    std::cout << gameStatus << "\n";
+    if (gameStatus == '2' || gameStatus == '3')
+    {
+        std::string choice;
+        std::cout << "Do you want to continue the game with a single move? (YES or NO) \n";
+        std::cin >> choice;
+        if (choice == "YES")
+            handleOption();
+        if (m_game->GetPlayer1().GetColor() == m_game->GetBoard().findWinnerByScore())
+        {
+            std::cout << "Player " << m_game->GetPlayer1().GetName() << " wins this round!" << std::endl;
+            m_game->IncrementPlayer1Wins();
+        }
+        else
+            if (m_game->GetPlayer2().GetColor() == m_game->GetBoard().findWinnerByScore())
+            {
+                std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this round!" << std::endl;
+                m_game->IncrementPlayer2Wins();
+            }
+            else
+                std::cout << "DRAW \n";
+    }
+    std::cout << m_game->GetBoard();
 }
 void CMode::startMatch()
 {
@@ -128,7 +158,7 @@ void eter::CMode::handleOption()
     std::cout << "Press 4 to activate the elemental power \n";
     std::cin >> key;
     Option option = static_cast<Option>(key);
-    bool activatedPower1 = 0;
+    static bool activatedPower1 = 0;
 
     switch (option) {
     case OPTION_1:

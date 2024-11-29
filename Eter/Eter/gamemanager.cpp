@@ -37,7 +37,7 @@ void GameManager::StartNewGame(Player player1, Player player2, const std::string
 		}
 		if (gameMode == "CMode")
 		{
-			CMode cmode(&m_game);
-			cmode.applyModeRules();
+			m_cmode = std::make_unique<CMode>(&m_game);
+			m_cmode->applyModeRules();
 		}
 }
