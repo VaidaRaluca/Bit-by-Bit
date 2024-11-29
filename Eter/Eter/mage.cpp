@@ -107,103 +107,363 @@ namespace eter {
             throw std::runtime_error("The ability has already been used!");
         }
 
-        displayAbilityDescription();  // Afiaeaza descrierea abilitatii
+        displayAbilityDescription();  // Afiseaza descrierea abilitatii
 
         if (!confirmAbilityActivation()) {  // Confirmarea utilizatorului
             cancelAbilityActivation();
             return;
         }
 
-        executeAbility(player, oponnent, board);  // Activeaza abilitatea
+        bool success = false;  // Indicator pentru activarea cu succes a abilitatii
 
-        updateAbilityUsage();  // Actualizeaza contorul utilizarii
+        try {
+            success = executeAbility(player, oponnent, board);  // Incearca activarea abilitatii
+        }
+        catch (const std::exception& e) {
+            std::cout << "Ability activation failed: " << e.what() << "\n";
+        }
 
-        notifyAbilityActivated();  // Notificare de succes
+        if (success) {
+            updateAbilityUsage();  // Actualizeaz? contorul utilizarii
+            notifyAbilityActivated();  // Notificare de succes
+        }
+        else {
+            std::cout << "The ability was not activated successfully. Please try again.\n";
+        }
     }
+
 
     // Eliminare carte a oponentului
     void Mage::removeOponnentCard(Player& player, Player& oponnent, Board& board) {
         std::cout << "Activating ability: Remove Opponent Card\n";
-        if (oponnent.GetPlayedCards().empty()) {
-            std::cout << "Opponent has no cards played.\n";
+
+        // Solicita utilizatorului pozitia cartii de eliminat
+        int row, col;
+        std::cout << "Enter the position (row, column) of the card to remove: ";
+        std::cin >> row >> col;
+
+        // Valideaza pozitia introdusa
+        if (!board.isValidPosition(row, col)) {
+            std::cout << "Invalid position (" << row << ", " << col << ") on the board.\n";
             return;
         }
 
-        const Card& lastCard = oponnent.GetPlayedCards().back();
-        if (auto position = findCardPosition(lastCard, board); position) {
-            auto& [row, col] = *position;
-            removeCardFromBoard(board[{row, col}]);
-            std::cout << "Removed opponent's card from (" << row << ", " << col << ").\n";
+        // Ob?ine stiva de la pozitia specificata
+        auto& cell = board[{row, col}];
+        if (!cell.has_value() || cell->empty()) {
+            std::cout << "No card found at position (" << row << ", " << col << ").\n";
+            return;
         }
-        else {
-            std::cout << "Card not found on the board.\n";
+
+        // Elimina cartea de la pozitia specificata
+        cell->pop();
+        if (cell->empty()) {
+            cell.reset();  // Reseteaza celula daca stiva devine goala
         }
+
+        std::cout << "Removed card at position (" << row << ", " << col << ").\n";
     }
+
 
     // Eliminare rand intreg
     void Mage::removeEntireRow(Player& player, Board& board) {
         std::cout << "Activating ability: Remove Entire Row\n";
-        for (size_t col = 0; col < board.GetCols(); ++col) {
-            removeCardFromBoard(board[{0, col}]);
+
+        // Solicit? utilizatorului rândul pe care dore?te s?-l elimine
+        int row;
+        std::cout << "Enter the row number to remove: ";
+        std::cin >> row;
+
+        // Valideaza daca randul este valid
+        if (row < 0 || row >= board.GetRows()) {
+            std::cout << "Invalid row number. The board has rows from 0 to " << board.GetRows() - 1 << ".\n";
+            return;
         }
-        std::cout << "Entire row has been removed!\n";
+
+        // Elimina toate cartile de pe randul specificat
+        for (size_t col = 0; col < board.GetCols(); ++col) {
+            removeCardFromBoard(board[{row, col}]);
+        }
+
+        std::cout << "Row " << row << " has been removed!\n";
     }
+
 
     // Acoperire carte adversar
     void Mage::coverOponnentCard(Player& player, Player& oponnent, Board& board) {
         std::cout << "Activating ability: Cover Opponent Card\n";
-        if (auto position = player.findEmptyCell(board); position != std::make_pair(255, 255)) {
-            const Card& card = player.GetCardsInHand().back();
-            player.placeCard(position.first, position.second, card, board);
-            std::cout << "Opponent's card has been covered.\n";
+
+        // Solicita utilizatorului pozitia cartii pe care doreste sa o acopere
+        int row, col;
+        std::cout << "Enter the position (row, column) of the opponent's card to cover: ";
+        std::cin >> row >> col;
+
+        // Valideaza pozitia introdusa
+        if (!board.isValidPosition(row, col)) {
+            std::cout << "Invalid position (" << row << ", " << col << ") on the board.\n";
+            return;
+        }
+
+        // Verifica daca exista o carte la pozitia specificata
+        auto& cell = board[{row, col}];
+        if (!cell.has_value() || cell->empty()) {
+            std::cout << "No card found at position (" << row << ", " << col << ").\n";
+            return;
+        }
+
+        // Verifica daca jucatorul are carti in mana pentru a efectua acoperirea
+        if (player.GetCardsInHand().empty()) {
+            std::cout << "You have no cards in hand to cover the opponent's card.\n";
+            return;
+        }
+
+        // Obtine ultima carte din mana jucatorului
+        const Card& card = player.GetCardsInHand().back();
+
+        // Acopera cartea de la pozitia specificata
+        if (board.placeCard(row, col, card)) {
+            player.GetCardsInHand().pop_back();  // Scoate cartea din mâna juc?torului
+            player.AddPlayedCard(card);         // Adaug? cartea în lista de c?r?i jucate
+            std::cout << "Card placed successfully at (" << row << ", " << col << ").\n";
+        }
+        else {
+            std::cout << "Failed to place the card at the specified position.\n";
         }
     }
+
 
     // Creare groapa
     void Mage::createPit(Board& board) {
         std::cout << "Activating ability: Create Pit\n";
-        int row = rand() % board.GetRows();
-        int col = rand() % board.GetCols();
-        if (board.isValidPosition(row, col)) {
-            board[{row, col}].reset();
-            std::cout << "Pit created at (" << row << ", " << col << ").\n";
+
+        int row, col;
+
+        // Solicita utilizatorului sa introduca pozitia pentru groapa
+        while (true) {
+            std::cout << "Enter the position (row, column) to create a pit: ";
+            std::cin >> row >> col;
+
+            // Valideaz? daca pozitia este valida
+            if (!board.isValidPosition(row, col)) {
+                std::cout << "Invalid position (" << row << ", " << col << ") on the board. Try again.\n";
+                continue;
+            }
+
+            // Verific? dac? pozitia este goala
+            if (board[{row, col}].has_value()) {
+                std::cout << "The position (" << row << ", " << col << ") is not empty. Try again.\n";
+                continue;
+            }
+
+            // Daca pozitia este valida si goala, iesi din bucla
+            break;
         }
+
+        // Creeaza groapa la pozitia specificata
+        board[{row, col}].reset();
+        std::cout << "Pit created at (" << row << ", " << col << ").\n";
     }
 
+
     // Adaugare carte Eter
-    void Mage::addExtraEterCard(Player& player) {
+    void Mage::addExtraEterCard(Player& player, Board& board) {
         std::cout << "Activating ability: Add Extra Ether Card\n";
-        player.AddCardToHand({ 1, "eter", true });
-        std::cout << "Extra Ether card added to player's hand.\n";
+
+        int row, col;
+
+        // Solicita utilizatorului sa introduca pozitia unde va fi plasata cartea
+        while (true) {
+            std::cout << "Enter the position (row, column) to place the Ether card: ";
+            std::cin >> row >> col;
+
+            // Verifica daca pozitia este valida
+            if (!board.isValidPosition(row, col)) {
+                std::cout << "Invalid position (" << row << ", " << col << ") on the board. Try again.\n";
+                continue;
+            }
+
+            // Verifica daca pozitia este goala
+            if (board[{row, col}].has_value()) {
+                std::cout << "The position (" << row << ", " << col << ") is not empty. Try again.\n";
+                continue;
+            }
+
+            // Dac? pozitia este valid? si goala, iesi din bucla
+            break;
+        }
+
+        // Creeaza o carte Eter si o plaseaz? pe tabla
+        Card etherCard(1, "eter", true);
+        board.placeCard(row, col, etherCard);
+
+        std::cout << "Extra Ether card placed at (" << row << ", " << col << ").\n";
     }
+
 
     // Mutare teanc propriu
     void Mage::moveOwnStack(Player& player, Board& board) {
         std::cout << "Activating ability: Move Own Stack\n";
-        auto from = player.findEmptyCell(board);
-        auto to = player.findEmptyCell(board);
-        moveStack(from, to, board);
+
+        int fromRow, fromCol, toRow, toCol;
+
+        // Solicita pozitia de plecare
+        while (true) {
+            std::cout << "Enter the position (row, column) of the stack to move: ";
+            std::cin >> fromRow >> fromCol;
+
+            // Valideaza pozitia de plecare
+            if (!board.isValidPosition(fromRow, fromCol)) {
+                std::cout << "Invalid position (" << fromRow << ", " << fromCol << ") on the board. Try again.\n";
+                continue;
+            }
+
+            auto& fromCell = board[{fromRow, fromCol}];
+            if (!fromCell.has_value() || fromCell->empty() || fromCell->top().GetColor() != player.GetColor()) {
+                std::cout << "The position (" << fromRow << ", " << fromCol << ") does not contain your stack. Try again.\n";
+                continue;
+            }
+
+            break;
+        }
+
+        // Solicita pozitia de destinatie
+        while (true) {
+            std::cout << "Enter the destination position (row, column): ";
+            std::cin >> toRow >> toCol;
+
+            // Valideaza pozitia de destinatie
+            if (!board.isValidPosition(toRow, toCol)) {
+                std::cout << "Invalid position (" << toRow << ", " << toCol << ") on the board. Try again.\n";
+                continue;
+            }
+
+            if (board[{toRow, toCol}].has_value()) {
+                std::cout << "The destination position (" << toRow << ", " << toCol << ") is not empty. Try again.\n";
+                continue;
+            }
+
+            break;
+        }
+
+        // Muta teancul
+        moveStack({ fromRow, fromCol }, { toRow, toCol }, board);
+
+        std::cout << "Stack moved from (" << fromRow << ", " << fromCol << ") to (" << toRow << ", " << toCol << ").\n";
     }
+
 
     // Mutare teanc adversar
     void Mage::moveOponnentStack(Player& oponnent, Board& board) {
         std::cout << "Activating ability: Move Opponent Stack\n";
-        auto from = oponnent.findEmptyCell(board);
-        auto to = oponnent.findEmptyCell(board);
-        moveStack(from, to, board);
+
+        int fromRow, fromCol, toRow, toCol;
+
+        // Solicit? pozitia de plecare
+        while (true) {
+            std::cout << "Enter the position (row, column) of the opponent's stack to move: ";
+            std::cin >> fromRow >> fromCol;
+
+            // Valideaza pozitia de plecare
+            if (!board.isValidPosition(fromRow, fromCol)) {
+                std::cout << "Invalid position (" << fromRow << ", " << fromCol << ") on the board. Try again.\n";
+                continue;
+            }
+
+            auto& fromCell = board[{fromRow, fromCol}];
+            if (!fromCell.has_value() || fromCell->empty()) {
+                std::cout << "The position (" << fromRow << ", " << fromCol << ") does not contain a valid stack. Try again.\n";
+                continue;
+            }
+
+            break;
+        }
+
+        // Solicita pozitia de destinatie
+        while (true) {
+            std::cout << "Enter the destination position (row, column): ";
+            std::cin >> toRow >> toCol;
+
+            // Valideaza pozitia de destinatie
+            if (!board.isValidPosition(toRow, toCol)) {
+                std::cout << "Invalid position (" << toRow << ", " << toCol << ") on the board. Try again.\n";
+                continue;
+            }
+
+            if (board[{toRow, toCol}].has_value()) {
+                std::cout << "The destination position (" << toRow << ", " << toCol << ") is not empty. Try again.\n";
+                continue;
+            }
+
+            break;
+        }
+
+        // Muta teancul
+        moveStack({ fromRow, fromCol }, { toRow, toCol }, board);
+
+        std::cout << "Stack moved from (" << fromRow << ", " << fromCol << ") to (" << toRow << ", " << toCol << ").\n";
     }
+
 
     // Mutare rand la marginea tablei
     void Mage::shiftRowToEdge(Board& board) {
         std::cout << "Activating ability: Shift Row to Edge\n";
+
+        int fromRow, toRow;
+
+        // Solicita utilizatorului randul de plecare
+        while (true) {
+            std::cout << "Enter the row number to move (must be on the edge): ";
+            std::cin >> fromRow;
+
+            // Verifica daca randul este la margine
+            if (fromRow != 0 && fromRow != board.GetRows() - 1) {
+                std::cout << "Invalid row. You can only move rows on the edges (0 or "
+                    << board.GetRows() - 1 << "). Try again.\n";
+                continue;
+            }
+
+            // Verifica daca randul are cel pu?in 3 pozitii ocupate
+            int occupiedCount = 0;
+            for (size_t col = 0; col < board.GetCols(); ++col) {
+                if (board[{fromRow, col}].has_value()) {
+                    ++occupiedCount;
+                }
+            }
+
+            if (occupiedCount < 3) {
+                std::cout << "The selected row must have at least 3 occupied positions. Try again.\n";
+                continue;
+            }
+
+            break;
+        }
+
+        // Solicita utilizatorului randul de destinatie
+        while (true) {
+            std::cout << "Enter the destination row (must be on the edge): ";
+            std::cin >> toRow;
+
+            // Verifica daca randul de destinatie este la margine si diferit de cel de plecare
+            if ((toRow != 0 && toRow != board.GetRows() - 1) || toRow == fromRow) {
+                std::cout << "Invalid destination row. You can only move to the opposite edge (0 or "
+                    << board.GetRows() - 1 << ") and not the same as the source row. Try again.\n";
+                continue;
+            }
+
+            break;
+        }
+
+        // Muta randul
         for (size_t col = 0; col < board.GetCols(); ++col) {
-            if (auto& stack = board[{board.GetRows() - 1, col}]; stack.has_value()) {
-                board[{0, col}] = stack;
-                stack.reset();
+            if (board[{fromRow, col}].has_value()) {
+                board[{toRow, col}] = board[{fromRow, col}];
+                board[{fromRow, col}].reset();
             }
         }
-        std::cout << "Row moved to the edge.\n";
+
+        std::cout << "Row " << fromRow << " moved to row " << toRow << ".\n";
     }
+
 
     std::unordered_map<Mage::MagicAbility, int> Mage::abilityUsage = {};
 
@@ -248,26 +508,35 @@ namespace eter {
         std::cout << "Ability activation canceled.\n";
     }
 
-    void Mage::executeAbility(Player& player, Player& oponnent, Board& board) {
+    bool Mage::executeAbility(Player& player, Player& oponnent, Board& board) {
         static const std::unordered_map<MagicAbility, std::function<void()>> abilityMap = {
             { MagicAbility::removeOponnentCard, [&]() { removeOponnentCard(player, oponnent, board); } },
             { MagicAbility::removeEntireRow,    [&]() { removeEntireRow(player, board); } },
             { MagicAbility::coverOponnetCard,   [&]() { coverOponnentCard(player, oponnent, board); } },
             { MagicAbility::createPit,          [&]() { createPit(board); } },
             { MagicAbility::moveOwnStack,       [&]() { moveOwnStack(player, board); } },
-            { MagicAbility::extraEterCard,      [&]() { addExtraEterCard(player); } },
+            { MagicAbility::extraEterCard,      [&]() { addExtraEterCard(player, board); } },
             { MagicAbility::moveOponnentStack,  [&]() { moveOponnentStack(oponnent, board); } },
             { MagicAbility::shiftRowToEdge,     [&]() { shiftRowToEdge(board); } }
         };
 
         auto abilityIt = abilityMap.find(m_ability);
         if (abilityIt != abilityMap.end()) {
-            abilityIt->second();
+            try {
+                abilityIt->second();  // Incearca ss activezi abilitatea
+                return true;          // Succes
+            }
+            catch (const std::exception& e) {
+                std::cout << "Error while activating ability: " << e.what() << "\n";
+                return false;         // Esec din cauza exceptiei
+            }
         }
         else {
-            throw std::invalid_argument("Unknown ability!");
+            std::cout << "Unknown ability!\n";
+            return false;             // Esec pentru abilitate necunoscuta
         }
     }
+
 
     void Mage::updateAbilityUsage() {
         ++abilityUsage[m_ability];

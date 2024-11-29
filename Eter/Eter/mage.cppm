@@ -54,7 +54,7 @@ namespace eter {
 		void removeEntireRow(Player& player, Board& board);
 		void coverOponnentCard(Player& player, Player& oponnent, Board& board);
 		void createPit(Board& board);
-		void addExtraEterCard(Player& player);
+		void addExtraEterCard(Player& player, Board& board);
 		void moveOwnStack(Player& player, Board& board);
 		void moveOponnentStack(Player& oponnent, Board& board);
 		void shiftRowToEdge(Board& board);
@@ -70,7 +70,7 @@ namespace eter {
 		void displayAbilityDescription() const;
 		bool confirmAbilityActivation() const;
 		void cancelAbilityActivation() const;
-		void executeAbility(Player& player, Player& oponnent, Board& board);
+		bool executeAbility(Player& player, Player& oponnent, Board& board);
 		void updateAbilityUsage();
 		void notifyAbilityActivated() const;
 
