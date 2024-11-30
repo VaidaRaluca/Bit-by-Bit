@@ -48,6 +48,42 @@ void eter::Explosion::ApplyExplosion(size_t x, size_t y)
 {
     void ApplyExplosion(size_t x, size_t y);
 }
+
+void eter::Explosion::ApplyEffect(size_t x, size_t y, ExplosionEffect effect)
+{
+    if (!CanActivateExplosion()) {
+        std::cerr << "Explosion cannot be activated: conditions not met or already activated.\n";
+        return;
+    }
+
+    m_hasBeenActivated = true;
+    auto grid = m_board.GetGrid();
+
+    // Aplica efectele pe baza m_effectMap
+    for (size_t i = 0; i < m_effectMap.size(); ++i) {
+        for (size_t j = 0; j < m_effectMap[i].size(); ++j) {
+            size_t boardX = i + m_board.GetDimMax() / 2 - m_effectMap.size() / 2;
+            size_t boardY = j + m_board.GetDimMax() / 2 - m_effectMap[0].size() / 2;
+
+            if (boardX < m_board.GetRows() && boardY < m_board.GetCols()) {
+                ApplyEffect(boardX, boardY, m_effectMap[i][j]);
+            }
+        }
+    }
+
+    // Afectează pozițiile din jurul (x, y) în funcție de raza exploziei
+    for (int dx = -m_radius; dx <= m_radius; ++dx) {
+        for (int dy = -m_radius; dy <= m_radius; ++dy) {
+            size_t nx = x + dx, ny = y + dy;
+            if (m_board.isValidPosition(nx, ny)) {
+                ApplyEffect(nx, ny, ExplosionEffect::RemoveCard);  // De exemplu, elimină cartea
+                std::cout << "Explosion cleared at (" << nx << ", " << ny << ").\n";
+            }
+        }
+    }
+
+    std::cout << "Explosion applied successfully!\n";
+}
  
 
 bool Explosion::IsRowFull(size_t row) const {

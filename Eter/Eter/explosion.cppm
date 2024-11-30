@@ -25,6 +25,7 @@ namespace eter {
         void RotateEffectMap();  // Rotește harta cu 90°
         bool CanActivateExplosion() const;
         void ApplyExplosion(size_t x, size_t y);
+        void ApplyEffect(size_t x, size_t y, ExplosionEffect effect);
        
     private:
         bool IsRowFull(size_t row) const;  // Verifică dacă un rând e complet
