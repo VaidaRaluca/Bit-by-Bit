@@ -174,14 +174,44 @@ namespace eter {
             return;
         }
 
-        // Elimina toate cartile de pe randul specificat
+        // Verifica daca randul indeplineste conditiile
+        int occupiedCount = 0;
+        bool containsOwnCard = false;
+
         for (size_t col = 0; col < board.GetCols(); ++col) {
-            removeCardFromBoard(board[{row, col}]);
+            auto& cell = board[{row, col}];
+            if (cell.has_value() && !cell->empty()) {
+                ++occupiedCount;
+
+                // Verifica daca exista o carte proprie vizibila
+                const Card& topCard = cell->top();
+                if (topCard.GetColor() == player.GetColor()) {
+                    containsOwnCard = true;
+                }
+            }
+        }
+
+        if (occupiedCount < 3) {
+            std::cout << "The row must have at least 3 occupied positions.\n";
+            return;
+        }
+
+        if (!containsOwnCard) {
+            std::cout << "The row must contain at least one of your own visible cards.\n";
+            return;
+        }
+
+        // Elimina intregul teanc de pe fiecare pozitie ocupata
+        for (size_t col = 0; col < board.GetCols(); ++col) {
+            auto& cell = board[{row, col}];
+            if (cell.has_value() && !cell->empty()) {
+                cell.reset(); // Elimina intregul teanc
+                std::cout << "Stack removed at (" << row << ", " << col << ").\n";
+            }
         }
 
         std::cout << "Row " << row << " has been removed!\n";
     }
-
 
     // Acoperire carte adversar
     void Mage::coverOponnentCard(Player& player, Player& oponnent, Board& board) {
