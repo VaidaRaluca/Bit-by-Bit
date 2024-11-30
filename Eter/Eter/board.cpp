@@ -353,6 +353,79 @@ void eter::Board::swap(Board& other) noexcept
 	swap(m_cols, other.m_cols);
 }
 
+bool Board::isValidRow(size_t row)
+{
+	return row >= m_indexLineMin && row <= m_indexLineMax;
+}
+
+void Board::eliminateCardsOnRow(size_t row)
+{
+	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) 
+		 if (m_grid[row][col].has_value()){
+			m_grid[row][col].reset(); // Elimina intregul teanc
+			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
+		}
+}
+
+size_t Board::countOccupiedCellsOnRow(size_t row)
+{
+	size_t occupiedCount = 0;
+	for (size_t col = m_indexColMin; col <= m_indexColMax ; ++col) {
+		if (m_grid[row][col].has_value())
+			++occupiedCount;
+	}
+	return occupiedCount;
+}
+
+bool Board::containsOwnCardOnRow(size_t row,const std::string& playerColor)
+{
+	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
+		if (m_grid[row][col].has_value()) {
+			const Card& topCard = m_grid[row][col].value().top();
+			if (topCard.GetColor() == playerColor) 
+				return true;
+		}
+	}
+	return false;
+}
+
+void Board::eliminateCardsOnColumn(size_t col)
+{
+	for (size_t row = m_indexLineMin; col <= m_indexLineMax; ++row)
+		if (m_grid[row][col].has_value()) {
+			m_grid[row][col].reset(); // Elimina intregul teanc
+			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
+		}
+}
+
+size_t Board::countOccupiedCellsOnColumn(size_t col)
+{
+	size_t occupiedCount = 0;
+	for (size_t row = m_indexLineMin; col <= m_indexLineMax; ++row) {
+		if (m_grid[row][col].has_value())
+			++occupiedCount;
+	}
+	return occupiedCount;
+}
+
+bool Board::containsOwnCardOnColumn(size_t col, const std::string& playerColor)
+{
+	for (size_t row = m_indexLineMin; col <= m_indexLineMax; ++row) {
+		if (m_grid[row][col].has_value()) {
+			const Card& topCard = m_grid[row][col].value().top();
+			if (topCard.GetColor() == playerColor)
+				return true;
+		}
+	}
+	return false;
+}
+
+
+bool Board::isValidColumn(size_t column)
+{
+	return column >= m_indexColMin && column <= m_indexColMax;
+}
+
 bool Board::isEmptyCell(size_t x, size_t y)
 {
 	if (!isValidPosition(x, y)) {

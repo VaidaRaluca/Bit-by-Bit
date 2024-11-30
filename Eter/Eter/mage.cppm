@@ -11,13 +11,13 @@ namespace eter {
 	public:
 		//abilitati magice pentru vrajitori
 		enum class MagicAbility {
-			removeOponnentCard,
+			removeOpponentCard,
 			removeEntireRow,
-			coverOponnetCard,
+			coverOpponentCard,
 			createPit,
 			moveOwnStack,
 			extraEterCard,
-			moveOponnentStack,
+			moveOpponentStack,
 			shiftRowToEdge
 		};
 
@@ -44,19 +44,19 @@ namespace eter {
 		MagicAbility GetAbility() const;
 
 		// activare abilitate
-		void activate(Player& player, Player& oponnent, Board& board);
+		void activate(Player& player, Player& opponent, Board& board);
 
 		static void displayAbilityUsage();
 
 	private:
 		//metodele pentru activarea fiecarei abilitati
-		void removeOponnentCard(Player& player, Player& oponnent, Board& board);
+		void removeOpponentCard(Player& player, Player& opponent, Board& board);
 		void removeEntireRow(Player& player, Board& board);
-		void coverOponnentCard(Player& player, Player& oponnent, Board& board);
+		void coverOpponentCard(Player& player, Player& opponent, Board& board);
 		void createPit(Board& board);
 		void addExtraEterCard(Player& player, Board& board);
 		void moveOwnStack(Player& player, Board& board);
-		void moveOponnentStack(Player& oponnent, Board& board);
+		void moveOpponentStack(Player& opponent, Board& board);
 		void shiftRowToEdge(Board& board);
 
 		//Cautarea unei carti pe tabla
@@ -70,7 +70,7 @@ namespace eter {
 		void displayAbilityDescription() const;
 		bool confirmAbilityActivation() const;
 		void cancelAbilityActivation() const;
-		bool executeAbility(Player& player, Player& oponnent, Board& board);
+		bool executeAbility(Player& player, Player& opponent, Board& board);
 		void updateAbilityUsage();
 		void notifyAbilityActivated() const;
 

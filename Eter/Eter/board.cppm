@@ -50,6 +50,15 @@ namespace eter {
 		bool isBoardFull();
 		void clear();
 		void swap(Board& other) noexcept;
+		bool isValidRow(size_t row);
+		bool isValidColumn(size_t column);
+
+		size_t countOccupiedCellsOnRow(size_t row);
+		bool containsOwnCardOnRow(size_t row, const std::string& playerColor);
+		void eliminateCardsOnRow(size_t row);
+		size_t countOccupiedCellsOnColumn(size_t col);
+		bool containsOwnCardOnColumn(size_t col, const std::string& playerColor);
+		void eliminateCardsOnColumn(size_t col);
 	};
 	export std::ostream& operator<<(std::ostream& os, const Board& board);
 	export void swap(Board& first, Board& second) noexcept;
