@@ -44,6 +44,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		activateDestruction(player, opponent, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Flame:
+		activateFlame(player,opponent,board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Fire:
 		activateFire(player, opponent, board);
@@ -61,6 +62,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		activateGale(player, opponent, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Hurricane:
+		activateHurricane(player, opponent,board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Gust:
 		activateGust(board);
@@ -698,6 +700,242 @@ void ElementalPowerCards::activateWhirlpool(Board& board, Player& player)
 	}
 	else
 		std::cout << "The positions are not adjacent. Please select adjacent positions.\n";
+}
+
+void eter::ElementalPowerCards::activateFlame(Player& player,Player& opponent, Board& board)
+{
+	bool illusionFound = false;
+
+	for (size_t row = 0; row < board.GetRows(); ++row) 
+	{
+		for (size_t col = 0; col < board.GetCols(); ++col)
+		{
+			auto& cell = board[{static_cast<int>(row), static_cast<int>(col)}];
+			if (cell.has_value())
+			{
+				auto& stack = cell.value();
+				if (!stack.empty())
+				{
+					Card& topCard = stack.top();
+					if (!topCard.GetPosition() && topCard.GetColor() == opponent.GetColor())
+					{
+						topCard.SetPosition(true);
+						illusionFound = true;
+						break;
+					}
+				}
+			}
+		}
+		if (illusionFound) break;
+	}
+
+	if (!illusionFound) 
+		std::cout << "No illusion card found for the opponent.\n";
+
+	auto& cardsInHand = player.GetCardsInHand();
+
+	int choice;
+	std::cout << "Enter the number of the card you want to play: ";
+	std::cin >> choice;
+
+	if (choice <= 0 || choice > static_cast<int>(cardsInHand.size())) 
+	{
+		std::cout << "Invalid choice.\n";
+		return;
+	}
+	Card selectedCard = cardsInHand[choice - 1];
+	cardsInHand.erase(cardsInHand.begin() + (choice - 1));
+	player.AddPlayedCard(selectedCard);
+
+	int row, col;
+	std::cout << "Choose a position (x,y) to place the selected card.\n";
+	std::cout << "Enter row: ";
+	std::cin >> row;
+	std::cout << "Enter column: ";
+	std::cin >> col;
+
+	if (row < 0 || row >= static_cast<int>(board.GetRows()) || col < 0 || col >= static_cast<int>(board.GetCols())) 
+	{
+		std::cout << "Invalid position.\n";
+		return;
+	}
+	auto& cell = board[{row, col}];
+	if (!cell.has_value()) 
+		cell.emplace(); // stack nou dacă poziția este goală
+
+	cell->push(selectedCard);
+}
+
+void eter::ElementalPowerCards::activateHurricane(Player& player, Player& opponent,Board& board)
+{
+	char type;
+	size_t index;
+	char direction;
+
+	std::cout << "Choose 'R' for row or 'C' for column: ";
+	std::cin >> type;
+	std::cout << "Enter the index of the row/column: ";
+	std::cin >> index;
+	std::cout << "Enter direction ('L', 'R' for row; 'U', 'D' for column): ";
+	std::cin >> direction;
+
+	if (type == 'R')
+	{ 
+		if (index >= board.GetRows())
+		{
+			std::cout << "Invalid row index.\n";
+			return;
+		}
+
+		size_t occupiedCount = 0;
+		for (size_t col = 0; col < board.GetCols(); ++col) 
+		{
+			if (board[{index, col}].has_value())
+				++occupiedCount;
+		}
+		if (occupiedCount != board.GetCols())
+		{
+			std::cout << "The selected row is not fully occupied.\n";
+			return;
+		}
+
+		if (direction == 'L')
+		{
+			auto tempStack = board[{index, 0}];
+			for (size_t col = 0; col < board.GetCols() - 1; ++col)
+			{
+				board[{index, col}] = board[{index, col + 1}];
+			}
+			board[{index, board.GetCols() - 1}].reset(); 
+
+			if (tempStack.has_value())
+			{
+				auto& stack = tempStack.value();
+				while (!stack.empty())
+				{
+					Card topCard = stack.top();
+					stack.pop();
+					if (topCard.GetColor() == player.GetColor()) 
+					{
+						player.AddCardToHand(topCard);
+					}
+					else if (topCard.GetColor() == opponent.GetColor())
+					{
+						opponent.AddCardToHand(topCard);
+					}
+				}
+			}
+		}
+		else if (direction == 'R') 
+		{
+			auto tempStack = board[{index, board.GetCols() - 1}];
+			for (int col = board.GetCols() - 1; col > 0; --col)
+			{
+				board[{index, col}] = board[{index, col - 1}];
+			}
+			board[{index, 0}].reset(); 
+
+			if (tempStack.has_value()) 
+			{
+				auto& stack = tempStack.value();
+				while (!stack.empty()) 
+				{
+					Card topCard = stack.top();
+					stack.pop();
+					if (topCard.GetColor() == player.GetColor())
+					{
+						player.AddCardToHand(topCard);
+					}
+					else if (topCard.GetColor() == opponent.GetColor())
+					{
+						opponent.AddCardToHand(topCard);
+					}
+				}
+			}
+		}
+		else {
+			std::cout << "Invalid direction.\n";
+		}
+	}
+	else if (type == 'C') 
+	{
+		if (index >= board.GetCols())
+		{
+			std::cout << "Invalid column index.\n";
+			return;
+		}
+
+		size_t occupiedCount = 0;
+		for (size_t row = 0; row < board.GetRows(); ++row)
+		{
+			if (board[{row, index}].has_value())
+				++occupiedCount;
+		}
+		if (occupiedCount != board.GetRows()) 
+		{
+			std::cout << "The selected column is not fully occupied.\n";
+			return;
+		}
+
+		if (direction == 'U') 
+		{ 
+			auto tempStack = board[{0, index}];
+			for (size_t row = 0; row < board.GetRows() - 1; ++row)
+			{
+				board[{row, index}] = board[{row + 1, index}];
+			}
+			board[{board.GetRows() - 1, index}].reset(); 
+
+			if (tempStack.has_value()) 
+			{
+				auto& stack = tempStack.value();
+				while (!stack.empty())
+				{
+					Card topCard = stack.top();
+					stack.pop();
+					if (topCard.GetColor() == player.GetColor()) {
+						player.AddCardToHand(topCard);
+					}
+					else if (topCard.GetColor() == opponent.GetColor())
+					{
+						opponent.AddCardToHand(topCard);
+					}
+				}
+			}
+		}
+		else if (direction == 'D') 
+		{ 
+			auto tempStack = board[{board.GetRows() - 1, index}];
+			for (int row = board.GetRows() - 1; row > 0; --row)
+			{
+				board[{row, index}] = board[{row - 1, index}];
+			}
+			board[{0, index}].reset();
+
+			if (tempStack.has_value()) 
+			{
+				auto& stack = tempStack.value();
+				while (!stack.empty()) {
+					Card topCard = stack.top();
+					stack.pop();
+					if (topCard.GetColor() == player.GetColor())
+					{
+						player.AddCardToHand(topCard);
+					}
+					else if (topCard.GetColor() == opponent.GetColor())
+					{
+						opponent.AddCardToHand(topCard);
+					}
+				}
+			}
+		}
+		else {
+			std::cout << "Invalid direction.\n";
+		}
+	}
+	else {
+		std::cout << "Invalid type. Choose 'R' or 'C'.\n";
+	}
 }
 
 
