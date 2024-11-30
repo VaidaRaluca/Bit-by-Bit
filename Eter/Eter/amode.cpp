@@ -1,4 +1,4 @@
-module amode;
+﻿module amode;
 import player;
 import board;
 import explosion;
@@ -72,19 +72,10 @@ namespace eter {
     {
         Player& currentPlayer = m_isPlayerTurn ? m_player1 : m_player2;
         std::cout << currentPlayer.GetName() << " activates an explosion.\n";
+        Explosion e(3);
 
-        uint8_t x, y;
-        std::cout << "Enter X position: "; std::cin >> x;
-        std::cout << "Enter Y position: "; std::cin >> y;
-
-        //if (m_board.isValidPosition(x, y)) {
-        //    //Explosion explosion(3);
-        //   // explosion.applyEffects(x, y, m_board);
-        //}
-        //else {
-        //    std::cout << "Invalid position!\n";
-        //}
-
+      Board&b = m_game->GetBoardRef();   
+         e.applyEffects(b.GetGridForModeA());   
     }
 
     void AMode::handleOptionModeA()
@@ -117,7 +108,7 @@ namespace eter {
             m_game->playTurn();
             break;
         case OPTION_2:
-            handleActivateIllusionModeA();
+            m_game->playIllusion();
             break;
         case OPTION_3:
             handleActivateExplosionModeA();

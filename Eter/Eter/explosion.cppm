@@ -1,36 +1,29 @@
-﻿export module explosion;
-
-import board;
+export module explosion;
+import <iostream>;
 import <vector>;
-import <utility>;
 import <optional>;
-import <stdexcept>;
-
+import <stack>;
+import <random>;
+import card;
 namespace eter {
 
-    enum class ExplosionEffect {
-        RemoveCard,
-        ReturnCard,
-        CreatePit
+    enum class Effect {
+        REMOVE_CARD,
+        //FLIP_CARD,
+        CREATE_HOLE
     };
-
-    class Explosion {
+    export class Explosion {
     private:
-        bool m_hasBeenActivated;  // O singură explozie per joc
-        Board& m_board;           // Referință către tablă
-        uint8_t m_radius;
-        std::vector<std::vector<ExplosionEffect>> m_effectMap;  // Harta efectelor exploziei
+        std::vector<std::vector<Effect>> m_effectMatrix;
+
     public:
-        Explosion(uint8_t radius, Board& board);
-        void RotateEffectMap();  // Rotește harta cu 90°
-        bool CanActivateExplosion() const;
-        void ApplyExplosion(size_t x, size_t y);
-        void ApplyEffect(size_t x, size_t y, ExplosionEffect effect);
-       
-    private:
-        bool IsRowFull(size_t row) const;  // Verifică dacă un rând e complet
+        Explosion(int size);
+        void generateRandomEffects(int size);
+        bool areEffectsAdjacent(int size);
+        void applyEffects( std::vector<std::vector<std::optional<std::stack<Card>>>>& board);
+
+
+
+
     };
-
-
-
 }

@@ -1,97 +1,105 @@
 ﻿module explosion;
 import <iostream>;
-import <random>;
 import <vector>;
+import <optional>;
+import <stack>;
+import <random>;
+import std;
+namespace eter {
+    Explosion::Explosion(int size) 
+    {
+        m_effectMatrix.resize(size, std::vector<Effect>(size, Effect::REMOVE_CARD)); //  efecte default
+        generateRandomEffects(size);
+    }
+    void Explosion::generateRandomEffects(int size)
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dist(0, 9);   
+        int maxEffects = (size == 3) ? 4 : 6; 
+        int effectCount = 0;
+        while (effectCount < 2 || (size == 3 && effectCount > 4) || (size == 4 && effectCount < 3)) {
+            for (int i = 0; i < size; ++i) {
+                for (int j = 0; j < size; ++j) {
+                    int randEffect = dist(gen);
+                    if (randEffect < 3 && m_effectMatrix[i][j] == Effect::REMOVE_CARD) {
+                        m_effectMatrix[i][j] = Effect::REMOVE_CARD;
+                        ++effectCount;
+                    }
+                    /*else if (randEffect < 7 && m_effectMatrix[i][j] == Effect::REMOVE_CARD) {
+                        m_effectMatrix[i][j] = Effect::FLIP_CARD;
+                        ++effectCount;
+                    }*/
+                    else if (randEffect < 9 && m_effectMatrix[i][j] == Effect::REMOVE_CARD) {
+                        m_effectMatrix[i][j] = Effect::CREATE_HOLE;
+                        ++effectCount;
+                    }
+                }
+            }
+        }
 
-using namespace eter;
-
-
-Explosion::Explosion(uint8_t radius, Board& board) : m_radius(radius), m_hasBeenActivated(false), m_board(board) {
-    m_effectMap = {
-        {ExplosionEffect::RemoveCard, ExplosionEffect::CreatePit, ExplosionEffect::ReturnCard},
-        {ExplosionEffect::ReturnCard, ExplosionEffect::RemoveCard, ExplosionEffect::CreatePit},
-        {ExplosionEffect::CreatePit, ExplosionEffect::ReturnCard, ExplosionEffect::RemoveCard}
-    };
-}
-
-void Explosion::RotateEffectMap() {
-    size_t n = m_effectMap.size();
-    std::vector<std::vector<ExplosionEffect>> rotated(n, std::vector<ExplosionEffect>(n));
-
-    for (size_t i = 0; i < n; ++i) {
-        for (size_t j = 0; j < n; ++j) {
-            rotated[j][n - 1 - i] = m_effectMap[i][j];
+         if (!areEffectsAdjacent(size)) {
+             std::fill(m_effectMatrix.begin(), m_effectMatrix.end(), std::vector<Effect>(size, Effect::REMOVE_CARD));
+            generateRandomEffects(size);  // Refacem aleator
         }
     }
-    m_effectMap = std::move(rotated);
-}
 
-bool eter::Explosion::CanActivateExplosion() const
-{
-    if (m_hasBeenActivated) {
-        return false;
-    }
-
-    size_t fullRows = 0;
-    for (size_t row = 0; row < m_board.GetRows(); ++row) {
-        if (IsRowFull(row)) {
-            ++fullRows;
+    bool Explosion::areEffectsAdjacent(int size)
+    {
+        std::set<std::pair<int, int>> affectedPositions;
+        for (int i = 0; i < size; ++i) {
+            for (int j = 0; j < size; ++j) {
+                if (m_effectMatrix[i][j] != Effect::REMOVE_CARD) {
+                    affectedPositions.insert({ i, j });
+                }
+            }
         }
-        if (fullRows >= 2) {
-            return true;
+
+        if (affectedPositions.size() < 2) {
+            return true; 
         }
+
+         for (const auto& pos : affectedPositions) {
+            int x = pos.first;
+            int y = pos.second;
+            bool isAdjacent = false;
+            for (const auto& adj : affectedPositions) {
+                if (adj != pos && (std::abs(x - adj.first) <= 1 && std::abs(y - adj.second) <= 1)) {
+                    isAdjacent = true;
+                    break;
+                }
+            }
+            if (!isAdjacent) {
+                return false; //  ignor efectul
+            }
+        }
+        return true;
     }
-    return false;
-}
 
-void eter::Explosion::ApplyExplosion(size_t x, size_t y)
-{
-    void ApplyExplosion(size_t x, size_t y);
-}
-
-void eter::Explosion::ApplyEffect(size_t x, size_t y, ExplosionEffect effect)
-{
-    if (!CanActivateExplosion()) {
-        std::cerr << "Explosion cannot be activated: conditions not met or already activated.\n";
-        return;
-    }
-
-    m_hasBeenActivated = true;
-    auto grid = m_board.GetGrid();
-
-    // Aplica efectele pe baza m_effectMap
-    for (size_t i = 0; i < m_effectMap.size(); ++i) {
-        for (size_t j = 0; j < m_effectMap[i].size(); ++j) {
-            size_t boardX = i + m_board.GetDimMax() / 2 - m_effectMap.size() / 2;
-            size_t boardY = j + m_board.GetDimMax() / 2 - m_effectMap[0].size() / 2;
-
-            if (boardX < m_board.GetRows() && boardY < m_board.GetCols()) {
-                ApplyEffect(boardX, boardY, m_effectMap[i][j]);
+    void Explosion::applyEffects(std::vector<std::vector<std::optional<std::stack<Card>>>>& board)
+    {
+        for (size_t i = 0; i < m_effectMatrix.size(); ++i) {
+            for (size_t j = 0; j < m_effectMatrix[i].size(); ++j) {
+                 if (board[i][j] && !board[i][j]->empty()) {
+                    switch (m_effectMatrix[i][j]) {
+                    case Effect::REMOVE_CARD:
+                        board[i][j]->pop();  // Elimina ultima carte de pe pozitie
+                        std::cout << "Removed card at (" << i << ", " << j << ")\n";
+                        break;
+                        //case Effect::FLIP_CARD:
+                        //    board[i][j]->top().flip();  
+                        //    std::cout << "Flipped card at (" << i << ", " << j << ")\n";
+                        //    break;
+                    case Effect::CREATE_HOLE:
+                        board[i][j].reset();  // Creeaza o groapa 
+                        std::cout << "Created a hole at (" << i << ", " << j << ")\n";
+                        break;
+                    }
+                }
+                else {
+                    std::cout << "Positia (" << i << ", " << j << ") nu contine o carte.\n";
+                }
             }
         }
     }
-
-    // Afectează pozițiile din jurul (x, y) în funcție de raza exploziei
-    for (int dx = -m_radius; dx <= m_radius; ++dx) {
-        for (int dy = -m_radius; dy <= m_radius; ++dy) {
-            size_t nx = x + dx, ny = y + dy;
-            if (m_board.isValidPosition(nx, ny)) {
-                ApplyEffect(nx, ny, ExplosionEffect::RemoveCard);  // De exemplu, elimină cartea
-                std::cout << "Explosion cleared at (" << nx << ", " << ny << ").\n";
-            }
-        }
-    }
-
-    std::cout << "Explosion applied successfully!\n";
 }
- 
-
-bool Explosion::IsRowFull(size_t row) const {
-    for (size_t col = 0; col < m_board.GetCols(); ++col) {
-        if (!m_board[{row, col}].has_value() || m_board[{row, col}]->empty()) {
-            return false;
-        }
-    }
-    return true;
-}
-

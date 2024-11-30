@@ -24,7 +24,7 @@ Player Game::GetPlayer2() const
 	return m_player2;
 }
 
-Board Game::GetBoard() const
+Board Game::GetBoard() 
 {
 	return m_board;
 }

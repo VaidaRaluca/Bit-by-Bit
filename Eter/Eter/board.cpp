@@ -3,6 +3,7 @@ using eter::Card;
 using eter::Board;
 const std::string_view kEmpyBoardCell{ "____" };
 import <iostream>;
+ 
 
 eter::Board::Board()
 	: m_dimMax{3},m_indexMax{7},
@@ -397,6 +398,14 @@ void Board::eliminateCardsOnColumn(size_t col)
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
 		}
 }
+
+std::vector<std::vector<std::optional<std::stack<Card>>>> &Board::GetGridForModeA()
+{
+	return m_grid;
+}
+
+ 
+ 
 
 size_t Board::countOccupiedCellsOnColumn(size_t col)
 {

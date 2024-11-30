@@ -29,7 +29,7 @@ namespace eter
 
 		Player GetPlayer1() const;
 		Player GetPlayer2() const;
-		Board GetBoard() const;
+		Board GetBoard()  ;
 
 		//Getter ce returneaza &
 		Player& GetPlayer1Ref();

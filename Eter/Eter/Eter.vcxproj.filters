@@ -42,9 +42,6 @@
     <ClCompile Include="elementalpowercards.cppm">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="explosion.cppm">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="elementalpowercards.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -52,9 +49,6 @@
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="mage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="explosion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bmode.cpp">
@@ -82,6 +76,12 @@
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="gamemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="explosion.cppm">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="explosion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

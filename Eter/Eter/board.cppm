@@ -59,7 +59,9 @@ namespace eter {
 		size_t countOccupiedCellsOnColumn(size_t col);
 		bool containsOwnCardOnColumn(size_t col, const std::string& playerColor);
 		void eliminateCardsOnColumn(size_t col);
-	};
+		std::vector<std::vector<std::optional<std::stack<Card>>>>&GetGridForModeA();
+
+  	};
 	export std::ostream& operator<<(std::ostream& os, const Board& board);
 	export void swap(Board& first, Board& second) noexcept;
 }

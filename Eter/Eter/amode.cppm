@@ -6,6 +6,8 @@ import card;
 import <iostream>;
 import <string>;
 import <memory>;
+import <stack>;
+import card;
 
 namespace eter {
 	enum class Action : uint8_t {
@@ -18,8 +20,7 @@ namespace eter {
 	private:
 		Player m_player1;
 		Player m_player2;
-		Board m_board;
-		bool m_isPlayerTurn;//true pentru Player 1, false pentru Player 2
+ 		bool m_isPlayerTurn;//true pentru Player 1, false pentru Player 2
 		int m_player1Wins;
 		int m_player2Wins;
 		Game* m_game;
@@ -31,6 +32,7 @@ namespace eter {
  
 	public:
 		AMode() = default;
+		 
 		AMode(Game* game);
 		void assignCardsInHandModeA();
 		void startMatchModeA();
