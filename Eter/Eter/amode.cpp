@@ -77,13 +77,13 @@ namespace eter {
         std::cout << "Enter X position: "; std::cin >> x;
         std::cout << "Enter Y position: "; std::cin >> y;
 
-        if (m_board.isValidPosition(x, y)) {
-            Explosion explosion(3);
-            explosion.applyEffects(x, y, m_board);
-        }
-        else {
-            std::cout << "Invalid position!\n";
-        }
+        //if (m_board.isValidPosition(x, y)) {
+        //    //Explosion explosion(3);
+        //   // explosion.applyEffects(x, y, m_board);
+        //}
+        //else {
+        //    std::cout << "Invalid position!\n";
+        //}
 
     }
 

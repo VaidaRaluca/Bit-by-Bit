@@ -1,40 +1,33 @@
-export module explosion;
+﻿export module explosion;
+
 import board;
 import <vector>;
+import <utility>;
 import <optional>;
-import <stack>;
+import <stdexcept>;
 
 namespace eter {
-	enum class Effect : uint8_t {
-		None,
-		Eliminate,
-		Return,
-		Pit
-	};
 
-	export class Explosion {
-	private:
-		std::vector<std::vector<Effect>> EffectsMatrix;
-		uint8_t m_SizeEffectsMatrix;
+    enum class ExplosionEffect {
+        RemoveCard,
+        ReturnCard,
+        CreatePit
+    };
 
-		// Functii ajutatoare noi
-		int calculatePosition(int coord, int offset) const;
-		void applyEffectAtPosition(Effect effect, int x, int y, Board& grid);
-		void eliminateCard(std::optional<std::stack<Card>>& cell);
-		void returnCardToPlayer(std::optional<std::stack<Card>>& cell);
-		void createPit(std::optional<std::stack<Card>>& cell);
-		void assignRandomEffect(int i, int j, int randomNr, int& numEffects, int& numPits);
-		char effectToChar(Effect effect) const;
+    class Explosion {
+    private:
+        bool m_hasBeenActivated;  // O singură explozie per joc
+        Board& m_board;           // Referință către tablă
+        uint8_t m_radius;
+        std::vector<std::vector<ExplosionEffect>> m_effectMap;  // Harta efectelor exploziei
+    public:
+        Explosion(uint8_t radius, Board& board);
+        void RotateEffectMap();  // Rotește harta cu 90°
+       
+    private:
+        bool IsRowFull(size_t row) const;  // Verifică dacă un rând e complet
+    };
 
-	public:
-		Explosion() = default;
-		Explosion(int dim);
 
-		void rorate90();
-		void applyEffects(uint8_t x, uint8_t y, Board& grid);
-		void display() const;
-		void generateEffects();
-		int GetSize() const;
-		void SetSize(uint8_t newSize);
-	};
+
 }
