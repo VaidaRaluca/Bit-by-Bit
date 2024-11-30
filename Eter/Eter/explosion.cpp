@@ -25,6 +25,29 @@ void Explosion::RotateEffectMap() {
     }
     m_effectMap = std::move(rotated);
 }
+
+bool eter::Explosion::CanActivateExplosion() const
+{
+    if (m_hasBeenActivated) {
+        return false;
+    }
+
+    size_t fullRows = 0;
+    for (size_t row = 0; row < m_board.GetRows(); ++row) {
+        if (IsRowFull(row)) {
+            ++fullRows;
+        }
+        if (fullRows >= 2) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void eter::Explosion::ApplyExplosion(size_t x, size_t y)
+{
+    void ApplyExplosion(size_t x, size_t y);
+}
  
 
 bool Explosion::IsRowFull(size_t row) const {

@@ -23,6 +23,8 @@ namespace eter {
     public:
         Explosion(uint8_t radius, Board& board);
         void RotateEffectMap();  // Rotește harta cu 90°
+        bool CanActivateExplosion() const;
+        void ApplyExplosion(size_t x, size_t y);
        
     private:
         bool IsRowFull(size_t row) const;  // Verifică dacă un rând e complet
