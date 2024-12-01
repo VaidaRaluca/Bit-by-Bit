@@ -29,8 +29,12 @@ Board::Board(const Board& other)
 Board& Board::operator=(const Board& other) {
 	if (this != &other) {
 		m_grid = other.m_grid;
-		m_rows = other.m_rows;
-		m_cols = other.m_cols;
+		m_indexMax =other.m_indexMax;
+	    m_dimMax=other.m_dimMax;
+		m_indexLineMin = other.m_indexLineMin;
+		m_indexColMin = other.m_indexColMin ;
+		m_indexLineMax = other.m_indexLineMax ; 
+		m_indexColMax=other.m_indexColMax;
 	}
 	return *this;
 }
@@ -69,9 +73,29 @@ const std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGrid(
 	return m_grid;
 }
 
-const uint8_t eter::Board::GetDimMax() const
+const size_t eter::Board::GetDimMax() const
 {
 	return m_dimMax;
+}
+
+const size_t eter::Board::GetIndexLineMin() const
+{
+	return m_indexLineMin;
+}
+
+const size_t eter::Board::GetIndexColMin() const
+{
+	return m_indexColMin;
+}
+
+const size_t eter::Board::GetIndexLineMax() const
+{
+	return m_indexLineMax;
+}
+
+const size_t eter::Board::GetIndexColMax() const
+{
+	return m_indexColMax;
 }
 
 std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) {
@@ -83,14 +107,14 @@ std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) {
 	throw std::out_of_range("Invalid position");
 }
 
-const std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) const {
-	int x = pos.first;
-	int y = pos.second;
-	if (isValidPosition(x, y)) {
-		return m_grid[x][y];
-	}
-	throw std::out_of_range("Invalid position");
-}
+//const std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) const {
+//	int x = pos.first;
+//	int y = pos.second;
+//	if (isValidPosition(x, y)) {
+//		return m_grid[x][y];
+//	}
+//	throw std::out_of_range("Invalid position");
+//}
 
 void eter::Board::SetDimMax(uint8_t dim)
 {
@@ -204,6 +228,16 @@ bool eter::Board::placeCard(size_t x, size_t y, const Card& card)
 	std::cout << "The card with value " << static_cast<int>(card.GetValue())
 		<< " has been placed at (" << x << ", " << y << ").\n";
 	return true;
+}
+
+void eter::Board::removeCard(size_t x, size_t y)
+{
+	if (m_grid[x][y].has_value() && !m_grid[x][y].value().empty())
+	{
+		m_grid[x][y].value().pop();
+	}
+	if (m_grid[x][y].has_value() && m_grid[x][y].value().empty())
+		m_grid[x][y] = std::nullopt;
 }
 
 bool eter::Board::isVerticalLine(const std::string& lineColor) const {

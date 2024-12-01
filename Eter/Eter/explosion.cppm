@@ -1,29 +1,31 @@
 export module explosion;
 import <iostream>;
 import <vector>;
-import <optional>;
 import <stack>;
 import <random>;
 import card;
+import board;
 namespace eter {
 
     enum class Effect {
+        NONE,
         REMOVE_CARD,
-        //FLIP_CARD,
+        RETURN_CARD,
         CREATE_HOLE
     };
     export class Explosion {
     private:
         std::vector<std::vector<Effect>> m_effectMatrix;
-
+        size_t m_size;
+        Board m_board;  // copie a tablei originale pentru a putea testa pe ea daca efectele sunt acceptate
+        std::vector<Card> m_returnedCards;
     public:
-        Explosion(int size);
-        void generateRandomEffects(int size);
-        bool areEffectsAdjacent(int size);
-        void applyEffects( std::vector<std::vector<std::optional<std::stack<Card>>>>& board);
-
-
-
+        Explosion(size_t size, Board board);
+        void generateRandomEffects();
+        void printeffectMatrix();
+        bool areEffectsAdjacent();
+        void handleApplyEffects();
+        Board applyEffects();
 
     };
 }

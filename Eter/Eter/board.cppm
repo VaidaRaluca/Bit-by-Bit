@@ -28,7 +28,11 @@ namespace eter {
 		uint8_t GetRows() const;
 		uint8_t GetCols() const;
 		const std::vector<std::vector<std::optional<std::stack<Card>>>>& GetGrid() const;
-		const uint8_t GetDimMax() const;
+		const size_t GetDimMax() const;
+		const size_t GetIndexLineMin() const;
+		const size_t GetIndexColMin() const;
+		const size_t GetIndexLineMax() const;
+		const size_t GetIndexColMax() const;
 		std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos);
 		const std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos) const;
 
@@ -38,6 +42,7 @@ namespace eter {
 		bool isAdjacentToOccupiedSpace(size_t x, size_t y)const;
 		bool canPlaceCard(size_t x, size_t y, const Card& card);
 		bool placeCard(size_t x, size_t y, const Card& card);
+		void removeCard(size_t x, size_t y);
 
 		bool isVerticalLine(const std::string& lineColor) const;
 		bool isPrimaryDiagonalLine(const std::string& lineColor) const;

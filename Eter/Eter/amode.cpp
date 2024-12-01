@@ -72,10 +72,8 @@ namespace eter {
     {
         Player& currentPlayer = m_isPlayerTurn ? m_player1 : m_player2;
         std::cout << currentPlayer.GetName() << " activates an explosion.\n";
-        Explosion e(3);
-
-      Board&b = m_game->GetBoardRef();   
-         e.applyEffects(b.GetGridForModeA());   
+        Explosion e(3, m_game->GetBoard());
+        m_game->GetBoardRef() = e.applyEffects();
     }
 
     void AMode::handleOptionModeA()
@@ -112,6 +110,7 @@ namespace eter {
             break;
         case OPTION_3:
             handleActivateExplosionModeA();
+            //m_game->GetBoardRef().removeCard(2, 2);
             break;
         default:
             std::cout << "Invalid option.\n";
