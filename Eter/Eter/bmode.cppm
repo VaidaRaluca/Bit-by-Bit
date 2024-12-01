@@ -13,7 +13,7 @@ namespace eter {
 	export class BMode {
 	private:
 		std::vector<Mage> m_mages{ Mage(Mage::MagicAbility::removeOpponentCard),
-		Mage(Mage::MagicAbility::removeEntireRow)/*,
+		Mage(Mage::MagicAbility::removeEntireLine)/*,
 		Mage(Mage::MagicAbility::coverOpponentCard),
 		Mage(Mage::MagicAbility::createPit),
 		Mage(Mage::MagicAbility::moveOwnStack),

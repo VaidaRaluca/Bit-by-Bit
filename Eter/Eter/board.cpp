@@ -426,7 +426,7 @@ bool Board::containsOwnCardOnRow(size_t row,const std::string& playerColor)
 
 void Board::eliminateCardsOnColumn(size_t col)
 {
-	for (size_t row = m_indexLineMin; col <= m_indexLineMax; ++row)
+	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row)
 		if (m_grid[row][col].has_value()) {
 			m_grid[row][col].reset(); // Elimina intregul teanc
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
@@ -439,12 +439,20 @@ std::vector<std::vector<std::optional<std::stack<Card>>>> &Board::GetGridForMode
 }
 
  
- 
+
+bool Board::containsOpponentCardsOnCell(size_t row, size_t col, const std::string& opponentColor) {
+	while (m_grid[row][col].has_value()) {
+		if (m_grid[row][col].value().top().GetColor() == opponentColor)
+			return true;
+	}
+	return false;
+}
+
 
 size_t Board::countOccupiedCellsOnColumn(size_t col)
 {
 	size_t occupiedCount = 0;
-	for (size_t row = m_indexLineMin; col <= m_indexLineMax; ++row) {
+	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
 		if (m_grid[row][col].has_value())
 			++occupiedCount;
 	}
@@ -453,7 +461,7 @@ size_t Board::countOccupiedCellsOnColumn(size_t col)
 
 bool Board::containsOwnCardOnColumn(size_t col, const std::string& playerColor)
 {
-	for (size_t row = m_indexLineMin; col <= m_indexLineMax; ++row) {
+	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
 		if (m_grid[row][col].has_value()) {
 			const Card& topCard = m_grid[row][col].value().top();
 			if (topCard.GetColor() == playerColor)
