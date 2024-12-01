@@ -79,18 +79,24 @@ import<algorithm>;  // pt std::shuffle
                     std::cout << "R ";
                     break;
                 case Effect::NONE:
-                    std::cout << "  "; // Două spații pentru aliniere
+                    std::cout << "  "; 
                     break;
                 default:
                     break;
                 }
             }
-            std::cout << '\n'; // Sfârșit de linie după fiecare rând
+            std::cout << '\n'; 
         }
     }
 
     bool eter::Explosion::areEffectsAdjacent()
     {
+        for(size_t line =m_board.GetIndexLineMin();line<=m_board.GetIndexLineMax();++line)
+            for (size_t col = m_board.GetIndexColMin();col <= m_board.GetIndexColMax();++col)
+            {
+                if (!m_board.isAdjacentToOccupiedSpace(line, col))
+                    return false;
+            }
         return true;
     }
 
@@ -101,13 +107,13 @@ import<algorithm>;  // pt std::shuffle
         size_t lineBoard{m_board.GetIndexLineMin()};
         size_t colBoard{ m_board.GetIndexColMin()};
         std::cout << static_cast<int>(lineBoard) << " " << static_cast<int>(colBoard) << " INDECSI \n";
-        while (lineMatrixEffect < m_effectMatrix.size() && lineBoard < m_board.GetIndexLineMax())
+        while (lineMatrixEffect < m_effectMatrix.size() && lineBoard <= m_board.GetIndexLineMax())
         {
-            while (colMatrixEffect < m_effectMatrix[lineMatrixEffect].size() &&
-                colBoard <m_board.GetIndexColMax())
+            while (colMatrixEffect < m_effectMatrix.size() &&
+                colBoard <= m_board.GetIndexColMax())
             {   
                 auto cellMatrixEffect = m_effectMatrix[lineMatrixEffect][colMatrixEffect];
-                auto& cellBoard = m_board[{lineBoard, colBoard}];
+                auto& cellBoard = m_board.GetGrid()[lineBoard] [colBoard];
                 std::cout << "Effect applied at (" << lineBoard << ", " << colBoard << "): "
                     << static_cast<int>(cellMatrixEffect) << "\n";
 
@@ -118,7 +124,7 @@ import<algorithm>;  // pt std::shuffle
                         break;
 
                     case Effect::RETURN_CARD:
-                        {
+                        if (cellBoard && !cellBoard->empty()) {
                             Card card = cellBoard->top();
                             m_board.removeCard(lineBoard, colBoard);
                             m_returnedCards.push_back(card);
@@ -126,10 +132,20 @@ import<algorithm>;  // pt std::shuffle
                         break;
 
                     case Effect::CREATE_HOLE:
-                        // trebuie creata o carte cu valoarea /
-                        cellBoard = std::nullopt; // Creăm un spațiu gol
+                    {
+                        /*eter::Card card{ '/', "red", 1 };
+                        auto& cellBoard2 = m_board[{lineBoard, colBoard}];
+                        if (!cellBoard2.has_value()) {
+                            std::stack<eter::Card> stack;
+                            stack.push(card);
+                            m_board[{lineBoard, colBoard}] = stack;
+                        }
+                        else {
+                            auto& stackRef = cellBoard2.value();
+                            stackRef.push(card);
+                        }*/
                         break;
-
+                    }
                     default:
                         break;
                     }
@@ -137,12 +153,10 @@ import<algorithm>;  // pt std::shuffle
                 colBoard++;
                 colMatrixEffect++;
             }
-            /*if (colMatrixEffect == m_effectMatrix[colMatrixEffect].size() ||
-                colBoard == m_board.GetIndexColMax() + 1)*/
-            {
-                colMatrixEffect=0 ;
-                colBoard= m_board.GetIndexColMin();
-            }
+      
+            colMatrixEffect=0 ;
+            colBoard= m_board.GetIndexColMin();
+
             lineMatrixEffect++;
             lineBoard++;
         }
@@ -151,9 +165,12 @@ import<algorithm>;  // pt std::shuffle
 
     Board eter::Explosion::applyEffects()
     {
-        generateRandomEffects();
-        printeffectMatrix();
-        handleApplyEffects();
+        do {
+            generateRandomEffects();
+            printeffectMatrix();
+            handleApplyEffects();
+
+        } while (areEffectsAdjacent());
         std::cout << m_board;
         return m_board;
     }

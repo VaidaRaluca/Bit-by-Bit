@@ -28,11 +28,11 @@ namespace eter {
 		uint8_t GetRows() const;
 		uint8_t GetCols() const;
 		const std::vector<std::vector<std::optional<std::stack<Card>>>>& GetGrid() const;
-		const size_t GetDimMax() const;
-		const size_t GetIndexLineMin() const;
-		const size_t GetIndexColMin() const;
-		const size_t GetIndexLineMax() const;
-		const size_t GetIndexColMax() const;
+	    size_t GetDimMax() const;
+		size_t GetIndexLineMin() const;
+		size_t GetIndexColMin() const;
+		size_t GetIndexLineMax() const;
+		size_t GetIndexColMax() const;
 		std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos);
 		const std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos) const;
 

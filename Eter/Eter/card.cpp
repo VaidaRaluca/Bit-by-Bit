@@ -100,9 +100,14 @@ std::ostream& eter::operator<<(std::ostream& os, const Card& card)
 	}
 	std::string resetColor = "\033[0m";
 	if (!card.GetPosition()) os << backgroundColor << textColor << '\"';
+	else 
+		if (card.GetValue() == '/')
+		std::cout << "/";
 	else
 		os << backgroundColor << textColor
 		<< static_cast<int>(card.GetValue());
+
+
 	os << resetColor;
 	return os;
 }
