@@ -14,12 +14,6 @@ eter::Board::Board()
 	m_grid.resize(m_indexMax, std::vector<std::optional<std::stack<Card>>>(m_indexMax));
 }
 
-Board::Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint8_t rows, uint8_t cols)
-	: m_grid{ std::move(grid) }
-	, m_rows{ rows }
-	, m_cols{ cols }
-{}
-
 Board::Board(const Board& other)
 	: m_grid{ other.m_grid }
 	, m_rows{ other.m_rows }

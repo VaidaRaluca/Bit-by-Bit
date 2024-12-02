@@ -224,27 +224,6 @@ void eter::Game::resetBoard()
 	m_board.clear();
 }
 
-void eter::Game::ReassignCardsToPlayers()
-{
-	if (m_gameMode == "AMode") {
-		// Creează o instanță de AMode și apelează funcția de asignare a cărților
-		AMode modeA(this);
-		modeA.assignCardsInHandModeA();
-	}
-	else if (m_gameMode == "BMode")
-	{
-		// Creează o instanță de BMode și apelează funcția de asignare a cărților
-		BMode modeB(this);
-		modeB.assignCardsInHand();
-	}
-	else if (m_gameMode == "CMode")
-	{
-		// Creează o instanță de CMode și apelează funcția de asignare a cărților
-		CMode modeC(this);
-		modeC.assignCardsInHand();
-	}
-}
-
 void Game::handleCardCover(Player& currentPlayer, Player& opponent, size_t x, size_t y, size_t cardIndex) {
 	auto& targetCell = m_board[{x, y}];
 	if (!targetCell.has_value() || targetCell->empty()) {

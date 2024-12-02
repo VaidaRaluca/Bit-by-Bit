@@ -1,8 +1,6 @@
 #include<cstdint>
 export module game;
-import card;
 import player;
-import <string>;
 import board;
 namespace eter
 {
@@ -55,7 +53,6 @@ namespace eter
 
 		char VerifyGameOver();
 		void resetBoard();
-		void ReassignCardsToPlayers();
 		void handleCardCover(Player& currentPlayer, Player& opponent, size_t x, size_t y, size_t cardIndex);
 
 	};

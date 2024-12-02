@@ -17,7 +17,6 @@ namespace eter {
 	public:
 		//Rule of 5 
 		Board();
-		Board(std::vector<std::vector<std::optional<std::stack<Card>>>>grid, uint8_t rows, uint8_t cols);
 		Board(const Board& other); //constructor de copiere
 		Board& operator=(const Board& other);
 		Board(Board&& other) noexcept;

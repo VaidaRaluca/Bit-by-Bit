@@ -2,11 +2,7 @@
 export module bmode;
 
 import game;
-import <string>;
 import mage;
-import player;
-import board;
-import card;
 import<vector>;
 
 namespace eter {

@@ -1,9 +1,4 @@
 ﻿module gamemanager;
-import game;
-import player;
-import board;
-import bmode;
-import cmode;
 using namespace eter;
 
 GameManager::GameManager(const Game& game):

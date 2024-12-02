@@ -1,13 +1,8 @@
 ﻿module amode;
-import player;
-import board;
+using namespace eter;
 import explosion;
-import <iostream>;
-import <string>;
 import <vector>;
-
-
-namespace eter {
+import card;
     
     AMode::AMode(Game* game) : m_game{ game } {}
 
@@ -55,25 +50,24 @@ namespace eter {
 
             // Reset the board and reassign cards
             m_game->resetBoard();
-            m_game->ReassignCardsToPlayers();
+            assignCardsInHandModeA();
         }
-        std::cout << "GAME OVER \n";
-    }
-    void AMode::handleActivateIllusionModeA()
-    {
-        Player& currentPlayer = m_isPlayerTurn ? m_player1 : m_player2;
-        std::cout << currentPlayer.GetName() << " activates an illusion.\n";
-        Card illusion;
-      //  currentPlayer.useIllusion(m_board, illusion);
 
+        if (m_game->GetPlayer1Wins() > m_game->GetPlayer2Wins())
+            std::cout << "Player " << m_game->GetPlayer1().GetName() << " wins this game!" << std::endl;
+        else
+            std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this game!" << std::endl;
+
+        std::cout << "GAME OVER \n";
     }
 
     void AMode::handleActivateExplosionModeA()
     {
-        Player& currentPlayer = m_isPlayerTurn ? m_player1 : m_player2;
+        Player& currentPlayer = m_game->GetIsPlayerTurn() ? m_game->GetPlayer1Ref() : m_game->GetPlayer2Ref();
         std::cout << currentPlayer.GetName() << " activates an explosion.\n";
         Explosion e(3, m_game->GetBoard());
         m_game->GetBoardRef() = e.applyEffects();
+        m_game->SetIsPlayerTurn();
     }
 
     void AMode::handleOptionModeA()
@@ -110,7 +104,6 @@ namespace eter {
             break;
         case OPTION_3:
             handleActivateExplosionModeA();
-            //m_game->GetBoardRef().removeCard(2, 2);
             break;
         default:
             std::cout << "Invalid option.\n";
@@ -137,10 +130,16 @@ namespace eter {
                 handleOptionModeA();
 
             if (m_game->GetPlayer1().GetColor() == m_game->GetBoard().findWinnerByScore())
+            {
                 std::cout << "Player " << m_game->GetPlayer1().GetName() << " wins this round!" << std::endl;
+                m_game->IncrementPlayer1Wins();
+            }
             else
                 if (m_game->GetPlayer2().GetColor() == m_game->GetBoard().findWinnerByScore())
+                {
                     std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this round!" << std::endl;
+                    m_game->IncrementPlayer2Wins();
+                }
                 else
                     std::cout << "DRAW \n";
         }
@@ -151,8 +150,5 @@ namespace eter {
     {
         assignCardsInHandModeA();
         startMatchModeA();
-
-
     }
  
-}

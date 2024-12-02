@@ -1,12 +1,6 @@
 module bmode;
 using namespace eter;
-import game;
-import player;
-import card;
-import gamemanager;
 import <random>;
-import<iostream>;
-import <string>;
 
 BMode::BMode(Game* game):
     m_game{game}
