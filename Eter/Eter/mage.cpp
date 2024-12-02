@@ -28,31 +28,36 @@ Mage::Mage(const Mage& other)
 
 //Operator de atribuire prin copiere
 Mage& Mage::operator=(const Mage& other) {
-	if (this != &other) {
-		m_ability = other.m_ability;
-		m_used = other.m_used;
-	}
+	Mage temp{ other };
+	swap(temp);
 	return *this;
 }
 
 // Constructor de mutare
 Mage::Mage(Mage&& other) noexcept
-	: m_ability(std::move(other.m_ability)), m_used(other.m_used) {
-	other.m_used = false; // Resetez starea obiectului mutat
+{
+	this->swap(other);
 }
 
 // Operator de atribuire prin mutare
 Mage& Mage::operator=(Mage&& other) noexcept {
-	if (this != &other) {
-		m_ability = std::move(other.m_ability);
-		m_used = other.m_used;
-		other.m_used = false; // Resetez starea obiectului mutat
-	}
+	this->swap(other);
 	return *this;
 }
 
 // Destructor
 Mage::~Mage() {}
+
+void eter::Mage::swap(Mage& other) noexcept
+{
+	MagicAbility tempAbility = m_ability;
+	m_ability = other.m_ability;
+	other.m_ability = tempAbility;
+
+	bool tempUsed = m_used;
+	m_used = other.m_used;
+	other.m_used = tempUsed;
+}
 
 //descriere abilitati
 const std::unordered_map<Mage::MagicAbility, std::string> abilityDescriptions = {

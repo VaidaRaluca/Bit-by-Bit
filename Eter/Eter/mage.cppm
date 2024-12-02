@@ -38,6 +38,7 @@ namespace eter {
 		Mage(Mage&& other) noexcept;           //constructor de mutare
 		Mage& operator=(Mage&& other) noexcept;		//operator de atribuire prin mutare
 		~Mage(); //Destructorul
+		void swap(Mage& other) noexcept;
 
 		// daca abilitatea respectiva a mai fost folosita
 		bool isUsed();
