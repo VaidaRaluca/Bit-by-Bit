@@ -8,14 +8,14 @@ import<vector>;
 namespace eter {
 	export class BMode {
 	private:
-		std::vector<Mage> m_mages{ Mage(Mage::MagicAbility::removeOpponentCard),
-		Mage(Mage::MagicAbility::removeEntireLine)/*,
+		std::vector<Mage> m_mages{/* Mage(Mage::MagicAbility::removeOpponentCard),
+		Mage(Mage::MagicAbility::removeEntireLine),
 		Mage(Mage::MagicAbility::coverOpponentCard),
-		Mage(Mage::MagicAbility::createPit),
+		Mage(Mage::MagicAbility::createPit),*/
 		Mage(Mage::MagicAbility::moveOwnStack),
-		Mage(Mage::MagicAbility::extraEterCard),
+		/*Mage(Mage::MagicAbility::extraEterCard),*/
 		Mage(Mage::MagicAbility::moveOpponentStack),
-		Mage(Mage::MagicAbility::shiftRowToEdge)*/ };
+		/*Mage(Mage::MagicAbility::shiftRowToEdge)*/ };
 		Mage m_magePlayer1;
 		Mage m_magePlayer2;
 		Game* m_game;

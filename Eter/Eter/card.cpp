@@ -5,11 +5,13 @@ import <format>;
 import <iostream>;
 Card::Card(uint8_t value, const std::string& color, bool position) :
 	m_value{ value }, m_color{ color }, m_position{ position }
-{}
+{
+}
 
 Card::Card(const Card& other)
 	: m_value{ other.m_value }, m_color{ other.m_color }, m_position{ other.m_position }
-{}
+{
+}
 
 Card& Card::operator=(const Card& other)
 {
@@ -100,13 +102,14 @@ std::ostream& eter::operator<<(std::ostream& os, const Card& card)
 	}
 	std::string resetColor = "\033[0m";
 	if (!card.GetPosition()) os << backgroundColor << textColor << '\"';
-	else 
-		if (card.GetValue() == '/')
-		std::cout << "/";
 	else
-		os << backgroundColor << textColor
-		<< static_cast<int>(card.GetValue());
-
+		if (card.GetValue() == '/')
+			os << "/";
+		else if (card.GetValue() == 5)
+			os << backgroundColor << textColor << 'E';
+		else
+			os << backgroundColor << textColor
+			<< static_cast<int>(card.GetValue());
 
 	os << resetColor;
 	return os;

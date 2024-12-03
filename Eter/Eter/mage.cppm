@@ -51,15 +51,15 @@ namespace eter {
 
 	private:
 		//metodele pentru activarea fiecarei abilitati
-		void removeOpponentCard(Player& player, Player& opponent, Board& board);
-		void removeEntireRow(Player& player, Board& board);
-		void removeEntireColumn(Player& player, Board& board);
-		void removeEntireLine(Player& player, Board& board);
-		void coverOpponentCard(Player& player, Player& opponent, Board& board);
+		static void removeOpponentCard(Player& player, Player& opponent, Board& board);
+		static void removeEntireRow(Player& player, Board& board);
+		static void removeEntireColumn(Player& player, Board& board);
+		static void removeEntireLine(Player& player, Board& board);
+		static void coverOpponentCard(Player& player, Player& opponent, Board& board);
 		void createPit(Board& board);
 		void addExtraEterCard(Player& player, Board& board);
-		void moveOwnStack(Player& player, Board& board);
-		void moveOpponentStack(Player& player, Player& opponent, Board& board);
+		static void moveOwnStack(Player& player, Board& board);
+		static void moveOpponentStack(Player& opponent, Board& board);
 		void shiftRowToEdge(Board& board);
 
 		//Cautarea unei carti pe tabla

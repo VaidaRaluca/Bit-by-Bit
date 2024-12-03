@@ -105,7 +105,7 @@ void Mage::moveStack(const std::pair<int, int>& from, const std::pair<int, int>&
 // Activare abilitate
 void Mage::activate(Player& player, Player& opponent, Board& board) {
 	if (isAbilityUsed()) {
-		throw std::runtime_error("The ability has already been used!");
+		std::cout << "The ability has already been used!\n";
 	}
 
 	displayAbilityDescription();  // Afiseaza descrierea abilitatii
@@ -408,7 +408,7 @@ void Mage::moveOwnStack(Player& player, Board& board) {
 }
 
 // Mutare teanc adversar
-void Mage::moveOpponentStack(Player& player, Player& opponent, Board& board) {
+void Mage::moveOpponentStack(Player& opponent, Board& board) {
 	std::cout << "Activating ability: Move Opponent's Stack\n";
 
 	size_t fromRow, fromCol, toRow, toCol;
@@ -427,8 +427,8 @@ void Mage::moveOpponentStack(Player& player, Player& opponent, Board& board) {
 			std::cout << "No stack found at the original position.\n";
 			continue;
 		}
-		std::cout << "op color: " << opponent.GetColor() << " p color " << player.GetColor();
-		if (!board.containsOpponentCardsOnCell(fromRow, fromCol, opponent.GetColor())) {
+		std::cout << "op color: " << opponent.GetColor();
+		if (fromCell.value().top().GetColor() == opponent.GetColor()) {
 			std::cout << "The original cell doesn't contain opponent's cards at all.\n";
 			continue;
 		}
@@ -568,31 +568,32 @@ void Mage::cancelAbilityActivation() const {
 }
 
 bool Mage::executeAbility(Player& player, Player& opponent, Board& board) {
-	static const std::unordered_map<MagicAbility, std::function<void()>> abilityMap = {
-		{ MagicAbility::removeOpponentCard, [&]() { removeOpponentCard(player,  opponent, board); } },
-		{ MagicAbility::removeEntireLine,    [&]() { removeEntireLine(player, board); } },
-		{ MagicAbility::coverOpponentCard,   [&]() { coverOpponentCard(player,  opponent, board); } },
-		{ MagicAbility::createPit,          [&]() { createPit(board); } },
-		{ MagicAbility::moveOwnStack,       [&]() { moveOwnStack(player, board); } },
-		{ MagicAbility::extraEterCard,      [&]() { addExtraEterCard(player, board); } },
-		{ MagicAbility::moveOpponentStack,  [&]() { moveOpponentStack(player, opponent, board); } },
-		{ MagicAbility::shiftRowToEdge,     [&]() { shiftRowToEdge(board); } }
+	static const std::unordered_map<MagicAbility, std::function<void(Player&, Player&, Board&)>> abilityMap = {
+	{ MagicAbility::removeOpponentCard, [](Player& player, Player& opponent, Board& board) { removeOpponentCard(player, opponent, board); } },
+	{ MagicAbility::removeEntireLine,   [](Player& player, Player&, Board& board) { removeEntireLine(player, board); } },
+	{ MagicAbility::coverOpponentCard,  [](Player& player, Player& opponent, Board& board) { coverOpponentCard(player, opponent, board); } },
+	/*{ MagicAbility::createPit,          [](Player&, Player&, Board& board) { createPit(board); } },*/
+	{ MagicAbility::moveOwnStack,       [](Player& player, Player&, Board& board) { moveOwnStack(player, board); } },
+	//{ MagicAbility::extraEterCard,      [](Player& player, Player&, Board& board) { addExtraEterCard(player, board); } },
+	{ MagicAbility::moveOpponentStack,  [](Player&, Player& opponent, Board& board) { moveOpponentStack(opponent, board); } },
+	/*	{ MagicAbility::shiftRowToEdge,     [](Player&, Player&, Board& board) { shiftRowToEdge(board); } }*/
 	};
+
 
 	auto abilityIt = abilityMap.find(m_ability);
 	if (abilityIt != abilityMap.end()) {
-		if (abilityIt->second) { // Check if the function pointer or callable object exists
-			abilityIt->second();  // Activate the ability
-			return true;          // Success
+		if (abilityIt->second) {
+			abilityIt->second(player, opponent, board); // Explicitly pass the parameters
+			return true;
 		}
 		else {
 			std::cout << "Couldn't activate ability\n";
-			return false;         // Failure due to missing callable
+			return false;
 		}
 	}
 	else {
 		std::cout << "Unknown ability\n";
-		return false;             // Failure for unknown ability
+		return false;
 	}
 
 }

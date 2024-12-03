@@ -63,7 +63,7 @@ namespace eter {
 		size_t countOccupiedCellsOnColumn(size_t col);
 		bool containsOwnCardOnColumn(size_t col, const std::string& playerColor);
 		void eliminateCardsOnColumn(size_t col);
-		bool containsOpponentCardsOnCell(size_t row, size_t col, const std::string& opponentColor);
+		// bool containsOpponentCardsOnCell(size_t row, size_t col, const std::string& opponentColor);
 		std::vector<std::vector<std::optional<std::stack<Card>>>>&GetGridForModeA();
 
   	};

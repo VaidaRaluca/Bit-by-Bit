@@ -15,12 +15,12 @@ int main()
 
 	// Test AMode
 	GameManager game;
-	game.StartNewGame(player1, player2, "AMode");
+	// game.StartNewGame(player1, player2, "AMode");
 
 
 	// Test BMode
 
-	//game.StartNewGame(player1, player2, "BMode");
+	game.StartNewGame(player1, player2, "BMode");
 
 	//Test CMode
 

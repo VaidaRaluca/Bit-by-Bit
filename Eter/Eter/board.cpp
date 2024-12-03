@@ -457,14 +457,14 @@ std::vector<std::vector<std::optional<std::stack<Card>>>> &Board::GetGridForMode
 }
 
  
-
-bool Board::containsOpponentCardsOnCell(size_t row, size_t col, const std::string& opponentColor) {
-	while (m_grid[row][col].has_value()) {
-		if (m_grid[row][col].value().top().GetColor() == opponentColor)
-			return true;
-	}
-	return false;
-}
+//
+//bool Board::containsOpponentCardsOnCell(size_t row, size_t col, const std::string& opponentColor) {
+//	while (m_grid[row][col].has_value()) {
+//		if (m_grid[row][col].value().top().GetColor() == opponentColor)
+//			return true;
+//	}
+//	return false;
+//}
 
 
 size_t Board::countOccupiedCellsOnColumn(size_t col)
