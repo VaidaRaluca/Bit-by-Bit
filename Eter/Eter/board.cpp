@@ -3,10 +3,10 @@ using eter::Card;
 using eter::Board;
 const std::string_view kEmpyBoardCell{ "____" };
 import <iostream>;
- 
+
 
 eter::Board::Board()
-	: m_dimMax{3},m_indexMax{7},
+	: m_dimMax{ 3 }, m_indexMax{ 7 },
 	m_indexLineMin{ 10 }, m_indexLineMax{ 10 },
 	m_indexColMin{ 10 }, m_indexColMax{ 10 }
 {
@@ -22,28 +22,29 @@ Board::Board(const Board& other)
 	, m_indexLineMax{ other.m_indexLineMax }
 	, m_indexColMin{ other.m_indexColMin }
 	, m_indexColMax{ other.m_indexColMax }
-{}
+{
+}
 
 Board& Board::operator=(const Board& other) {
 	if (this != &other) {
 		m_grid = other.m_grid;
-		m_indexMax =other.m_indexMax;
-	    m_dimMax=other.m_dimMax;
+		m_indexMax = other.m_indexMax;
+		m_dimMax = other.m_dimMax;
 		m_indexLineMin = other.m_indexLineMin;
-		m_indexColMin = other.m_indexColMin ;
-		m_indexLineMax = other.m_indexLineMax ; 
-		m_indexColMax=other.m_indexColMax;
+		m_indexColMin = other.m_indexColMin;
+		m_indexLineMax = other.m_indexLineMax;
+		m_indexColMax = other.m_indexColMax;
 	}
 	return *this;
 }
 
 Board::Board(Board&& other) noexcept
-	: m_grid{std::move(other.m_grid)},
-	m_rows{ other.m_rows }, 
+	: m_grid{ std::move(other.m_grid) },
+	m_rows{ other.m_rows },
 	m_cols{ other.m_cols },
 	m_indexLineMin{ other.m_indexLineMin },
 	m_indexLineMax{ other.m_indexLineMax },
-	m_indexColMin{ other.m_indexColMin }, 
+	m_indexColMin{ other.m_indexColMin },
 	m_indexColMax{ other.m_indexColMax }
 {
 	other.m_rows = 0;
@@ -56,7 +57,7 @@ Board::Board(Board&& other) noexcept
 
 Board& Board::operator=(Board&& other) noexcept
 {
-	if (this == &other) return *this; 
+	if (this == &other) return *this;
 	m_grid = std::move(other.m_grid);
 	m_rows = other.m_rows;
 	m_cols = other.m_cols;
@@ -184,11 +185,11 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 	{
 		return false;
 	}
-
 	if (m_grid[x][y].has_value())
 	{
 		const auto& stack = m_grid[x][y].value();
-		if (!stack.empty() && card.GetColor() == stack.top().GetColor() && !stack.top().GetPosition()){ // cannot put card over your own illusion
+	    if ((!stack.empty() && stack.top().GetValue() == 5) || (!stack.empty() && card.GetValue() == 5)) return false; // cannot place anything over eter card
+		if (!stack.empty() && card.GetColor() == stack.top().GetColor() && !stack.top().GetPosition()) { // cannot put card over your own illusion
 			return false;
 		}
 		if (stack.top().GetValue() == static_cast<int>('/')) //pentru gropi///create pit in board
@@ -343,7 +344,7 @@ bool eter::Board::isHorizontalLine(const std::string& lineColor) const {
 
 std::string eter::Board::findWinner()
 {
-	if (isHorizontalLine("red") || isVerticalLine("red") || isPrimaryDiagonalLine("red") || isSecondaryDiagonalLine("red")) 
+	if (isHorizontalLine("red") || isVerticalLine("red") || isPrimaryDiagonalLine("red") || isSecondaryDiagonalLine("red"))
 		return "red";
 	else if (isHorizontalLine("blue") || isVerticalLine("blue") || isPrimaryDiagonalLine("blue") || isSecondaryDiagonalLine("blue"))
 		return "blue";
@@ -380,8 +381,8 @@ std::string eter::Board::findWinnerByScore()
 bool eter::Board::isBoardFull()
 {
 	size_t occupiedSpaces = 0;
-	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row){
-		for (size_t col = m_indexColMin; col <= m_indexColMax; ++col){
+	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
+		for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
 			if (m_grid[row][col].has_value())
 				occupiedSpaces++;
 		}
@@ -406,15 +407,17 @@ void eter::Board::swap(Board& other) noexcept
 	swap(m_cols, other.m_cols);
 }
 
-bool Board::isValidRow(size_t row)
+bool Board::isValidRow(size_t row) const
 {
 	return row >= m_indexLineMin && row <= m_indexLineMax;
 }
 
 void Board::eliminateCardsOnRow(size_t row)
 {
-	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) 
-		 if (m_grid[row][col].has_value()){
+	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col)
+		if (m_grid[row][col].has_value()) {
+			if (m_grid[row][col].value().top().GetValue() == 5)
+				continue;
 			m_grid[row][col].reset(); // Elimina intregul teanc
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
 		}
@@ -423,19 +426,19 @@ void Board::eliminateCardsOnRow(size_t row)
 size_t Board::countOccupiedCellsOnRow(size_t row)
 {
 	size_t occupiedCount = 0;
-	for (size_t col = m_indexColMin; col <= m_indexColMax ; ++col) {
+	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
 		if (m_grid[row][col].has_value())
 			++occupiedCount;
 	}
 	return occupiedCount;
 }
 
-bool Board::containsOwnCardOnRow(size_t row,const std::string& playerColor)
+bool Board::containsOwnCardOnRow(size_t row, const std::string& playerColor)
 {
 	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
 		if (m_grid[row][col].has_value()) {
 			const Card& topCard = m_grid[row][col].value().top();
-			if (topCard.GetColor() == playerColor) 
+			if (topCard.GetColor() == playerColor)
 				return true;
 		}
 	}
@@ -446,25 +449,17 @@ void Board::eliminateCardsOnColumn(size_t col)
 {
 	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row)
 		if (m_grid[row][col].has_value()) {
+			if (m_grid[row][col].value().top().GetValue() == 5)
+				continue;
 			m_grid[row][col].reset(); // Elimina intregul teanc
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
 		}
 }
 
-std::vector<std::vector<std::optional<std::stack<Card>>>> &Board::GetGridForModeA()
+std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGridForModeA()
 {
 	return m_grid;
 }
-
- 
-//
-//bool Board::containsOpponentCardsOnCell(size_t row, size_t col, const std::string& opponentColor) {
-//	while (m_grid[row][col].has_value()) {
-//		if (m_grid[row][col].value().top().GetColor() == opponentColor)
-//			return true;
-//	}
-//	return false;
-//}
 
 
 size_t Board::countOccupiedCellsOnColumn(size_t col)
@@ -490,9 +485,21 @@ bool Board::containsOwnCardOnColumn(size_t col, const std::string& playerColor)
 }
 
 
-bool Board::isValidColumn(size_t column)
+bool Board::isValidColumn(size_t column) const
 {
 	return column >= m_indexColMin && column <= m_indexColMax;
+}
+
+bool eter::Board::isEdgeRow(size_t row) const
+{
+	return row == m_indexLineMin || row == m_indexLineMax;
+
+}
+
+bool eter::Board::isEdgeColumn(size_t column) const
+{
+	return column == m_indexColMin || column == m_indexColMax;
+
 }
 
 bool Board::isEmptyCell(size_t x, size_t y)

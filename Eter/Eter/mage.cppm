@@ -18,7 +18,7 @@ namespace eter {
 			moveOwnStack,
 			extraEterCard,
 			moveOpponentStack,
-			shiftRowToEdge
+			shiftEdge
 		};
 
 	private:
@@ -57,10 +57,12 @@ namespace eter {
 		static void removeEntireLine(Player& player, Board& board);
 		static void coverOpponentCard(Player& player, Player& opponent, Board& board);
 		void createPit(Board& board);
-		void addExtraEterCard(Player& player, Board& board);
+		static void addExtraEterCard(Player& player, Board& board);
 		static void moveOwnStack(Player& player, Board& board);
 		static void moveOpponentStack(Player& opponent, Board& board);
-		void shiftRowToEdge(Board& board);
+		static void shiftEdge(Board& board);
+		static void shiftRowToEdge(Board& board);
+		static void shiftColumnToEdge(Board& board);
 
 		//Cautarea unei carti pe tabla
 		std::optional<std::pair<size_t, size_t>> findCardPosition(const Card& card, Board& board);
