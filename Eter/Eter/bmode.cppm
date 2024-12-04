@@ -11,10 +11,10 @@ namespace eter {
 		std::vector<Mage> m_mages{// Mage(Mage::MagicAbility::removeOpponentCard),
 		//Mage(Mage::MagicAbility::removeEntireLine),
 		Mage(Mage::MagicAbility::coverOpponentCard),
-		//Mage(Mage::MagicAbility::createPit),
+		Mage(Mage::MagicAbility::createPit),
 		//Mage(Mage::MagicAbility::moveOwnStack),
 		//Mage(Mage::MagicAbility::extraEterCard),
-		Mage(Mage::MagicAbility::moveOpponentStack),
+		//Mage(Mage::MagicAbility::moveOpponentStack),
 		/*Mage(Mage::MagicAbility::shiftEdge)*/ };
 		Mage m_magePlayer1;
 		Mage m_magePlayer2;

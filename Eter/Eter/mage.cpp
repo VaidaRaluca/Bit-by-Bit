@@ -49,7 +49,7 @@ Mage& Mage::operator=(Mage&& other) noexcept {
 // Destructor
 Mage::~Mage() {}
 
-void eter::Mage::swap(Mage& other) noexcept
+void Mage::swap(Mage& other) noexcept
 {
 	MagicAbility tempAbility = m_ability;
 	m_ability = other.m_ability;
@@ -153,11 +153,11 @@ void Mage::removeOpponentCard(Player& player, Player& opponent, Board& board) {
 		validPosition = true;
 	}
 	auto& selectedCell = board[{row, col}];
-	const Card cardToRemove = selectedCell.value().top();
+	const Card& cardToRemove = selectedCell.value().top();
 	selectedCell->pop(); // Elimina cartea de sus din stiva
 	if (!selectedCell->empty())
 	{
-		Card belowTop = selectedCell.value().top();
+		const Card& belowTop = selectedCell.value().top();
 		if (belowTop.GetColor() == player.GetColor())
 		{
 			opponent.AddToEliminatedCards(selectedCell.value().top());
@@ -276,6 +276,10 @@ void Mage::coverOpponentCard(Player& player, Player& opponent, Board& board) {
 			std::cout << "The top card at (" << row << ", " << col << ") is not an opponent's card. Try again.\n";
 			continue;
 		}
+		if (cell.value().top().GetValue() == '/') {
+			std::cout << "Cell is a hole\n";
+			continue;
+		}
 		if (cell.value().top().GetValue() == 5) {
 			std::cout << "Cannot cover ETER card\n";
 			continue;
@@ -313,23 +317,32 @@ void Mage::coverOpponentCard(Player& player, Player& opponent, Board& board) {
 // Creare groapa
 void Mage::createPit(Board& board) {
 	std::cout << "Activating ability: Create Pit\n";
-
-	int row, col;
-	std::cout << "Enter the position (row, column) where you want to create a pit: ";
-	std::cin >> row >> col;
-
-	if (!board.isValidPosition(row, col)) {
-		std::cout << "Invalid position (" << row << ", " << col << ").\n";
-		return;
+	
+	size_t row, col;
+	bool validPosition = false;
+	while (!validPosition) {
+		std::cout << "Enter the position (row, column) where you want to create a hole: ";
+		std::cin >> row >> col;
+		if (!board.isValidPosition(row, col)) {
+			std::cout << "Invalid position (" << row << ", " << col << ") on the board. Try again.\n";
+			continue;
+		}
+		auto& cell = board[{row, col}];
+		if (!cell.has_value() || cell->empty()) {
+			if (!board.isAdjacentToOccupiedSpace(row, col)) {
+				std::cout << "The position is not adjacent to any occupied space. Choose another position.\n";
+				continue;
+			}
+			else
+				validPosition = true;
+		}
+		else if (cell.value().top().GetValue() == 5) {
+			std::cout << "Cannot create pit where ETER card is already placed\n";
+			continue;
+		}
+		validPosition = true;
 	}
-
-	auto& cell = board[{row, col}];
-	if (cell.has_value() && !cell->empty()) {
-		std::cout << "Cannot create a pit at (" << row << ", " << col << ") because it is occupied.\n";
-		return;
-	}
-
-	cell.reset(); // Creeaza groapa prin golirea celulei
+	board.createHole(row, col);
 	std::cout << "Pit created at (" << row << ", " << col << ").\n";
 }
 
@@ -570,7 +583,7 @@ bool Mage::executeAbility(Player& player, Player& opponent, Board& board) {
 	{ MagicAbility::removeOpponentCard, [](Player& player, Player& opponent, Board& board) { removeOpponentCard(player, opponent, board); } },
 	{ MagicAbility::removeEntireLine,   [](Player& player, Player&, Board& board) { removeEntireLine(player, board); } },
 	{ MagicAbility::coverOpponentCard,  [](Player& player, Player& opponent, Board& board) { coverOpponentCard(player, opponent, board); } },
-	/*{ MagicAbility::createPit,          [](Player&, Player&, Board& board) { createPit(board); } },*/
+	{ MagicAbility::createPit,          [](Player&, Player&, Board& board) { createPit(board); } },
 	{ MagicAbility::moveOwnStack,       [](Player& player, Player&, Board& board) { moveOwnStack(player, board); } },
 	{ MagicAbility::extraEterCard,      [](Player& player, Player&, Board& board) { addExtraEterCard(player, board); } },
 	{ MagicAbility::moveOpponentStack,  [](Player&, Player& opponent, Board& board) { moveOpponentStack(opponent, board); } },

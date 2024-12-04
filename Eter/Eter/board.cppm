@@ -67,6 +67,8 @@ namespace eter {
 		void eliminateCardsOnColumn(size_t col);
 		std::vector<std::vector<std::optional<std::stack<Card>>>>&GetGridForModeA();
 
+		void createHole(size_t row, size_t col);
+
   	};
 	export std::ostream& operator<<(std::ostream& os, const Board& board);
 	export void swap(Board& first, Board& second) noexcept;

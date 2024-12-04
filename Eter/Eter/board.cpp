@@ -192,10 +192,10 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 		if (!stack.empty() && card.GetColor() == stack.top().GetColor() && !stack.top().GetPosition()) { // cannot put card over your own illusion
 			return false;
 		}
-		if (stack.top().GetValue() == static_cast<int>('/')) //pentru gropi///create pit in board
-		{
-			return false;
-		}
+		//if (stack.top().GetValue() == static_cast<int>('/')) //pentru gropi///create pit in board
+		//{
+		//	return false;
+		//}
 		if (!stack.empty() && card.GetValue() > stack.top().GetValue()) {
 			return true;
 		}
@@ -454,6 +454,20 @@ void Board::eliminateCardsOnColumn(size_t col)
 			m_grid[row][col].reset(); // Elimina intregul teanc
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
 		}
+}
+
+
+void eter::Board::createHole(size_t row, size_t col)
+{
+	if (m_grid[row][col].has_value())
+	{
+		if (m_grid[row][col].value().top().GetValue() == 5)
+			return;
+		m_grid[row][col].reset();
+	}
+	m_grid[row][col] = std::stack<Card>();
+	m_grid[row][col]->push(Card{'/', "\033[0m" , true});
+
 }
 
 std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGridForModeA()

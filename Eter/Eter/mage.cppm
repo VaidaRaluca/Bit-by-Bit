@@ -56,7 +56,7 @@ namespace eter {
 		static void removeEntireColumn(Player& player, Board& board);
 		static void removeEntireLine(Player& player, Board& board);
 		static void coverOpponentCard(Player& player, Player& opponent, Board& board);
-		void createPit(Board& board);
+		static void createPit(Board& board);
 		static void addExtraEterCard(Player& player, Board& board);
 		static void moveOwnStack(Player& player, Board& board);
 		static void moveOpponentStack(Player& opponent, Board& board);

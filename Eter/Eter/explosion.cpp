@@ -62,7 +62,7 @@ import<algorithm>;  // pt std::shuffle
     void eter::Explosion::printeffectMatrix()
     {
         std::cout << "This is what the explosion card looks like. \n";
-        std::cout << " \\ represents CREATE_HOLE. \n";
+        std::cout << " \/ represents CREATE_HOLE. \n";
         std::cout << " X represents REMOVE_CARD. \n";
         std::cout << " R represents RETURN_CARD. \n";
         int size = static_cast<int>(m_effectMatrix.size());
