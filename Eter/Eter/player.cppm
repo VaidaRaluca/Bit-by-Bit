@@ -37,6 +37,8 @@ namespace eter {
 		std::vector<Card>& GetPlayedCards();
 		std::vector<Card>& GetEliminatedCards();
 
+		const std::vector<Card>& GetCardsInHand() const;
+
 		//Setteri
 		void SetName(const std::string& name);
 		void SetScore(uint32_t score);

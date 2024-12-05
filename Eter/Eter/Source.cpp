@@ -25,6 +25,13 @@ int main()
 	//Test CMode
 
 	/*game.StartNewGame(player1, player2, "CMode");*/
-	
+
+	/*try {
+		game.SaveGame();
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Error saving game: " << e.what() << std::endl;
+	}*/
+
 	return 0;
 }

@@ -193,3 +193,7 @@ void eter::swap(Player& first, Player& second) noexcept
 {
 	first.swap(second);
 }
+
+const std::vector<Card>& Player::GetCardsInHand() const {
+	return m_cardsInHand;
+}
