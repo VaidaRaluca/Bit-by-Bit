@@ -58,6 +58,9 @@ namespace eter {
 		bool isValidColumn(size_t column) const;
 		bool isEdgeRow(size_t row) const;
 		bool isEdgeColumn(size_t column) const;
+		void moveRow(size_t fromRow, size_t toRow);
+		void moveColumn(size_t fromCol, size_t toCol);
+
 
 		size_t countOccupiedCellsOnRow(size_t row);
 		bool containsOwnCardOnRow(size_t row, const std::string& playerColor);
@@ -66,7 +69,6 @@ namespace eter {
 		bool containsOwnCardOnColumn(size_t col, const std::string& playerColor);
 		void eliminateCardsOnColumn(size_t col);
 		std::vector<std::vector<std::optional<std::stack<Card>>>>&GetGridForModeA();
-
 		void createHole(size_t row, size_t col);
 
   	};

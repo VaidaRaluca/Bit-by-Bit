@@ -18,28 +18,28 @@ void BMode::applyModeRules()
 void BMode::assignCardsInHand()
 {
     std::vector<Card>cardsForPlayer1{
-    Card(1,"red",true),
-    Card(1,"red",true),
-    Card(2,"red",true),
-    Card(2,"red",true),
-    Card(2,"red",true),
-    Card(3,"red",true),
-    Card(3,"red",true),
-    Card(3,"red",true),
-    Card(4,"red",true),
-    Card(5,"red",true),  //valoare=5 ->  Carte eter
+    Card{1,"red",true},
+    Card{1,"red",true},
+    Card{2,"red",true},
+    Card{2,"red",true},
+    Card{2,"red",true},
+    Card{3,"red",true},
+    Card{3,"red",true},
+    Card{3,"red",true},
+    Card{4,"red",true},
+    Card{5,"red",true},  //valoare=5 ->  Carte eter
     };
     std::vector<Card>cardsForPlayer2{
-    Card(1,"blue",true),
-    Card(1,"blue",true),
-    Card(2,"blue",true),
-    Card(2,"blue",true),
-    Card(2,"blue",true),
-    Card(3,"blue",true),
-    Card(3,"blue",true),
-    Card(3,"blue",true),
-    Card(4,"blue",true),
-    Card(5,"blue",true),  //valoare=5 ->  Carte eter
+    Card{1,"blue",true},
+    Card{1,"blue",true},
+    Card{2,"blue",true},
+    Card{2,"blue",true},
+    Card{2,"blue",true},
+    Card{3,"blue",true},
+    Card{3,"blue",true},
+    Card{3,"blue",true},
+    Card{4,"blue",true},
+    Card{5,"blue",true},  //valoare=5 ->  Carte eter
     };
 
     if (m_game)

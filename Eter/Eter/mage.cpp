@@ -107,6 +107,7 @@ void Mage::moveStack(const std::pair<int, int>& from, const std::pair<int, int>&
 void Mage::activate(Player& player, Player& opponent, Board& board) {
 	if (isAbilityUsed()) {
 		std::cout << "The ability has already been used!\n";
+		return;
 	}
 
 	displayAbilityDescription();  // Afiseaza descrierea abilitatii
@@ -317,7 +318,7 @@ void Mage::coverOpponentCard(Player& player, Player& opponent, Board& board) {
 // Creare groapa
 void Mage::createPit(Board& board) {
 	std::cout << "Activating ability: Create Pit\n";
-	
+
 	size_t row, col;
 	bool validPosition = false;
 	while (!validPosition) {
@@ -368,16 +369,14 @@ void Mage::addExtraEterCard(Player& player, Board& board) {
 			else
 				validPosition = true;
 		}
-		else 
+		else
 		{
 			std::cout << "Eter cards can only be placed on empty cells. Position (" << row << ", " << col << ") is occupied.\n";
 			continue;
 		}
 	}
-	// Creeaza o carte Eter si o plaseaza pe tabla
-	
 	board[{row, col}] = std::stack<Card>(); // Initialize the optional if needed
-	board[{row, col}]->push(Card { 5, player.GetColor(), true });
+	board[{row, col}]->push(Card{ 5, player.GetColor(), true });
 	std::cout << "Extra Eter card placed at (" << row << ", " << col << ").\n";
 }
 
@@ -496,15 +495,15 @@ void Mage::moveOpponentStack(Player& opponent, Board& board) {
 
 void eter::Mage::shiftEdge(Board& board)
 {
-		std::cout << "Activating ability: Shift a Row or Column from an Edge to another Edge\n";
-		char choice;
-		std::cout << "Introduce R to shift row, C to shift column: ";
-		std::cin >> choice;
-		if (toupper(choice) == 'R')
-			shiftRowToEdge(board);
-		else if (toupper(choice) == 'C')
-			shiftColumnToEdge(board);
-		else std::cout << "ERROR\n";
+	std::cout << "Activating ability: Shift a Row or Column from an Edge to another Edge\n";
+	char choice;
+	std::cout << "Introduce R to shift row, C to shift column: ";
+	std::cin >> choice;
+	if (toupper(choice) == 'R')
+		shiftRowToEdge(board);
+	else if (toupper(choice) == 'C')
+		shiftColumnToEdge(board);
+	else std::cout << "ERROR\n";
 }
 
 
@@ -513,7 +512,7 @@ void eter::Mage::shiftRowToEdge(Board& board) {
 	size_t row;
 	bool validRow = false;
 	while (!validRow) {
-		std::cout << "Enter the row number to remove: ";
+		std::cout << "Enter the row number to move: ";
 		std::cin >> row;
 		if (!board.isEdgeRow(row)) {
 			std::cout << "Row is not on the edge.\n";
@@ -525,12 +524,54 @@ void eter::Mage::shiftRowToEdge(Board& board) {
 		}
 		validRow = true;
 	}
+	bool destValidRow = false;
+	size_t destRow;
+	while (!destValidRow)
+	{
+		std::cout << "Introduce the row number to which you want to move the row: ";
+		std::cin >> destRow;
+		if (!board.isEdgeRow(destRow)) {
+			std::cout << "Row is not on the edge.\n";
+			continue;
+		}
+		destValidRow = true;
+	}
+	board.moveRow(row, destRow);
+	std::cout << "The row has been moved successfully\n";
 
 }
 
 void eter::Mage::shiftColumnToEdge(Board& board) {
 	std::cout << "Activating ability: Shift Column to another Edge\n";
-
+	size_t col;
+	bool validCol = false;
+	while (!validCol) {
+		std::cout << "Enter the column number to move: ";
+		std::cin >> col;
+		if (!board.isEdgeColumn(col)) {
+			std::cout << "Column is not on the edge.\n";
+			continue;
+		}
+		if (board.countOccupiedCellsOnRow(col) < 3) {
+			std::cout << "The column must have at least 3 occupied positions.\n";
+			continue;
+		}
+		validCol = true;
+	}
+	bool destValidCol = false;
+	size_t destCol;
+	while (!destValidCol)
+	{
+		std::cout << "Introduce the column number to which you want to move the row: ";
+		std::cin >> destCol;
+		if (!board.isEdgeColumn(destCol)) {
+			std::cout << "Column is not on the edge.\n";
+			continue;
+		}
+		destValidCol = true;
+	}
+	board.moveColumn(col, destCol);
+	std::cout << "The column has been moved successfully\n";
 }
 
 

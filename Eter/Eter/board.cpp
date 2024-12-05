@@ -3,7 +3,7 @@ using eter::Card;
 using eter::Board;
 const std::string_view kEmpyBoardCell{ "____" };
 import <iostream>;
-
+import <algorithm>;
 
 eter::Board::Board()
 	: m_dimMax{ 3 }, m_indexMax{ 7 },
@@ -188,7 +188,7 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 	if (m_grid[x][y].has_value())
 	{
 		const auto& stack = m_grid[x][y].value();
-	    if ((!stack.empty() && stack.top().GetValue() == 5) || (!stack.empty() && card.GetValue() == 5)) return false; // cannot place anything over eter card
+		if ((!stack.empty() && stack.top().GetValue() == 5) || (!stack.empty() && card.GetValue() == 5)) return false; // cannot place anything over eter card
 		if (!stack.empty() && card.GetColor() == stack.top().GetColor() && !stack.top().GetPosition()) { // cannot put card over your own illusion
 			return false;
 		}
@@ -358,13 +358,15 @@ std::string eter::Board::findWinnerByScore()
 	for (size_t line = 0; line < m_grid.size(); ++line) {
 		for (size_t col = 0; col < m_grid[line].size(); ++col) {
 			if (m_grid[line][col].has_value()) {
+				if (m_grid[line][col].value().top().GetValue() == '/')
+					continue;
 				if (m_grid[line][col].value().top().GetColor() == "blue")
-					if (m_grid[line][col].value().top().GetPosition() == true)
+					if (m_grid[line][col].value().top().GetPosition() == true && m_grid[line][col].value().top().GetValue() != 5)
 						score1 += m_grid[line][col].value().top().GetValue();
 					else
 						score1 += 1;
 				if (m_grid[line][col].value().top().GetColor() == "red")
-					if (m_grid[line][col].value().top().GetPosition() == true)
+					if (m_grid[line][col].value().top().GetPosition() == true && m_grid[line][col].value().top().GetValue() != 5)
 						score2 += m_grid[line][col].value().top().GetValue();
 					else
 						score2 += 1;
@@ -418,6 +420,8 @@ void Board::eliminateCardsOnRow(size_t row)
 		if (m_grid[row][col].has_value()) {
 			if (m_grid[row][col].value().top().GetValue() == 5)
 				continue;
+			if (m_grid[row][col].value().top().GetValue() == '/')
+				continue;
 			m_grid[row][col].reset(); // Elimina intregul teanc
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
 		}
@@ -451,6 +455,8 @@ void Board::eliminateCardsOnColumn(size_t col)
 		if (m_grid[row][col].has_value()) {
 			if (m_grid[row][col].value().top().GetValue() == 5)
 				continue;
+			if (m_grid[row][col].value().top().GetValue() == '/')
+				continue;
 			m_grid[row][col].reset(); // Elimina intregul teanc
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
 		}
@@ -466,7 +472,7 @@ void eter::Board::createHole(size_t row, size_t col)
 		m_grid[row][col].reset();
 	}
 	m_grid[row][col] = std::stack<Card>();
-	m_grid[row][col]->push(Card{'/', "\033[0m" , true});
+	m_grid[row][col]->push(Card{ '/', "\033[0m" , true });
 
 }
 
@@ -514,6 +520,40 @@ bool eter::Board::isEdgeColumn(size_t column) const
 {
 	return column == m_indexColMin || column == m_indexColMax;
 
+}
+
+void eter::Board::moveRow(size_t fromRow, size_t toRow) {
+
+	std::transform(
+		m_grid[fromRow].begin() + m_indexColMin,
+		m_grid[fromRow].begin() + m_indexColMax + 1,
+		m_grid[toRow].begin() + m_indexColMin,
+		[](std::optional<std::stack<Card>>& source) {
+			return std::move(source);
+		}
+	);
+	std::for_each(m_grid[fromRow].begin() + m_indexColMin,
+		m_grid[fromRow].begin() + m_indexColMax + 1,
+		[](std::optional<std::stack<Card>>& cell) {
+			cell.reset(); 
+		});
+}
+
+
+void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
+	std::transform(
+		m_grid[fromCol].begin() + m_indexLineMin,
+		m_grid[fromCol].begin() + m_indexLineMax + 1,
+		m_grid[toCol].begin() + m_indexLineMin,
+		[](std::optional<std::stack<Card>>& source) {
+			return std::move(source);
+		}
+	);
+	std::for_each(m_grid[fromCol].begin() + m_indexLineMin,
+		m_grid[fromCol].begin() + m_indexLineMax + 1,
+		[](std::optional<std::stack<Card>>& cell) {
+			cell.reset();
+		});
 }
 
 bool Board::isEmptyCell(size_t x, size_t y)
