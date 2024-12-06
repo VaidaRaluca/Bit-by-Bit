@@ -3,6 +3,8 @@
 import <fstream>;
 import <string>;
 import <stdexcept>;
+import <iostream>;
+import <sstream>;
 import player;
 import game;
 using namespace eter;
@@ -42,6 +44,87 @@ void GameManager::StartNewGame(Player player1, Player player2, const std::string
 			m_cmode->applyModeRules();
 		}
 }
+
+void GameManager::LoadGame() {
+    std::string fileName;
+    std::cout << "Enter the name of the save file to load: ";
+    std::getline(std::cin, fileName);
+
+    std::ifstream inFile(fileName, std::ios::binary);
+    if (!inFile.is_open()) {
+        throw std::runtime_error("Failed to open file for loading the game.");
+    }
+
+    std::string line;
+    std::vector<Card> cards;
+
+    // Citim datele pentru Player 1
+    std::getline(inFile, line);
+    std::string player1Name = line;
+    std::getline(inFile, line);
+    std::string player1Color = line;
+    cards.clear();
+    while (std::getline(inFile, line) && line != "---") {
+        std::istringstream cardStream(line);
+        int value;
+        std::string color;
+        bool position;
+        cardStream >> value >> color >> position;
+        cards.emplace_back(value, color, position);
+    }
+    Player player1(player1Name, player1Color);
+    player1.SetCardsInHand(cards);
+
+    // Citim datele pentru Player 2
+    std::getline(inFile, line);
+    std::string player2Name = line;
+    std::getline(inFile, line);
+    std::string player2Color = line;
+    cards.clear();
+    while (std::getline(inFile, line) && line != "---") {
+        std::istringstream cardStream(line);
+        int value;
+        std::string color;
+        bool position;
+        cardStream >> value >> color >> position;
+        cards.emplace_back(value, color, position);
+    }
+    Player player2(player2Name, player2Color);
+    player2.SetCardsInHand(cards);
+
+    Board board;
+
+    // Citire dimensiuni tabla
+    std::getline(inFile, line);
+    int rows, cols;
+    std::istringstream boardStream(line);
+    boardStream >> rows >> cols;
+
+    // Adaugare randuri si coloane
+    for (int row = 0; row < rows; ++row) {
+        std::getline(inFile, line);
+        std::istringstream rowStream(line);
+        for (int col = 0; col < cols; ++col) {
+            std::string cellContent;
+            rowStream >> cellContent;
+            if (cellContent != "empty") {
+                std::istringstream cardStream(cellContent);
+                int value;
+                std::string color;
+                bool position;
+                cardStream >> value >> color >> position;
+                board.placeCard(row, col, Card(value, color, position));
+            }
+        }
+    }
+
+    inFile.close();
+
+    // Reconstruire joc folosind metoda StartNewGame
+    StartNewGame(player1, player2, "LoadedMode");
+    std::cout << "Game successfully loaded from '" << fileName << "'!\n";
+}
+
 
 void GameManager::SaveGame() {
     std::string fileName;
