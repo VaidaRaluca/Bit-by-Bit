@@ -171,7 +171,7 @@ bool eter::Board::isAdjacentToOccupiedSpace(size_t x, size_t y)const
 	for (const auto& [dx, dy] : directions) {
 		int nx = x + dx;
 		int ny = y + dy;
-		if (isValidPosition(nx, ny) && m_grid[nx][ny].has_value() && !m_grid[nx][ny]->empty()) {
+		if (m_grid[nx][ny].has_value() && !m_grid[nx][ny]->empty()) {
 			return true; // cel putin  un spadiacent este ocupat
 		}
 	}

@@ -10,7 +10,7 @@ import<algorithm>;  // pt std::shuffle
     Explosion::Explosion(size_t size, Board board)
     {
         m_size = size;
-        m_board = board;
+        m_originalBoard = board;
     }
 
 
@@ -34,15 +34,15 @@ import<algorithm>;  // pt std::shuffle
             effectCount = 0;
 
             // Generăm efectele
-            std::vector<int> positions(m_size * m_size);
+            std::vector<size_t> positions(m_size * m_size);
             std::iota(positions.begin(), positions.end(), 0); // populeaza vect cu valori consecutive -> toate pozitiile din matrice (0, ..., size*size-1)
             std::shuffle(positions.begin(), positions.end(), gen); // amesteca valorile din vect
 
             // Plasăm efectele pe poziții aleatorii
-            for (int i = 0; i < maxEffects; ++i) {
-                int pos = positions[i];
-                int row = pos / m_size;
-                int col = pos % m_size;
+            for (size_t i = 0; i < maxEffects; ++i) {
+                size_t pos = positions[i];
+                size_t row = pos / m_size;
+                size_t col = pos % m_size;
 
                 Effect effect = static_cast<Effect>(effectDist(gen)); // Generăm efectul
                 m_effectMatrix[row][col] = effect;
@@ -57,6 +57,34 @@ import<algorithm>;  // pt std::shuffle
         } while (effectCount < minEffects); // Verificăm dacă avem suficiente efecte
    
        
+    }
+
+    void eter::Explosion::rotateClockwise()
+    {
+        size_t n = m_effectMatrix.size();
+        std::vector<std::vector<Effect>> rotated(n, std::vector<Effect>(n, Effect::NONE));
+
+        for (size_t i = 0; i < n; ++i) {
+            for (size_t j = 0; j < n; ++j) {
+                rotated[j][n - 1 - i] = m_effectMatrix[i][j];
+            }
+        }
+
+        m_effectMatrix = std::move(rotated); // Înlocuim matricea originală cu cea rotită
+    }
+
+    void eter::Explosion::rotateCounterClockwise()
+    {
+        size_t n = m_effectMatrix.size();
+        std::vector<std::vector<Effect>> rotated(n, std::vector<Effect>(n, Effect::NONE));
+
+        for (size_t i = 0; i < n; ++i) {
+            for (size_t j = 0; j < n; ++j) {
+                rotated[n - 1 - j][i] = m_effectMatrix[i][j];
+            }
+        }
+
+        m_effectMatrix = std::move(rotated);
     }
 
     void eter::Explosion::printeffectMatrix()
@@ -89,19 +117,22 @@ import<algorithm>;  // pt std::shuffle
         }
     }
 
+
     bool eter::Explosion::areEffectsAdjacent()
     {
         for(size_t line =m_board.GetIndexLineMin();line<=m_board.GetIndexLineMax();++line)
             for (size_t col = m_board.GetIndexColMin();col <= m_board.GetIndexColMax();++col)
             {
-                if (!m_board.isAdjacentToOccupiedSpace(line, col))
-                    return false;
+                if (m_board.GetGrid()[line][col].has_value() && !m_board.GetGrid()[line][col].value().empty())
+                   if (m_board.isAdjacentToOccupiedSpace(line, col)==false)
+                        return false;
             }
         return true;
     }
 
     void eter::Explosion::handleApplyEffects()
     {
+        m_board = m_originalBoard;
         size_t lineMatrixEffect{ 0 };
         size_t colMatrixEffect{ 0 };
         size_t lineBoard{m_board.GetIndexLineMin()};
@@ -133,17 +164,7 @@ import<algorithm>;  // pt std::shuffle
 
                     case Effect::CREATE_HOLE:
                     {
-                        /*eter::Card card{ '/', "red", 1 };
-                        auto& cellBoard2 = m_board[{lineBoard, colBoard}];
-                        if (!cellBoard2.has_value()) {
-                            std::stack<eter::Card> stack;
-                            stack.push(card);
-                            m_board[{lineBoard, colBoard}] = stack;
-                        }
-                        else {
-                            auto& stackRef = cellBoard2.value();
-                            stackRef.push(card);
-                        }*/
+                        m_board.createHole(lineBoard, colBoard);
                         break;
                     }
                     default:
@@ -169,9 +190,23 @@ import<algorithm>;  // pt std::shuffle
             generateRandomEffects();
             printeffectMatrix();
             handleApplyEffects();
+            std::cout << m_board;
+            for (size_t line = m_board.GetIndexLineMin();line <= m_board.GetIndexLineMax();++line)
+            {
+                for (size_t col = m_board.GetIndexColMin();col <= m_board.GetIndexColMax();++col)
+                {
+                    std::cout << (m_board.GetGrid()[line][col].has_value() && !m_board.GetGrid()[line][col].value().empty()) << " ";
+                }
+                std::cout << "\n";
+            }
 
-        } while (areEffectsAdjacent());
-        std::cout << m_board;
+        } while (areEffectsAdjacent()==false);
+
+        rotateClockwise();
+        printeffectMatrix();
+        rotateCounterClockwise();
+        printeffectMatrix();
+
         return m_board;
     }
 
