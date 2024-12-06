@@ -26,5 +26,16 @@ namespace eter
 		void StartNewGame(Player player1, Player player2, const std::string& gameMode);
 		void SaveGame();   // Metoda pentru salvarea unui joc
 		void LoadGame();   // Metoda pentru incarcarea unui joc
+
+	private:
+		std::string GetFileName() const;
+		void SavePlayer(std::ofstream& outFile, const Player& player, const std::string& header) const;
+		void SaveBoard(std::ofstream& outFile, const Board& board) const;
+		void SaveCell(std::ofstream& outFile, const std::optional<std::stack<Card>>& cell) const;
+
+		std::string GetFileNameToLoad() const;
+		Player LoadPlayer(std::ifstream& inFile) const;
+		Board LoadBoard(std::ifstream& inFile) const;
+
 	};
 }
