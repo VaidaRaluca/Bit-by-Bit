@@ -27,6 +27,7 @@ namespace eter {
         void rotateCounterClockwise(); // rotirea matricei de efecte la 90 de grade in sens invers acelor de ceasornic
         void printeffectMatrix();
         bool areEffectsAdjacent();
+        void verifyEffects();
         void handleApplyEffects();
         Board applyEffects();
 

@@ -39,8 +39,10 @@ namespace eter {
 
 		bool isValidPosition(size_t x, size_t y) const;
 		bool isAdjacentToOccupiedSpace(size_t x, size_t y)const;
+		bool existNonAdjacentCards(size_t x, size_t y);
 		bool canPlaceCard(size_t x, size_t y, const Card& card);
 		bool placeCard(size_t x, size_t y, const Card& card);
+		void updateAfterRemoval();
 		void removeCard(size_t x, size_t y);
 
 		bool isVerticalLine(const std::string& lineColor) const;

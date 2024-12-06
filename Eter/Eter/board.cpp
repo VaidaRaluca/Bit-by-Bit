@@ -171,7 +171,25 @@ bool eter::Board::isAdjacentToOccupiedSpace(size_t x, size_t y)const
 	for (const auto& [dx, dy] : directions) {
 		int nx = x + dx;
 		int ny = y + dy;
-		if (m_grid[nx][ny].has_value() && !m_grid[nx][ny]->empty()) {
+		if ( isValidPosition(nx,ny) && m_grid[nx][ny].has_value() && !m_grid[nx][ny].value().empty()) {
+			return true; // cel putin  un spadiacent este ocupat
+		}
+	}
+	return false; // niciun sp adiacent nu este ocupat
+}
+
+bool eter::Board::existNonAdjacentCards(size_t x, size_t y)
+{
+	static const std::vector<std::pair<int, int>> directions = {
+		{-1, -1}, {-1, 0}, {-1, 1},
+		{0, -1},          {0, 1},
+		{1, -1}, {1, 0}, {1, 1}
+	};
+
+	for (const auto& [dx, dy] : directions) {
+		int nx = x + dx;
+		int ny = y + dy;
+		if ( m_grid[nx][ny].has_value() && !m_grid[nx][ny].value().empty()) {
 			return true; // cel putin  un spadiacent este ocupat
 		}
 	}
@@ -249,14 +267,71 @@ bool eter::Board::placeCard(size_t x, size_t y, const Card& card)
 	return true;
 }
 
+void Board::updateAfterRemoval()
+{
+	/*size_t newLineMin, newLineMax, newColMin, newColMax;
+	newLineMin = newLineMax = newColMin = newColMax = 10;
+
+	for (size_t i = m_indexLineMin; i <= m_indexLineMax; ++i) {
+		for (size_t j = m_indexColMin; j < m_indexColMax; ++j) {
+			if (m_grid[i][j].has_value() && !m_grid[i][j]->empty()) {
+				newLineMin = std::min(newLineMin, i);
+				newLineMax = std::max(newLineMax, i);
+				newColMin = std::min(newColMin, j);
+				newColMax = std::max(newColMax, j);
+			}
+		}
+	}
+
+	m_indexLineMin = newLineMin;
+	m_indexLineMax = newLineMax;
+	m_indexColMin = newColMin;
+	m_indexColMax = newColMax;*/
+	size_t newLineMin = m_rows; // Setează inițial la valori maxime
+	size_t newLineMax = 0;
+	size_t newColMin = m_cols;
+	size_t newColMax = 0;
+	bool hasCards = false;
+
+	for (size_t i = 0; i < m_rows; ++i) {
+		for (size_t j = 0; j < m_cols; ++j) {
+			if (m_grid[i][j].has_value() && !m_grid[i][j]->empty()) {
+				hasCards = true;
+				newLineMin = std::min(newLineMin, i);
+				newLineMax = std::max(newLineMax, i);
+				newColMin = std::min(newColMin, j);
+				newColMax = std::max(newColMax, j);
+			}
+		}
+	}
+
+	if (hasCards) {
+		m_indexLineMin = newLineMin;
+		m_indexLineMax = newLineMax;
+		m_indexColMin = newColMin;
+		m_indexColMax = newColMax;
+	}
+	else {
+		// Tabla este goală, resetează limitele la valori implicite
+		m_indexLineMin = 10;
+		m_indexLineMax = 10;
+		m_indexColMin = 10;
+		m_indexColMax = 10;
+	}
+}
+
+
 void eter::Board::removeCard(size_t x, size_t y)
 {
 	if (m_grid[x][y].has_value() && !m_grid[x][y].value().empty())
 	{
 		m_grid[x][y].value().pop();
+		if (m_grid[x][y]->empty()) 
+		{
+			m_grid[x][y].reset();
+		}
+
 	}
-	if (m_grid[x][y].has_value() && m_grid[x][y].value().empty())
-		m_grid[x][y] = std::nullopt;
 }
 
 bool eter::Board::isVerticalLine(const std::string& lineColor) const {

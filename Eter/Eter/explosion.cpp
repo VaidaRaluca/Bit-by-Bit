@@ -23,7 +23,7 @@ import<algorithm>;  // pt std::shuffle
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dist(0, m_size * m_size - 1); // Generam indicii matricei
-        std::uniform_int_distribution<> effectDist(1, 3); // Tipuri de efecte (1 = REMOVE_CARD, 2 = RETURN_CARD, 3 = CREATE_HOLE)
+        std::uniform_int_distribution<> effectDist(1, 2); // Tipuri de efecte (1 = REMOVE_CARD, 2 = RETURN_CARD, 3 = CREATE_HOLE)
 
         int effectCount = 0;
 
@@ -124,10 +124,82 @@ import<algorithm>;  // pt std::shuffle
             for (size_t col = m_board.GetIndexColMin();col <= m_board.GetIndexColMax();++col)
             {
                 if (m_board.GetGrid()[line][col].has_value() && !m_board.GetGrid()[line][col].value().empty())
-                   if (m_board.isAdjacentToOccupiedSpace(line, col)==false)
+                   if (m_board.existNonAdjacentCards(line, col)==false)
                         return false;
             }
         return true;
+    }
+
+    void eter::Explosion::verifyEffects()
+    {
+            m_board = m_originalBoard;
+            size_t lineMatrixEffect{ 0 };
+            size_t colMatrixEffect{ 0 };
+            size_t lineBoard{ m_board.GetIndexLineMin() };
+            size_t colBoard{ m_board.GetIndexColMin() };
+            std::cout << static_cast<int>(lineBoard) << " " << static_cast<int>(colBoard) << " INDECSI \n";
+            while (lineMatrixEffect < m_effectMatrix.size() && lineBoard <= m_board.GetIndexLineMax())
+            {
+                while (colMatrixEffect < m_effectMatrix.size() &&
+                    colBoard <= m_board.GetIndexColMax())
+                {
+                    auto cellMatrixEffect = m_effectMatrix[lineMatrixEffect][colMatrixEffect];
+                    auto& cellBoard = m_board.GetGrid()[lineBoard][colBoard];
+                    std::cout << "Effect applied at (" << lineBoard << ", " << colBoard << "): "
+                        << static_cast<int>(cellMatrixEffect) << "\n";
+
+                    if (cellMatrixEffect != Effect::NONE) {
+                        switch (cellMatrixEffect) {
+                        case Effect::REMOVE_CARD:
+                        {
+                            m_board.removeCard(lineBoard, colBoard);
+                            if (areEffectsAdjacent() == false)
+                            {
+                                m_effectMatrix[lineMatrixEffect][colMatrixEffect] = Effect::NONE;
+                                m_board = m_originalBoard;
+                            }
+                        }
+                            break;
+
+                        case Effect::RETURN_CARD:
+                        {
+                            if (cellBoard && !cellBoard->empty()) {
+                                Card card = cellBoard->top();
+                                m_board.removeCard(lineBoard, colBoard);
+                                m_returnedCards.push_back(card);
+                            }
+                            if (areEffectsAdjacent() == false)
+                            {
+                                m_effectMatrix[lineMatrixEffect][colMatrixEffect] = Effect::NONE;
+                                m_board = m_originalBoard;
+                            }
+
+                            break;
+                        }
+                        case Effect::CREATE_HOLE:
+                        {
+                            m_board.createHole(lineBoard, colBoard);
+                            if (areEffectsAdjacent() == false)
+                            {
+                                m_effectMatrix[lineMatrixEffect][colMatrixEffect] = Effect::NONE;
+                                m_board = m_originalBoard;
+                            }
+                            break;
+                        }
+                        default:
+                            break;
+                        }
+                    }
+                    colBoard++;
+                    colMatrixEffect++;
+                }
+
+                colMatrixEffect = 0;
+                colBoard = m_board.GetIndexColMin();
+
+                lineMatrixEffect++;
+                lineBoard++;
+            }
     }
 
     void eter::Explosion::handleApplyEffects()
@@ -186,7 +258,7 @@ import<algorithm>;  // pt std::shuffle
 
     Board eter::Explosion::applyEffects()
     {
-        do {
+       /* do {
             generateRandomEffects();
             printeffectMatrix();
             handleApplyEffects();
@@ -200,12 +272,16 @@ import<algorithm>;  // pt std::shuffle
                 std::cout << "\n";
             }
 
-        } while (areEffectsAdjacent()==false);
+        } while (areEffectsAdjacent()==false);*/
 
-        rotateClockwise();
+        generateRandomEffects();
         printeffectMatrix();
-        rotateCounterClockwise();
+        verifyEffects();
         printeffectMatrix();
+        handleApplyEffects();
+        m_board.updateAfterRemoval();
+        std::cout << m_board;
+   
 
         return m_board;
     }
