@@ -87,11 +87,13 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		activateWhirlpool(board, player);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Blizzard:
+		activateBlizzard( board, player,opponent);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Waterfall:
 		activateWaterfall(board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Support:
+		activateSupport(board, player);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::EarthQuake:
 		activateEarthQuake(player, opponent, board);
@@ -331,8 +333,27 @@ void ElementalPowerCards::activateEarthQuake(Player& player, Player& opponent, B
 
 void ElementalPowerCards::activateMist(Player& player, Board& board)
 {
-	Card illusion;
-	// player.useIllusion(board, illusion);
+	uint8_t row, col;
+	std::cout << "Enter the coordinates of the position to use an illusion:";
+	std::cin >> row >> col;
+	std::vector<Card>& cardsInHand = player.GetCardsInHand();
+	int selectedCardIndex = -1;
+
+	std::cout << "Select a new illusion from your hand:\n";
+	for (size_t i = 0; i < cardsInHand.size(); ++i)
+		std::cout << i << ": " << cardsInHand[i] << "\n";
+	std::cin >> selectedCardIndex;
+
+	if (selectedCardIndex < 0 || selectedCardIndex >= cardsInHand.size()) {
+		std::cout << "Invalid selection. Mirage cancelled.\n";
+		return;
+	}
+
+	Card newIllusion = cardsInHand[selectedCardIndex];
+	player.useIllusion(row, col, board, newIllusion);
+	player.AddPlayedCard(newIllusion);
+	player.GetCardsInHand().erase(player.GetCardsInHand().begin() + selectedCardIndex);
+
 }
 
 void ElementalPowerCards::activateGale(Player& player, Player& opponent, Board& board)
@@ -1034,7 +1055,9 @@ void eter::ElementalPowerCards::activateMirage(Board& board, Player& player)
 					}
 
 					Card newIllusion = cardsInHand[selectedCardIndex];
-					player.useIllusion(static_cast<int>(row), static_cast<int>(col), board, newIllusion);
+					player.useIllusion(row, col, board, newIllusion);
+					player.AddPlayedCard(newIllusion);
+					player.GetCardsInHand().erase(player.GetCardsInHand().begin() + selectedCardIndex);
 					return;
 				}
 			}
@@ -1043,6 +1066,92 @@ void eter::ElementalPowerCards::activateMirage(Board& board, Player& player)
 
 	std::cout << "No illusion found on the board to replace.\n";
 }
+
+void eter::ElementalPowerCards::activateBlizzard(Board& board, Player& player, Player& opponent)
+{
+	bool hasFreeSpace = false;
+	for (size_t row = 0; row < board.GetRows(); ++row) 
+	{
+		for (size_t col = 0; col < board.GetCols(); ++col)
+		{
+			if (!board[{row, col}].has_value())
+			{
+				hasFreeSpace = true;
+				break;
+			}
+		}
+		if (hasFreeSpace) break;
+	}
+
+	if (!hasFreeSpace) {
+		std::cout << "Opponent does not have any free space to play a card. Blizzard cannot be activated.\n";
+		return;
+	}
+
+	int x, y;
+	std::cout << "Enter the position (row and column) to place the Blizzard card: ";
+	std::cin >> x >> y;
+
+	if (x < 0 || x >= board.GetRows() || y < 0 || y >= board.GetCols())
+	{
+		std::cout << "Invalid position. Blizzard cancelled.\n";
+		return;
+	}
+
+	if (board[{x, y}].has_value()) 
+	{
+		std::cout << "Position is already occupied. Blizzard cancelled.\n";
+		return;
+	}
+	Card blizzardCard('X', player.GetColor(),true); 
+	board[{x, y}].emplace().push(blizzardCard);
+	player.AddPlayedCard(blizzardCard);
+
+	int blockedRow = -1, blockedCol = -1;
+	char choice;
+	std::cout << "Do you want to block a row (R) or a column (C)? ";
+	std::cin >> choice;
+	if (choice == 'R' || choice == 'r') 
+	{
+		blockedRow = x;
+		std::cout << "Row " << blockedRow << " will be blocked.\n";
+	}
+	else if (choice == 'C' || choice == 'c') 
+	{
+		blockedCol = y;
+		std::cout << "Column " << blockedCol << " will be blocked.\n";
+	}
+	//continuare pentru a face oponentul sa nu poata plasa o carte in urmatoarea tura
+}
+
+void eter::ElementalPowerCards::activateSupport(Board& board, Player& player)
+{
+	int row, col;
+	std::cout << "Enter the row and column of the card to boost (1/2/3): ";
+	std::cin >> row >> col;
+
+	if (row < 0 || row >= board.GetRows() || col < 0 || col >= board.GetCols()) {
+		std::cout << "Invalid position on the board.\n";
+		return;
+	}
+
+	auto& cell = board[{row, col}];
+	if (!cell.has_value() || cell->empty()) {
+		std::cout << "No cards at the specified position.\n";
+		return;
+	}
+
+	Card& topCard = cell->top();
+
+	if (topCard.GetColor() == player.GetColor() && (topCard.GetValue() >= 1 && topCard.GetValue() <= 3))
+	{
+		int originalValue = topCard.GetValue(); 
+		topCard.SetValue(topCard.GetValue() + 1); 
+	}
+	//continuare
+}
+
+
 
 
 

@@ -64,5 +64,7 @@ namespace eter {
 		void activateFlame(Player& player, Player& opponent, Board& board);
 		void activateHurricane(Player& player, Player& opponent, Board& board);
 		void activateMirage(Board& board, Player& player);
+		void activateBlizzard(Board& board, Player& player, Player& opponent);
+		void activateSupport(Board& board, Player& player);
 	};
 }
