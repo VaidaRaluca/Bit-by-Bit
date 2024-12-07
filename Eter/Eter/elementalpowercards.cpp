@@ -99,12 +99,15 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		activateEarthQuake(player, opponent, board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Crumble:
+		activateCrumble(board, player);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Border:
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Avalanche:
+		activateAvalanche(board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Rock:
+		activateRock(board,player);
 		break;
 	default:
 		throw std::invalid_argument("Unknown power!\n!");
@@ -1150,6 +1153,150 @@ void eter::ElementalPowerCards::activateSupport(Board& board, Player& player)
 	}
 	//continuare
 }
+
+void eter::ElementalPowerCards::activateCrumble(Board& board, Player& player)
+{
+	int row, col;
+	std::cout << "Enter the row and column of the card to boost (1/2/3): ";
+	std::cin >> row >> col;
+
+	if (row < 0 || row >= board.GetRows() || col < 0 || col >= board.GetCols()) {
+		std::cout << "Invalid position on the board.\n";
+		return;
+	}
+
+	auto& cell = board[{row, col}];
+	if (!cell.has_value() || cell->empty()) {
+		std::cout << "No cards at the specified position.\n";
+		return;
+	}
+
+	Card& topCard = cell->top();
+
+	if (topCard.GetColor() == player.GetColor() && (topCard.GetValue() >= 1 && topCard.GetValue() <= 3))
+	{
+		int originalValue = topCard.GetValue();
+		topCard.SetValue(topCard.GetValue() -1);
+	}
+	//continuare
+}
+
+void eter::ElementalPowerCards::activateRock(Board& board, Player& player)
+{
+	std::vector<std::pair<int, int>> illusionPositions;
+
+	for (size_t row = 0; row < board.GetRows(); ++row) 
+	{
+		for (size_t col = 0; col < board.GetCols(); ++col)
+		{
+			auto& cell = board[{row, col}];
+			if (cell.has_value() && !cell->empty()) 
+			{
+				Card& topCard = cell->top();
+				if (topCard.GetPosition()==0) 
+					illusionPositions.push_back({ row, col });
+			}
+		}
+	}
+
+	if (illusionPositions.empty())
+	{
+		std::cout << "No Illusion cards found on the board. ROCK action cancelled.\n";
+		return;
+	}
+
+	std::cout << "Select an Illusion card to cover from the following positions:\n";
+	for (size_t i = 0; i < illusionPositions.size(); ++i)
+		std::cout << i << ": Row " << illusionPositions[i].first << ", Column " << illusionPositions[i].second << "\n";
+
+	uint8_t selectedPositionIndex;
+	std::cin >> selectedPositionIndex;
+
+	uint8_t selectedRow = illusionPositions[selectedPositionIndex].first;
+	uint8_t selectedCol = illusionPositions[selectedPositionIndex].second;
+
+	std::vector<Card>& cardsInHand = player.GetCardsInHand();
+	uint8_t selectedCardIndex ;
+
+	std::cout << "Select a card from your hand to cover the Illusion card:\n";
+	for (size_t i = 0; i < cardsInHand.size(); ++i) 
+		std::cout << i << ": " << cardsInHand[i] << "\n";
+
+	std::cin >> selectedCardIndex;
+
+	Card coverCard = cardsInHand[selectedCardIndex];
+	player.AddPlayedCard(coverCard); 
+	player.GetCardsInHand().erase(player.GetCardsInHand().begin() + selectedCardIndex);
+	auto& cell = board[{selectedRow, selectedCol}];
+	cell->push(coverCard); 
+}
+void ElementalPowerCards::activateAvalanche(Board& board) //DE VERIFICAT!!
+{
+	int row1, col1, row2, col2;
+	std::cout << "Enter the coordinates of the first stack (row col): ";
+	std::cin >> row1 >> col1;
+	std::cout << "Enter the coordinates of the second stack (row col): ";
+	std::cin >> row2 >> col2;
+
+	if ((row1 == row2 && abs(col1 - col2) == 1) || (col1 == col2 && abs(row1 - row2) == 1))
+	{
+
+		std::vector<std::pair<int, int>> emptyPositions;
+
+		if (row1 == row2)
+		{ 
+			if (col1 > 0 && !board[{row1, col1 - 1}].has_value()) 
+				emptyPositions.push_back({ row1, col1 - 1 });
+			if (col1 + 1 < board.GetCols() && !board[{row1, col1 + 1}].has_value()) 
+				emptyPositions.push_back({ row1, col1 + 1 });
+			if (col2 > 0 && !board[{row2, col2 - 1}].has_value()) 
+				emptyPositions.push_back({ row2, col2 - 1 });
+			if (col2 + 1 < board.GetCols() && !board[{row2, col2 + 1}].has_value()) 
+				emptyPositions.push_back({ row2, col2 + 1 });
+		}
+		else if (col1 == col2) 
+		{ 
+			if (row1 > 0 && !board[{row1 - 1, col1}].has_value())
+				emptyPositions.push_back({ row1 - 1, col1 });
+			if (row1 + 1 < board.GetRows() && !board[{row1 + 1, col1}].has_value()) 
+				emptyPositions.push_back({ row1 + 1, col1 });
+			if (row2 > 0 && !board[{row2 - 1, col1}].has_value()) 
+				emptyPositions.push_back({ row2 - 1, col1 });
+			if (row2 + 1 < board.GetRows() && !board[{row2 + 1, col1}].has_value()) 
+				emptyPositions.push_back({ row2 + 1, col1 });
+		}
+		if (!emptyPositions.empty()) 
+		{
+			int selectedPosition;
+			std::cout << "Select the position to shift both stacks to:\n";
+			for (size_t i = 0; i < emptyPositions.size(); ++i)
+			{
+				std::cout << i << ": (" << emptyPositions[i].first << ", " << emptyPositions[i].second << ")\n";
+			}
+			std::cin >> selectedPosition;
+
+			if (selectedPosition < 0 || selectedPosition >= emptyPositions.size())
+			{
+				std::cout << "Invalid selection. Avalanche cancelled.\n";
+				return;
+			}
+
+			auto newPos = emptyPositions[selectedPosition];
+
+			board[{newPos.first, newPos.second}] = board[{row1, col1}];
+			board[{row1, col1}].reset();
+			board[{newPos.first, newPos.second + 1}] = board[{row2, col2}];
+			board[{row2, col2}].reset();
+		}
+		else 
+			std::cout << "No valid empty positions to move the stacks. Avalanche cancelled.\n";
+	}
+	else 
+		std::cout << "The stacks are not adjacent. Avalanche cancelled.\n";
+}
+
+
+
 
 
 
