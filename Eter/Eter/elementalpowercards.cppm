@@ -63,5 +63,6 @@ namespace eter {
 		void activateWhirlpool(Board& board, Player& player);
 		void activateFlame(Player& player, Player& opponent, Board& board);
 		void activateHurricane(Player& player, Player& opponent, Board& board);
+		void activateMirage(Board& board, Player& player);
 	};
 }

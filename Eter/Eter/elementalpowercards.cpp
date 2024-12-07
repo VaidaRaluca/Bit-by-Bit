@@ -4,6 +4,7 @@ import player;
 import card;
 import <stdexcept>;
 import <unordered_map>;
+import <iostream>;
 
 using namespace eter;
 
@@ -68,6 +69,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		activateGust(board);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Mirage:
+		activateMirage(board, player);
 		break;
 	case eter::ElementalPowerCards::PowerAbility::Storm:
 		activateStorm(board, player, opponent);
@@ -566,69 +568,135 @@ void ElementalPowerCards::activateStorm(Board& board, Player& player, Player& op
 
 void ElementalPowerCards::activateWaterfall(Board& board)
 {
-	int row;
-	char direction;
-	std::cout << "Enter the row number with at least 3 occupied positions: ";
-	std::cin >> row;
-	if (row < 0 || row >= board.GetRows())
-	{
-		std::cout << "Invalid row. Try again.\n";
-		return;
-	}
+	char choice;
+	std::cout << "Choose 'R' for row or 'C' for column: ";
+	std::cin >> choice;
+	if (choice == 'R') {
+		int row;
+		char direction;
+		std::cout << "Enter the row number with at least 3 occupied positions: ";
+		std::cin >> row;
+		if (row < 0 || row >= board.GetRows())
+		{
+			std::cout << "Invalid row. Try again.\n";
+			return;
+		}
 
-	int occupiedCount = 0;
-	for (size_t col = 0; col < board.GetCols(); ++col)
-		if (board[{row, static_cast<int>(col)}].has_value())
-			++occupiedCount;
-
-	if (occupiedCount < 3)
-	{
-		std::cout << "Selected row must have at least 3 occupied positions.\n";
-		return;
-	}
-
-	std::cout << "Enter the direction of the cascade (D for down, U for up): ";
-	std::cin >> direction;
-
-	if (direction != 'D' && direction != 'U') {
-		std::cout << "Invalid direction. Try again.\n";
-		return;
-	}
-
-	std::stack<Card> finalStack;
-	if (direction == 'D')
-	{
+		int occupiedCount = 0;
 		for (size_t col = 0; col < board.GetCols(); ++col)
-		{
 			if (board[{row, static_cast<int>(col)}].has_value())
-			{
-				auto& currentStack = board[{row, static_cast<int>(col)}].value();
-				while (!currentStack.empty())
-				{
-					finalStack.push(currentStack.top());
-					currentStack.pop();
-				}
-				board[{row, static_cast<int>(col)}].reset();
-			}
-		}
-		board[{row, 0}] = finalStack;
-	}
-	else if (direction == 'U')
-	{
-		for (int col = static_cast<int>(board.GetCols() - 1); col >= 0; --col)
+				++occupiedCount;
+
+		if (occupiedCount < 3)
 		{
-			if (board[{row, col}].has_value())
+			std::cout << "Selected row must have at least 3 occupied positions.\n";
+			return;
+		}
+
+		std::cout << "Enter the direction of the cascade (D for down, U for up): ";
+		std::cin >> direction;
+
+		if (direction != 'D' && direction != 'U') {
+			std::cout << "Invalid direction. Try again.\n";
+			return;
+		}
+
+		std::stack<Card> finalStack;
+		if (direction == 'D')
+		{
+			for (size_t col = 0; col < board.GetCols(); ++col)
 			{
-				auto& currentStack = board[{row, col}].value();
-				while (!currentStack.empty())
+				if (board[{row, static_cast<int>(col)}].has_value())
 				{
-					finalStack.push(currentStack.top());
-					currentStack.pop();
+					auto& currentStack = board[{row, static_cast<int>(col)}].value();
+					while (!currentStack.empty())
+					{
+						finalStack.push(currentStack.top());
+						currentStack.pop();
+					}
+					board[{row, static_cast<int>(col)}].reset();
 				}
-				board[{row, col}].reset();
+			}
+			board[{row, 0}] = finalStack;
+		}
+		else if (direction == 'U')
+		{
+			for (int col = static_cast<int>(board.GetCols() - 1); col >= 0; --col)
+			{
+				if (board[{row, col}].has_value())
+				{
+					auto& currentStack = board[{row, col}].value();
+					while (!currentStack.empty())
+					{
+						finalStack.push(currentStack.top());
+						currentStack.pop();
+					}
+					board[{row, col}].reset();
+				}
+			}
+			board[{row, static_cast<int>(board.GetCols() - 1)}] = finalStack;
+		}
+	}
+	else if (choice == 'C') {
+		int col;
+		char direction;
+		std::cout << "Enter the column number with at least 3 occupied positions: ";
+		std::cin >> col;
+		if (col < 0 || col >= board.GetCols()) {
+			std::cout << "Invalid column. Try again.\n";
+			return;
+		}
+
+		int occupiedCount = 0;
+		for (size_t row = 0; row < board.GetRows(); ++row) {
+			if (board[{static_cast<int>(row), col}].has_value()) {
+				++occupiedCount;
 			}
 		}
-		board[{row, static_cast<int>(board.GetCols() - 1)}] = finalStack;
+
+		if (occupiedCount < 3) {
+			std::cout << "Selected column must have at least 3 occupied positions.\n";
+			return;
+		}
+
+		std::cout << "Enter the direction of the cascade (U for up, D for down): ";
+		std::cin >> direction;
+
+		if (direction != 'U' && direction != 'D') {
+			std::cout << "Invalid direction. Try again.\n";
+			return;
+		}
+
+		std::stack<Card> finalStack;
+		if (direction == 'U') {
+			for (size_t row = 0; row < board.GetRows(); ++row) {
+				if (board[{static_cast<int>(row), col}].has_value()) {
+					auto& currentStack = board[{static_cast<int>(row), col}].value();
+					while (!currentStack.empty()) {
+						finalStack.push(currentStack.top());
+						currentStack.pop();
+					}
+					board[{static_cast<int>(row), col}].reset();
+				}
+			}
+			board[{0, col}] = finalStack;
+		}
+		else if (direction == 'D') {
+			for (int row = static_cast<int>(board.GetRows() - 1); row >= 0; --row) {
+				if (board[{row, col}].has_value()) {
+					auto& currentStack = board[{row, col}].value();
+					while (!currentStack.empty()) {
+						finalStack.push(currentStack.top());
+						currentStack.pop();
+					}
+					board[{row, col}].reset();
+				}
+			}
+			board[{static_cast<int>(board.GetRows() - 1), col}] = finalStack;
+		}
+	}
+	else {
+		std::cout << "Invalid choice. Choose 'R' for row or 'C' for column.\n";
 	}
 }
 
@@ -936,6 +1004,44 @@ void eter::ElementalPowerCards::activateHurricane(Player& player, Player& oppone
 	else {
 		std::cout << "Invalid type. Choose 'R' or 'C'.\n";
 	}
+}
+
+void eter::ElementalPowerCards::activateMirage(Board& board, Player& player)
+{
+	for (size_t row = 0; row < board.GetRows(); ++row) {
+		for (size_t col = 0; col < board.GetCols(); ++col) {
+			auto& cell = board[{row, col}];
+
+			if (cell.has_value() && !cell->empty()) 
+			{
+				Card& topCard = cell->top();
+				if (topCard.GetColor() == player.GetColor() && !topCard.GetPosition()) 
+				{
+					cell->pop();
+					player.AddCardToHand(topCard);
+					
+					std::vector<Card>& cardsInHand = player.GetCardsInHand();
+					int selectedCardIndex = -1;
+
+					std::cout << "Select a new illusion from your hand:\n";
+					for (size_t i = 0; i < cardsInHand.size(); ++i) 
+						std::cout << i << ": " << cardsInHand[i] << "\n";
+					std::cin >> selectedCardIndex;
+
+					if (selectedCardIndex < 0 || selectedCardIndex >= cardsInHand.size()) {
+						std::cout << "Invalid selection. Mirage cancelled.\n";
+						return;
+					}
+
+					Card newIllusion = cardsInHand[selectedCardIndex];
+					player.useIllusion(static_cast<int>(row), static_cast<int>(col), board, newIllusion);
+					return;
+				}
+			}
+		}
+	}
+
+	std::cout << "No illusion found on the board to replace.\n";
 }
 
 
