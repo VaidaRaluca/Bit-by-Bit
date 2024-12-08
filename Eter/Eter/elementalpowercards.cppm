@@ -1,6 +1,8 @@
 export module elementalpowercards;
 import board;
 import player;
+import std;
+import <ostream>;
 
 namespace eter {
 
@@ -69,5 +71,6 @@ namespace eter {
 		void activateCrumble(Board& board, Player& player);
 		void activateRock(Board& board, Player& player);
 		void activateAvalanche(Board& board);
-	};
+ 	};
+	export std::ostream& operator<<(std::ostream& os, ElementalPowerCards::PowerAbility ability);
 }

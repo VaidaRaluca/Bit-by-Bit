@@ -1,4 +1,4 @@
-module cmode;
+﻿module cmode;
 using namespace eter;
 import card;
 import player;
@@ -7,6 +7,7 @@ import gamemanager;
 import <random>;
 import <iostream>;
 import <string>;
+import<ostream>;
 
 CMode::CMode(Game* game): m_game{game}
 {}
@@ -169,34 +170,41 @@ void eter::CMode::handleOption()
         break;
     case OPTION_3:
         break;
-    case OPTION_4:
-        if (!activatedPower1)
-        {
-            if (m_game->GetIsPlayerTurn())
-            {
-                m_power1Player1.activate(m_game->GetPlayer1Ref(), m_game->GetPlayer2Ref(), m_game->GetBoardRef());
-                m_game->SetIsPlayerTurn();
-            }
-            else
-            {
-                m_power1Player2.activate(m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
-                m_game->SetIsPlayerTurn();
-            }
-            activatedPower1 = 1;
+    case OPTION_4: {
+        // Selectarea unei puteri elementale
+        std::cout << "Select an elemental power:\n";
+        int abilityIndex = 0;
+        for (int i = 0; i <= static_cast<int>(eter::ElementalPowerCards::PowerAbility::Rock); ++i) {
+            std::cout << i << " - " << static_cast<eter::ElementalPowerCards::PowerAbility>(i) << "\n";
+        }
+        std::cin >> abilityIndex;
+
+        if (abilityIndex < 0 || abilityIndex > static_cast<int>(eter::ElementalPowerCards::PowerAbility::Rock)) {
+            std::cout << "Invalid ability selection.\n";
+            break;
+        }
+
+        eter::ElementalPowerCards::PowerAbility selectedAbility =
+            static_cast<eter::ElementalPowerCards::PowerAbility>(abilityIndex);
+
+        eter::ElementalPowerCards elementalPower(selectedAbility);
+
+        // Verificăm dacă puterea a fost utilizată
+        if (elementalPower.getUsed()) {
+            std::cout << "This power has already been used.\n";
         }
         else {
-            if (m_game->GetIsPlayerTurn())
-            {
-                m_power2Player1.activate(m_game->GetPlayer1Ref(), m_game->GetPlayer2Ref(), m_game->GetBoardRef());
-                m_game->SetIsPlayerTurn();
+            if (m_game->GetIsPlayerTurn()) {
+                elementalPower.activate(m_game->GetPlayer1Ref(), m_game->GetPlayer2Ref(), m_game->GetBoardRef());
             }
-            else
-            {
-                m_power2Player2.activate(m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
-                m_game->SetIsPlayerTurn();
+            else {
+                elementalPower.activate(m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
             }
+            elementalPower.setUsed(true);
+            std::cout << "Power activated successfully!\n";
         }
         break;
+    }
     default:
         std::cout << "Invalid option.\n";
         break;

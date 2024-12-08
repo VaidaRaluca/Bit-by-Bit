@@ -6,7 +6,87 @@ import <stdexcept>;
 import <unordered_map>;
 import <iostream>;
 
-using namespace eter;
+namespace eter{
+std::ostream& operator<<(std::ostream& os, ElementalPowerCards::PowerAbility ability) {
+	switch (ability) {
+	case ElementalPowerCards::PowerAbility::ControlledExplosion:
+		os << "Controlled Explosion";
+		break;
+	case ElementalPowerCards::PowerAbility::Destruction:
+		os << "Destruction";
+		break;
+	case ElementalPowerCards::PowerAbility::Flame:
+		os << "Flame";
+		break;
+	case ElementalPowerCards::PowerAbility::Fire:
+		os << "Fire";
+		break;
+	case ElementalPowerCards::PowerAbility::ASH:
+		os << "ASH";
+		break;
+	case ElementalPowerCards::PowerAbility::Spark:
+		os << "Spark";
+		break;
+	case ElementalPowerCards::PowerAbility::Squall:
+		os << "Squall";
+		break;
+	case ElementalPowerCards::PowerAbility::Gale:
+		os << "Gale";
+		break;
+	case ElementalPowerCards::PowerAbility::Hurricane:
+		os << "Hurricane";
+		break;
+	case ElementalPowerCards::PowerAbility::Gust:
+		os << "Gust";
+		break;
+	case ElementalPowerCards::PowerAbility::Mirage:
+		os << "Mirage";
+		break;
+	case ElementalPowerCards::PowerAbility::Storm:
+		os << "Storm";
+		break;
+	case ElementalPowerCards::PowerAbility::Tide:
+		os << "Tide";
+		break;
+	case ElementalPowerCards::PowerAbility::Mist:
+		os << "Mist";
+		break;
+	case ElementalPowerCards::PowerAbility::Wave:
+		os << "Wave";
+		break;
+	case ElementalPowerCards::PowerAbility::Whirlpool:
+		os << "Whirlpool";
+		break;
+	case ElementalPowerCards::PowerAbility::Blizzard:
+		os << "Blizzard";
+		break;
+	case ElementalPowerCards::PowerAbility::Waterfall:
+		os << "Waterfall";
+		break;
+	case ElementalPowerCards::PowerAbility::Support:
+		os << "Support";
+		break;
+	case ElementalPowerCards::PowerAbility::EarthQuake:
+		os << "Earthquake";
+		break;
+	case ElementalPowerCards::PowerAbility::Crumble:
+		os << "Crumble";
+		break;
+	case ElementalPowerCards::PowerAbility::Border:
+		os << "Border";
+		break;
+	case ElementalPowerCards::PowerAbility::Avalanche:
+		os << "Avalanche";
+		break;
+	case ElementalPowerCards::PowerAbility::Rock:
+		os << "Rock";
+		break;
+	default:
+		os << "Unknown Ability";
+		break;
+	}
+	return os;
+}
 
 ElementalPowerCards::ElementalPowerCards(PowerAbility power) : 
 	m_power{power},
@@ -115,36 +195,12 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 	}
 	m_used = true;
 }
-
 void ElementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board)
 {
-	const auto& opponentPlayedCards = opponent.GetPlayedCards();
-	if (opponentPlayedCards.empty()) {
-		throw std::invalid_argument("The opponent has not played any cards!\n");
-	}
-	Card lastCardPlayed = opponentPlayedCards.back();
-	auto& grid = board.GetGrid();
-	for (size_t i = 0; i < board.GetRows(); ++i)
-	{
-		for (size_t j = 0; j < board.GetCols(); ++j)
-		{
-			auto& stackOpt = grid[i][j]; 
-			if (stackOpt.has_value())
-			{
-				std::stack<Card> cardStack = stackOpt.value();
-				if (!cardStack.empty() && cardStack.top() == lastCardPlayed)
-				{
-					cardStack.pop();
-					std::cout << "The card with value " << lastCardPlayed.GetValue()
-						<< " and color " << lastCardPlayed.GetColor()
-						<< " has been removed from the game!\n";
-					return; 
-				}
-			}
-		}
-	}
-	throw std::invalid_argument("The card was not found on the board!");
+	std::cout << "Avtivate power1 ";
 }
+
+
 
 void ElementalPowerCards::activateSquall(Player& opponent)
 {
@@ -1294,7 +1350,7 @@ void ElementalPowerCards::activateAvalanche(Board& board) //DE VERIFICAT!!
 	else 
 		std::cout << "The stacks are not adjacent. Avalanche cancelled.\n";
 }
-
+};
 
 
 

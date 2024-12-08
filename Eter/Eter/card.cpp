@@ -75,7 +75,7 @@ void Card::SetPosition(bool position)
 
 bool eter::Card::operator==(const Card& other) const
 {
-	return m_value == other.m_value && m_color == other.m_color && m_position == other.m_position;
+	return this->m_value == other.m_value && this->m_color == other.m_color;
 }
 
 void eter::Card::swap(Card& other) noexcept

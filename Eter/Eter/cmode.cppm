@@ -35,6 +35,7 @@ namespace eter {
 		ElementalPowerCards m_power1Player1,m_power2Player1;
 		ElementalPowerCards m_power1Player2,m_power2Player2;
 		Game* m_game;
+		Player m_player;
 		const uint8_t knrRoundsForWin = 3;
 	public:
 		CMode() =default;
