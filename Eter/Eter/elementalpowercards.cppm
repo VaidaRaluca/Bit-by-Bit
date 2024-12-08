@@ -1,4 +1,4 @@
-export module elementalpowercards;
+﻿export module elementalpowercards;
 import board;
 import player;
 import std;
@@ -6,50 +6,79 @@ import <ostream>;
 
 namespace eter {
 
-	export class ElementalPowerCards {
+	export class elementalPowerCards {
 	public:
-		enum class PowerAbility {
-			ControlledExplosion,
-			Destruction,
-			Flame,
-			Fire,
-			ASH,
-			Spark,
-			Squall,
-			Gale,
-			Hurricane,
-			Gust,
-			Mirage,
-			Storm,
-			Tide,
-			Mist,
-			Wave,
-			Whirlpool,
-			Blizzard,
-			Waterfall,
-			Support,
-			EarthQuake,
-			Crumble,
-			Border,
-			Avalanche,
-			Rock
-	};
+		enum class powerAbility {
+			controlledExplosion,
+			destruction,
+			flame,
+			fire,
+			ash,
+			spark,
+			squall,
+			gale,
+			hurricane,
+			gust,
+			mirage,
+			storm,
+			tide,
+			mist,
+			wave,
+			whirlpool,
+			blizzard,
+			waterfall,
+			support,
+			earthQuake,
+			crumble,
+			border,
+			avalanche,
+			rock
+		};
+
 	private:
-		PowerAbility m_power;
-		bool m_used;
+		powerAbility m_power = powerAbility::controlledExplosion;
+		bool m_used = false;
 
 	public:
-		ElementalPowerCards()=default;
-		ElementalPowerCards(PowerAbility power);
-		void setUsed(bool used);
-		bool getUsed() const;
-		void setAbility(PowerAbility power);
-		PowerAbility getAbility() const;
+ 		elementalPowerCards() = default;
+
+ 		elementalPowerCards(powerAbility power) : m_power(power), m_used(false) {}
+
+ 		elementalPowerCards(const elementalPowerCards& other)
+			: m_power(other.m_power), m_used(other.m_used) {
+		}
+
+ 		elementalPowerCards& operator=(const elementalPowerCards& other) {
+			if (this != &other) { 
+				m_power = other.m_power;
+				m_used = other.m_used;
+			}
+			return *this;
+		}
+
+ 		elementalPowerCards(elementalPowerCards&& other) noexcept
+			: m_power(std::move(other.m_power)), m_used(std::move(other.m_used)) {
+			 
+		}
+
+ 		elementalPowerCards& operator=(elementalPowerCards&& other) noexcept {
+			if (this != &other) { 
+				m_power = std::move(other.m_power);
+				m_used = std::move(other.m_used);
+			}
+			return *this;
+		}
+
+ 		~elementalPowerCards() = default;
+
+ 		void setUsed(bool used) { m_used = used; }
+		bool getUsed() const { return m_used; }
+		void setAbility(powerAbility power) { m_power = power; }
+		powerAbility getAbility() const { return m_power; }
 		void activate(Player& player, Player& opponent, Board& board);
-		~ElementalPowerCards()=default;
 
 	private:
-		void activateDestruction(Player& player, Player& opponent, Board& board);
+ 		void activateDestruction(Player& player, Player& opponent, Board& board);
 		void activateSquall(Player& opponent);
 		void activateFire(Player& player, Player& opponent, Board& board);
 		void activateASH(Player& player, Board& board);
@@ -71,6 +100,8 @@ namespace eter {
 		void activateCrumble(Board& board, Player& player);
 		void activateRock(Board& board, Player& player);
 		void activateAvalanche(Board& board);
- 	};
-	export std::ostream& operator<<(std::ostream& os, ElementalPowerCards::PowerAbility ability);
+		friend void swap(elementalPowerCards& first, elementalPowerCards& second) noexcept;
+	};
+
+ 	export std::ostream& operator<<(std::ostream& os, elementalPowerCards::powerAbility ability);
 }

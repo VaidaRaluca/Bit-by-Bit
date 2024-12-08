@@ -7,78 +7,84 @@ import <unordered_map>;
 import <iostream>;
 
 namespace eter{
-std::ostream& operator<<(std::ostream& os, ElementalPowerCards::PowerAbility ability) {
+	void swap(elementalPowerCards& first, elementalPowerCards& second) noexcept
+	{
+		using std::swap;
+		swap(first.m_power, second.m_power);
+		swap(first.m_used, second.m_used);
+	}
+	std::ostream& operator<<(std::ostream& os, elementalPowerCards::powerAbility ability) {
 	switch (ability) {
-	case ElementalPowerCards::PowerAbility::ControlledExplosion:
+	case elementalPowerCards::powerAbility::controlledExplosion:
 		os << "Controlled Explosion";
 		break;
-	case ElementalPowerCards::PowerAbility::Destruction:
+	case elementalPowerCards::powerAbility::destruction:
 		os << "Destruction";
 		break;
-	case ElementalPowerCards::PowerAbility::Flame:
+	case elementalPowerCards::powerAbility::flame:
 		os << "Flame";
 		break;
-	case ElementalPowerCards::PowerAbility::Fire:
+	case elementalPowerCards::powerAbility::fire:
 		os << "Fire";
 		break;
-	case ElementalPowerCards::PowerAbility::ASH:
+	case elementalPowerCards::powerAbility::ash:
 		os << "ASH";
 		break;
-	case ElementalPowerCards::PowerAbility::Spark:
+	case elementalPowerCards::powerAbility::spark:
 		os << "Spark";
 		break;
-	case ElementalPowerCards::PowerAbility::Squall:
+	case elementalPowerCards::powerAbility::squall:
 		os << "Squall";
 		break;
-	case ElementalPowerCards::PowerAbility::Gale:
+	case elementalPowerCards::powerAbility::gale:
 		os << "Gale";
 		break;
-	case ElementalPowerCards::PowerAbility::Hurricane:
+	case elementalPowerCards::powerAbility::hurricane:
 		os << "Hurricane";
 		break;
-	case ElementalPowerCards::PowerAbility::Gust:
+	case elementalPowerCards::powerAbility::gust:
 		os << "Gust";
 		break;
-	case ElementalPowerCards::PowerAbility::Mirage:
+	case elementalPowerCards::powerAbility::mirage:
 		os << "Mirage";
 		break;
-	case ElementalPowerCards::PowerAbility::Storm:
+	case elementalPowerCards::powerAbility::storm:
 		os << "Storm";
 		break;
-	case ElementalPowerCards::PowerAbility::Tide:
+	case elementalPowerCards::powerAbility::tide:
 		os << "Tide";
 		break;
-	case ElementalPowerCards::PowerAbility::Mist:
+	case elementalPowerCards::powerAbility::mist:
 		os << "Mist";
 		break;
-	case ElementalPowerCards::PowerAbility::Wave:
+	case elementalPowerCards::powerAbility::wave:
 		os << "Wave";
 		break;
-	case ElementalPowerCards::PowerAbility::Whirlpool:
+	case elementalPowerCards::powerAbility::whirlpool:
 		os << "Whirlpool";
 		break;
-	case ElementalPowerCards::PowerAbility::Blizzard:
+	case elementalPowerCards::powerAbility::blizzard:
 		os << "Blizzard";
 		break;
-	case ElementalPowerCards::PowerAbility::Waterfall:
+	case elementalPowerCards::powerAbility::waterfall:
 		os << "Waterfall";
 		break;
-	case ElementalPowerCards::PowerAbility::Support:
+	case elementalPowerCards::powerAbility::support:
 		os << "Support";
 		break;
-	case ElementalPowerCards::PowerAbility::EarthQuake:
+	case elementalPowerCards::powerAbility::earthQuake:
 		os << "Earthquake";
 		break;
-	case ElementalPowerCards::PowerAbility::Crumble:
+	case elementalPowerCards::powerAbility::crumble:
 		os << "Crumble";
 		break;
-	case ElementalPowerCards::PowerAbility::Border:
+	case elementalPowerCards::powerAbility::border:
 		os << "Border";
 		break;
-	case ElementalPowerCards::PowerAbility::Avalanche:
+	case elementalPowerCards::powerAbility::avalanche:
 		os << "Avalanche";
 		break;
-	case ElementalPowerCards::PowerAbility::Rock:
+	case elementalPowerCards::powerAbility::rock:
 		os << "Rock";
 		break;
 	default:
@@ -88,105 +94,105 @@ std::ostream& operator<<(std::ostream& os, ElementalPowerCards::PowerAbility abi
 	return os;
 }
 
-ElementalPowerCards::ElementalPowerCards(PowerAbility power) : 
+elementalPowerCards::elementalPowerCards(powerAbility power) : 
 	m_power{power},
 	m_used{false}
 {}
 
-void ElementalPowerCards:: setUsed(bool used)
+void elementalPowerCards:: setUsed(bool used)
 {
 	m_used = used;
 }
 
-bool ElementalPowerCards::getUsed() const
+bool elementalPowerCards::getUsed() const
 {
 	return m_used;
 }
 
-void ElementalPowerCards::setAbility(PowerAbility power)
+void elementalPowerCards::setAbility(powerAbility power)
 {
 	m_power = power;
 }
 
-ElementalPowerCards::PowerAbility ElementalPowerCards::getAbility() const
+elementalPowerCards::powerAbility elementalPowerCards::getAbility() const
 {
-	return PowerAbility();
+	return powerAbility();
 }
-void ElementalPowerCards::activate(Player& player, Player& opponent, Board& board) 
+void elementalPowerCards::activate(Player& player, Player& opponent, Board& board) 
 {
 	if (m_used)
 		throw std::runtime_error("The elemental power has already been used!\n");
 	switch (m_power)
 	{
-	case eter::ElementalPowerCards::PowerAbility::ControlledExplosion:
+	case eter::elementalPowerCards::powerAbility::controlledExplosion:
 		//se va apela o functie pentru puterea respectiva
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Destruction:
+	case eter::elementalPowerCards::powerAbility::destruction:
 		activateDestruction(player, opponent, board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Flame:
+	case eter::elementalPowerCards::powerAbility::flame:
 		activateFlame(player,opponent,board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Fire:
+	case eter::elementalPowerCards::powerAbility::fire:
 		activateFire(player, opponent, board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::ASH:
+	case eter::elementalPowerCards::powerAbility::ash:
 		activateASH(player, board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Spark:
+	case eter::elementalPowerCards::powerAbility::spark:
 		activateSpark(player, board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Squall:
+	case eter::elementalPowerCards::powerAbility::squall:
 		activateSquall(opponent);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Gale:
+	case eter::elementalPowerCards::powerAbility::gale:
 		activateGale(player, opponent, board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Hurricane:
+	case eter::elementalPowerCards::powerAbility::hurricane:
 		activateHurricane(player, opponent,board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Gust:
+	case eter::elementalPowerCards::powerAbility::gust:
 		activateGust(board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Mirage:
+	case eter::elementalPowerCards::powerAbility::mirage:
 		activateMirage(board, player);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Storm:
+	case eter::elementalPowerCards::powerAbility::storm:
 		activateStorm(board, player, opponent);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Tide:
+	case eter::elementalPowerCards::powerAbility::tide:
 		activateTide(board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Mist:
+	case eter::elementalPowerCards::powerAbility::mist:
 		activateMist(player, board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Wave:
+	case eter::elementalPowerCards::powerAbility::wave:
 		activateWave(board, player);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Whirlpool:
+	case eter::elementalPowerCards::powerAbility::whirlpool:
 		activateWhirlpool(board, player);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Blizzard:
+	case eter::elementalPowerCards::powerAbility::blizzard:
 		activateBlizzard( board, player,opponent);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Waterfall:
+	case eter::elementalPowerCards::powerAbility::waterfall:
 		activateWaterfall(board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Support:
+	case eter::elementalPowerCards::powerAbility::support:
 		activateSupport(board, player);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::EarthQuake:
+	case eter::elementalPowerCards::powerAbility::earthQuake:
 		activateEarthQuake(player, opponent, board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Crumble:
+	case eter::elementalPowerCards::powerAbility::crumble:
 		activateCrumble(board, player);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Border:
+	case eter::elementalPowerCards::powerAbility::border:
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Avalanche:
+	case eter::elementalPowerCards::powerAbility::avalanche:
 		activateAvalanche(board);
 		break;
-	case eter::ElementalPowerCards::PowerAbility::Rock:
+	case eter::elementalPowerCards::powerAbility::rock:
 		activateRock(board,player);
 		break;
 	default:
@@ -195,7 +201,7 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 	}
 	m_used = true;
 }
-void ElementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board)
+void elementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board)
 {
 
 	const auto& opponentPlayedCards = opponent.GetPlayedCards();
@@ -262,7 +268,7 @@ void ElementalPowerCards::activateDestruction(Player& player, Player& opponent, 
 
 
 
-void ElementalPowerCards::activateSquall(Player& opponent)
+void elementalPowerCards::activateSquall(Player& opponent)
 {
 	auto& playedCards = opponent.GetPlayedCards();
 	auto it = std::find_if(playedCards.begin(), playedCards.end(), [](const Card& card) {
@@ -281,7 +287,7 @@ void ElementalPowerCards::activateSquall(Player& opponent)
 	}
 }
 
-void ElementalPowerCards::activateFire(Player& player, Player& opponent, Board& board)
+void elementalPowerCards::activateFire(Player& player, Player& opponent, Board& board)
 {
 	std::unordered_map<uint8_t, uint8_t> visibleCardCounts;
 
@@ -338,7 +344,7 @@ void ElementalPowerCards::activateFire(Player& player, Player& opponent, Board& 
 	}
 }
 
-void ElementalPowerCards::activateASH(Player& player, Board& board)
+void elementalPowerCards::activateASH(Player& player, Board& board)
 {
 	auto& eliminatedCards = player.GetEliminatedCards();
 
@@ -379,7 +385,7 @@ void ElementalPowerCards::activateASH(Player& player, Board& board)
 	eliminatedCards.erase(eliminatedCards.begin() + (choice - 1));
 }
 
-void ElementalPowerCards::activateSpark(Player& player, Board& board)
+void elementalPowerCards::activateSpark(Player& player, Board& board)
 {
 	bool cardFound = false; 
 	for (size_t row = 0; row < board.GetRows(); ++row) 
@@ -416,7 +422,7 @@ void ElementalPowerCards::activateSpark(Player& player, Board& board)
 	}
 }
 
-void ElementalPowerCards::activateEarthQuake(Player& player, Player& opponent, Board& board)
+void elementalPowerCards::activateEarthQuake(Player& player, Player& opponent, Board& board)
 {
 	for (int row = 0; row < board.GetRows(); ++row)
 	{
@@ -450,7 +456,7 @@ void ElementalPowerCards::activateEarthQuake(Player& player, Player& opponent, B
 	}
 }
 
-void ElementalPowerCards::activateMist(Player& player, Board& board)
+void elementalPowerCards::activateMist(Player& player, Board& board)
 {
 	uint8_t row, col;
 	std::cout << "Enter the coordinates of the position to use an illusion:";
@@ -475,7 +481,7 @@ void ElementalPowerCards::activateMist(Player& player, Board& board)
 
 }
 
-void ElementalPowerCards::activateGale(Player& player, Player& opponent, Board& board)
+void elementalPowerCards::activateGale(Player& player, Player& opponent, Board& board)
 {
 	for (int row = 0; row < static_cast<int>(board.GetRows()); ++row)
 	{
@@ -507,7 +513,7 @@ void ElementalPowerCards::activateGale(Player& player, Player& opponent, Board& 
 		}
 	}
 }
-void ElementalPowerCards::activateGust(Board& board)
+void elementalPowerCards::activateGust(Board& board)
 {
 	int selectedRow, selectedCol;
 	bool validCardSelected = false;
@@ -572,7 +578,7 @@ void ElementalPowerCards::activateGust(Board& board)
 	std::cout << "Card placed successfully on position (" << chosenRow << ", " << chosenCol << ").\n";
 }
 
-void ElementalPowerCards::activateTide(Board& board)
+void elementalPowerCards::activateTide(Board& board)
 {
 	int row1, col1, row2, col2;
 	std::cout << "Enter the coordinates for the first stack (row, column): ";
@@ -626,7 +632,7 @@ void ElementalPowerCards::activateTide(Board& board)
 	}
 }
 
-void ElementalPowerCards::activateWave(Board& board, Player& player)
+void elementalPowerCards::activateWave(Board& board, Player& player)
 {
 	int row, col;
 	std::cout << "Enter the coordinates of the stack to move (row, column): ";
@@ -679,7 +685,7 @@ void ElementalPowerCards::activateWave(Board& board, Player& player)
 	player.GetCardsInHand().erase(player.GetCardsInHand().begin() + cardIndex - 1);
 }
 
-void ElementalPowerCards::activateStorm(Board& board, Player& player, Player& opponent)
+void elementalPowerCards::activateStorm(Board& board, Player& player, Player& opponent)
 {
 	for (size_t row = 0; row < board.GetRows(); ++row)
 	{
@@ -706,7 +712,7 @@ void ElementalPowerCards::activateStorm(Board& board, Player& player, Player& op
 	}
 }
 
-void ElementalPowerCards::activateWaterfall(Board& board)
+void elementalPowerCards::activateWaterfall(Board& board)
 {
 	char choice;
 	std::cout << "Choose 'R' for row or 'C' for column: ";
@@ -840,7 +846,7 @@ void ElementalPowerCards::activateWaterfall(Board& board)
 	}
 }
 
-void ElementalPowerCards::activateWhirlpool(Board& board, Player& player)
+void elementalPowerCards::activateWhirlpool(Board& board, Player& player)
 {
 	int row1, col1, row2, col2;
 	std::cout << "Enter the coordinates for the first card (row, column): ";
@@ -910,7 +916,7 @@ void ElementalPowerCards::activateWhirlpool(Board& board, Player& player)
 		std::cout << "The positions are not adjacent. Please select adjacent positions.\n";
 }
 
-void eter::ElementalPowerCards::activateFlame(Player& player,Player& opponent, Board& board)
+void eter::elementalPowerCards::activateFlame(Player& player,Player& opponent, Board& board)
 {
 	bool illusionFound = false;
 
@@ -974,7 +980,7 @@ void eter::ElementalPowerCards::activateFlame(Player& player,Player& opponent, B
 	cell->push(selectedCard);
 }
 
-void eter::ElementalPowerCards::activateHurricane(Player& player, Player& opponent,Board& board)
+void eter::elementalPowerCards::activateHurricane(Player& player, Player& opponent,Board& board)
 {
 	char type;
 	size_t index;
@@ -1146,7 +1152,7 @@ void eter::ElementalPowerCards::activateHurricane(Player& player, Player& oppone
 	}
 }
 
-void eter::ElementalPowerCards::activateMirage(Board& board, Player& player)
+void eter::elementalPowerCards::activateMirage(Board& board, Player& player)
 {
 	for (size_t row = 0; row < board.GetRows(); ++row) {
 		for (size_t col = 0; col < board.GetCols(); ++col) {
@@ -1186,7 +1192,7 @@ void eter::ElementalPowerCards::activateMirage(Board& board, Player& player)
 	std::cout << "No illusion found on the board to replace.\n";
 }
 
-void eter::ElementalPowerCards::activateBlizzard(Board& board, Player& player, Player& opponent)
+void eter::elementalPowerCards::activateBlizzard(Board& board, Player& player, Player& opponent)
 {
 	bool hasFreeSpace = false;
 	for (size_t row = 0; row < board.GetRows(); ++row) 
@@ -1243,7 +1249,7 @@ void eter::ElementalPowerCards::activateBlizzard(Board& board, Player& player, P
 	//continuare pentru a face oponentul sa nu poata plasa o carte in urmatoarea tura
 }
 
-void eter::ElementalPowerCards::activateSupport(Board& board, Player& player)
+void eter::elementalPowerCards::activateSupport(Board& board, Player& player)
 {
 	int row, col;
 	std::cout << "Enter the row and column of the card to boost (1/2/3): ";
@@ -1270,7 +1276,7 @@ void eter::ElementalPowerCards::activateSupport(Board& board, Player& player)
 	//continuare
 }
 
-void eter::ElementalPowerCards::activateCrumble(Board& board, Player& player)
+void eter::elementalPowerCards::activateCrumble(Board& board, Player& player)
 {
 	int row, col;
 	std::cout << "Enter the row and column of the card to boost (1/2/3): ";
@@ -1297,7 +1303,7 @@ void eter::ElementalPowerCards::activateCrumble(Board& board, Player& player)
 	//continuare
 }
 
-void eter::ElementalPowerCards::activateRock(Board& board, Player& player)
+void eter::elementalPowerCards::activateRock(Board& board, Player& player)
 {
 	std::vector<std::pair<int, int>> illusionPositions;
 
@@ -1346,7 +1352,7 @@ void eter::ElementalPowerCards::activateRock(Board& board, Player& player)
 	auto& cell = board[{selectedRow, selectedCol}];
 	cell->push(coverCard); 
 }
-void ElementalPowerCards::activateAvalanche(Board& board) //DE VERIFICAT!!
+void elementalPowerCards::activateAvalanche(Board& board) //DE VERIFICAT!!
 {
 	int row1, col1, row2, col2;
 	std::cout << "Enter the coordinates of the first stack (row col): ";
@@ -1410,6 +1416,10 @@ void ElementalPowerCards::activateAvalanche(Board& board) //DE VERIFICAT!!
 	else 
 		std::cout << "The stacks are not adjacent. Avalanche cancelled.\n";
 }
+
+ 
+ 
+
 };
 
 

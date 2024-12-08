@@ -174,20 +174,20 @@ void eter::CMode::handleOption()
         // Selectarea unei puteri elementale
         std::cout << "Select an elemental power:\n";
         int abilityIndex = 0;
-        for (int i = 0; i <= static_cast<int>(eter::ElementalPowerCards::PowerAbility::Rock); ++i) {
-            std::cout << i << " - " << static_cast<eter::ElementalPowerCards::PowerAbility>(i) << "\n";
+        for (int i = 0; i <= static_cast<int>(eter::elementalPowerCards::powerAbility::rock); ++i) {
+            std::cout << i << " - " << static_cast<eter::elementalPowerCards::powerAbility>(i) << "\n";
         }
         std::cin >> abilityIndex;
 
-        if (abilityIndex < 0 || abilityIndex > static_cast<int>(eter::ElementalPowerCards::PowerAbility::Rock)) {
+        if (abilityIndex < 0 || abilityIndex > static_cast<int>(eter::elementalPowerCards::powerAbility::rock)) {
             std::cout << "Invalid ability selection.\n";
             break;
         }
 
-        eter::ElementalPowerCards::PowerAbility selectedAbility =
-            static_cast<eter::ElementalPowerCards::PowerAbility>(abilityIndex);
+        eter::elementalPowerCards::powerAbility selectedAbility =
+            static_cast<eter::elementalPowerCards::powerAbility>(abilityIndex);
 
-        eter::ElementalPowerCards elementalPower(selectedAbility);
+        eter::elementalPowerCards elementalPower(selectedAbility);
 
         // Verificăm dacă puterea a fost utilizată
         if (elementalPower.getUsed()) {
