@@ -20,11 +20,11 @@ int main()
 
 	// Test BMode
 
-	game.StartNewGame(player1, player2, "BMode");
+	//game.StartNewGame(player1, player2, "BMode");
 
 	//Test CMode
 
-	/*game.StartNewGame(player1, player2, "CMode");*/
+	game.StartNewGame(player1, player2, "CMode");
 
 	/*try {
 		game.SaveGame();

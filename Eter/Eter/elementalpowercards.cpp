@@ -197,7 +197,67 @@ void ElementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 }
 void ElementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board)
 {
-	std::cout << "Avtivate power1 ";
+
+	const auto& opponentPlayedCards = opponent.GetPlayedCards();
+
+	if (opponentPlayedCards.empty())
+	{
+		std::cout << "The opponent has not played any cards!\n";
+		return;
+	}
+
+	const Card& lastCardPlayed = opponentPlayedCards.back();
+	std::cout << "Last card played by opponent: "
+		<< lastCardPlayed.GetValue() + 1 - 1 << " of color "
+		<< lastCardPlayed.GetColor() << "\n";
+
+	auto& grid = board.GetGrid();
+	bool cardFound = false;
+
+	for (size_t i = 0; i < 4; ++i) {
+		for (size_t j = 0; j < 4; ++j) {
+			auto& stackOpt = grid[i][j];
+
+			if (stackOpt.has_value()) {
+				const std::stack<Card>& cardStack = stackOpt.value();
+
+				if (!cardStack.empty()) {
+					std::cout << "Checking stack at position (" << i << ", " << j << "): ";
+					std::cout << "Top card: " << cardStack.top().GetValue() + 1 - 1
+						<< " of color " << cardStack.top().GetColor() << "\n";
+
+					if (cardStack.top() == lastCardPlayed)
+					{
+						std::stack<Card>& modifiableCardStack = const_cast<std::stack<Card>&>(stackOpt.value());
+						modifiableCardStack.pop();
+						std::cout << "The card with value " << lastCardPlayed.GetValue() + 1 - 1
+							<< " and color " << lastCardPlayed.GetColor()
+							<< " has been removed from the game!\n";
+						cardFound = true;
+						break;
+					}
+				}
+				else {
+					std::cout << "The stack at position (" << i << ", " << j << ") is empty.\n";
+				}
+			}
+			else {
+				std::cout << "No stack at position (" << i << ", " << j << ").\n";
+			}
+		}
+
+		if (cardFound) {
+			break;
+		}
+	}
+
+	if (cardFound) {
+		std::cout << "Power activated successfully!\n";
+		return;
+	}
+
+	// Dacă nu am găsit cardul pe tablă, afișăm un mesaj
+	std::cout << "The card was not found on the board!\n";
 }
 
 
