@@ -79,7 +79,7 @@ namespace eter {
 
 	private:
  		void activateDestruction(Player& player, Player& opponent, Board& board);
-		void activateSquall(Player& opponent);
+		void activateSquall(Player& opponent, Board& board);
 		void activateFire(Player& player, Player& opponent, Board& board);
 		void activateASH(Player& player, Board& board);
 		void activateSpark(Player& player, Board& board);

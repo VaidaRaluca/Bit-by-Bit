@@ -143,7 +143,7 @@ void elementalPowerCards::activate(Player& player, Player& opponent, Board& boar
 		activateSpark(player, board);
 		break;
 	case eter::elementalPowerCards::powerAbility::squall:
-		activateSquall(opponent);
+		activateSquall(opponent,board);
 		break;
 	case eter::elementalPowerCards::powerAbility::gale:
 		activateGale(player, opponent, board);
@@ -224,7 +224,8 @@ void elementalPowerCards::activateDestruction(Player& player, Player& opponent, 
 		for (size_t j = 0; j < 4; ++j) {
 			auto& stackOpt = grid[i][j];
 
-			if (stackOpt.has_value()) {
+			if (stackOpt.has_value()) 
+			{
 				const std::stack<Card>& cardStack = stackOpt.value();
 
 				if (!cardStack.empty()) {
@@ -262,30 +263,62 @@ void elementalPowerCards::activateDestruction(Player& player, Player& opponent, 
 		return;
 	}
 
-	// Dacă nu am găsit cardul pe tablă, afișăm un mesaj
-	std::cout << "The card was not found on the board!\n";
+ 	std::cout << "The card was not found on the board!\n";
 }
 
 
 
-void elementalPowerCards::activateSquall(Player& opponent)
+void elementalPowerCards::activateSquall(Player& opponent, Board& board)
 {
-	auto& playedCards = opponent.GetPlayedCards();
-	auto it = std::find_if(playedCards.begin(), playedCards.end(), [](const Card& card) {
-		return card.GetPosition() == true;
-		});
-	if (it != playedCards.end()) {
-		Card visibleCard = *it;
-		playedCards.erase(it);
-		opponent.AddCardToHand(visibleCard);
-		std::cout << "The card with value " << visibleCard.GetValue()
-			<< " and color " << visibleCard.GetColor()
-			<< " has been returned to the opponent's hand!\n";
+	auto& playedCards = opponent.GetPlayedCards(); 
+
+ 	auto& grid = board.GetGrid();
+	
+	size_t gridWidth = grid.size();
+	size_t gridHeight = grid[0].size();
+
+ 	std::cout << "Enter the coordinates (x, y) of the card: ";
+	uint8_t x, y;
+	std::cin >> x >> y;
+
+ 	if (x >= gridWidth || y >= gridHeight) {
+		std::cout << "Invalid coordinates! The grid is " << gridWidth << "x" << gridHeight << "." << std::endl;
+		return;
 	}
-	else {
-		throw std::invalid_argument("There is no visible card that can be returned to the opponent's hand!\n");
+
+ 	if (grid[x][y].has_value() && grid[x][y].value().top().GetPosition())
+	{
+ 		std::stack<Card>& stackOpt = const_cast<std::stack<Card>&>(grid[x][y].value());
+
+ 		if (stackOpt.top().GetColor() == opponent.GetColor())
+		{
+ 			stackOpt.pop();
+
+ 			for (auto it = playedCards.begin(); it != playedCards.end(); ++it)
+			{
+				if (it->GetValue() == stackOpt.top().GetValue())
+				{
+					opponent.GetCardsInHand().push_back(*it);   
+					playedCards.erase(it);   
+					std::cout << "Card moved from played cards to hand!" << std::endl;
+					break;
+				}
+			}
+
+			std::cout << "Card removed from board!" << std::endl;
+		}
+		else
+		{
+			std::cout << "Card color does not match opponent's color. Action not performed." << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "No card found at the given coordinates!" << std::endl;
 	}
 }
+
+
 
 void elementalPowerCards::activateFire(Player& player, Player& opponent, Board& board)
 {
