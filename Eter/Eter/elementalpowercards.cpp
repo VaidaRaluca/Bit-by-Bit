@@ -586,36 +586,61 @@ void elementalPowerCards::activateMist(Player& player, Board& board)
 
 void elementalPowerCards::activateGale(Player& player, Player& opponent, Board& board)
 {
-	for (int row = 0; row < static_cast<int>(board.GetRows()); ++row)
+	for (size_t row = 0; row < 4; ++row)
 	{
-		for (int col = 0; col < static_cast<int>(board.GetCols()); ++col)
+		for (size_t col = 0; col < 4; ++col)
 		{
-			auto& cell = board[{row, col}];
-
-			if (cell.has_value() && cell->size() > 1)
+			auto& cellOpt = board[{row, col}];
+			if (cellOpt.has_value())
 			{
-				std::stack<Card> tempStack;
+				auto& cell = cellOpt.value();
 
-				Card topCard = cell->top();
-				cell->pop();
-
-				while (!cell->empty()) 
+				if (cell.size() > 1)
 				{
-					Card coveredCard = cell->top();
-					cell->pop();
+					Card topCard = cell.top(); 
+					cell.pop();              
 
-					if (coveredCard.GetColor() == player.GetColor()) 
-						player.AddCardToHand(coveredCard);
+					std::stack<Card> tempStack;
+					while (!cell.empty())
+					{
+						Card currentCard = cell.top();
+						cell.pop();
 
-					else if (coveredCard.GetColor() == opponent.GetColor()) 
-						opponent.AddCardToHand(coveredCard);
+						if (currentCard.GetColor() == player.GetColor())
+						{
+							player.AddCardToHand(currentCard);
+							auto& playedCards = player.GetPlayedCards();
+							playedCards.erase(
+								std::remove(playedCards.begin(), playedCards.end(), currentCard),
+								playedCards.end()
+							);
+							std::cout << "The card with the value " << currentCard.GetValue() +1-1 << " returned to the player's hand.\n";
+						}
+						else
+						{
+							opponent.AddCardToHand(currentCard);
+							auto& playedCards = opponent.GetPlayedCards();
+							playedCards.erase(
+								std::remove(playedCards.begin(), playedCards.end(), currentCard),
+								playedCards.end()
+							);
+							std::cout << "The card with the value " << currentCard.GetValue()+1-1 << " returned to the opponent's hand.\n";
+						}
+
+						tempStack.push(currentCard);
+					}
+					while (!tempStack.empty())
+					{
+						cell.push(tempStack.top());
+						tempStack.pop();
+					}
+					cell.push(topCard);
 				}
-
-				cell->push(topCard);
 			}
 		}
 	}
 }
+
 void elementalPowerCards::activateGust(Board& board)
 {
 	int selectedRow, selectedCol;

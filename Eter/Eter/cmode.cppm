@@ -32,8 +32,7 @@ namespace eter {
 		elementalPowerCards(elementalPowerCards::powerAbility::border),
 		elementalPowerCards(elementalPowerCards::powerAbility::avalanche),
 		elementalPowerCards(elementalPowerCards::powerAbility::rock)};
-		elementalPowerCards m_power1Player1,m_power2Player1;
-		elementalPowerCards m_power1Player2,m_power2Player2;
+		elementalPowerCards m_power1,m_power2;
 		Game* m_game;
 		Player m_player;
 		const uint8_t knrRoundsForWin = 3;
