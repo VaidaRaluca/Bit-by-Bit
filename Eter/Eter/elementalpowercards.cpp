@@ -323,17 +323,19 @@ void elementalPowerCards::activateSquall(Player& opponent, Board& board)
 void elementalPowerCards::activateFire(Player& player, Player& opponent, Board& board)
 {
 	std::unordered_map<uint8_t, uint8_t> visibleCardCounts;
-
-	for (size_t i = 0; i < board.GetRows(); ++i) 
+	for (size_t i = 0; i < board.GetRows(); ++i)
 	{
-		for (size_t j = 0; j < board.GetCols(); ++j) 
+		for (size_t j = 0; j < board.GetCols(); ++j)
 		{
 			auto& stackOpt = board.GetGrid()[i][j];
-			if (stackOpt.has_value() && !stackOpt.value().empty()) 
+			if (stackOpt.has_value() && !stackOpt.value().empty())
 			{
 				const Card& topCard = stackOpt.value().top();
-				if (topCard.GetPosition()) 
+				if (topCard.GetPosition())
+				{
 					++visibleCardCounts[topCard.GetValue()];
+					std::cout << "Visible card at (" << i << ", " << j << ") with value " << static_cast<int>(topCard.GetValue()) << std::endl;
+				}
 			}
 		}
 	}
@@ -343,19 +345,19 @@ void elementalPowerCards::activateFire(Player& player, Player& opponent, Board& 
 	{
 		std::cout << "Enter a number with at least two visible cards on the board: ";
 		std::cin >> chosenNumber;
+		std::cout << "Cards with value " << static_cast<int>(chosenNumber) << ": " << visibleCardCounts[chosenNumber] << std::endl;
 
-		if (visibleCardCounts[chosenNumber] >= 2) 
-			break; 
-		else 
+		if (visibleCardCounts[chosenNumber] >= 2)
+			break;
+		else
 			std::cout << "Invalid choice. There are less than two visible cards with this number.\n";
 	}
-
 	for (size_t i = 0; i < board.GetRows(); ++i)
 	{
 		for (size_t j = 0; j < board.GetCols(); ++j)
 		{
 			auto& stackOpt = board.GetGrid()[i][j];
-			if (stackOpt.has_value() && !stackOpt.value().empty()) 
+			if (stackOpt.has_value() && !stackOpt.value().empty())
 			{
 				std::stack<Card> cardStack = stackOpt.value();
 				Card topCard = cardStack.top();
@@ -376,7 +378,6 @@ void elementalPowerCards::activateFire(Player& player, Player& opponent, Board& 
 		}
 	}
 }
-
 void elementalPowerCards::activateASH(Player& player, Board& board)
 {
 	auto& eliminatedCards = player.GetEliminatedCards();
