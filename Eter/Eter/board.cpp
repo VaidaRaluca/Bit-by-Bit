@@ -467,6 +467,37 @@ bool eter::Board::isBoardFull()
 	return (occupiedSpaces == m_dimMax * m_dimMax);
 }
 
+bool eter::Board::isTwoLineComplete()
+{
+	size_t linesOcupate, columnOcupate;
+	linesOcupate = columnOcupate = 0;
+	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) 
+	{
+		size_t occupiedSpaces = 0;
+		for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) 
+		{
+			if (m_grid[row][col].has_value())
+				occupiedSpaces++;
+		}
+		if (occupiedSpaces == m_dimMax)
+			linesOcupate++;
+	}
+
+	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col)
+	{
+		size_t occupiedSpaces = 0;
+		for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row)
+		{
+			if (m_grid[row][col].has_value())
+				occupiedSpaces++;
+		}
+		if (occupiedSpaces == m_dimMax)
+			columnOcupate++;
+	}
+	return (linesOcupate==2 || columnOcupate==2
+		||(linesOcupate == 1 && columnOcupate == 1));
+}
+
 void eter::Board::clear()
 {
 	for (auto& row : m_grid) {

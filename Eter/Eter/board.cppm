@@ -54,6 +54,7 @@ namespace eter {
 		std::string findWinner();
 		std::string findWinnerByScore();
 		bool isBoardFull();
+		bool isTwoLineComplete();
 		void clear();
 		void swap(Board& other) noexcept;
 		bool isValidRow(size_t row) const;

@@ -10,7 +10,8 @@ import cmode;
 import board;
 
 Game::Game(Player player1, Player player2,std::string gameMode) :
-	m_player1{ player1 }, m_player2{ player2 }, m_gameMode{ gameMode }, m_isPlayerTurn{ true },
+	m_player1{ player1 }, m_player2{ player2 }, m_gameMode{ gameMode }, 
+	m_isPlayerTurn{ true }, m_isUsedExplosion{false},
 	m_player1Wins{ 0 }, m_player2Wins{ 0 }, m_nrRound{ 0 }
 {}
 
@@ -54,6 +55,11 @@ bool Game::GetIsPlayerTurn()
 	return m_isPlayerTurn;
 }
 
+bool eter::Game::GetIsUsedExplosion()
+{
+	return m_isUsedExplosion;
+}
+
 uint8_t Game::GetPlayer1Wins()
 {
 	return m_player1Wins;
@@ -85,6 +91,11 @@ void Game::SetIsPlayerTurn()
 	m_isPlayerTurn = !m_isPlayerTurn;
 }
 
+void eter::Game::SetIsUsedExplosion( bool ok)
+{
+	m_isUsedExplosion = ok;
+}
+
 void Game::IncrementPlayer1Wins()
 {
 	++m_player1Wins;
@@ -109,6 +120,7 @@ void Game::playTurn() {
 		m_player2.PrintCardsInHand();
 		handlePlayerTurn(GetPlayer2Ref());
 	}
+	handleActivateExplosion();
 	SetIsPlayerTurn();
 }
 
@@ -174,6 +186,23 @@ void eter::Game::handlePlayerTurnWithIllusion(Player& player) {
 		return;
 	}
 	player.useIllusion(x, y, m_board, player.GetCardsInHand().at(cardIndex));
+}
+
+void eter::Game::handleActivateExplosion()
+{
+	if (m_board.isTwoLineComplete() && GetIsUsedExplosion() == false)
+	{
+		std::string playerName = GetIsPlayerTurn() ? m_player1.GetName() : m_player2.GetName();
+		std::cout << playerName << " fill the second line. Do you want to activate the explosion? (Y/N) \n";
+		char choice;
+		std::cin >> choice;
+		if (choice == 'Y')
+		{
+			Explosion explosion(m_board.GetDimMax(), m_board);
+			m_board = explosion.applyEffects();
+			SetIsUsedExplosion(true);
+		}
+	}
 }
 
 //Obtinerea coordonatelor

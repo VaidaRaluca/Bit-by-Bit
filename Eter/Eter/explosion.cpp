@@ -23,7 +23,7 @@ import<algorithm>;  // pt std::shuffle
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dist(0, m_size * m_size - 1); // Generam indicii matricei
-        std::uniform_int_distribution<> effectDist(1, 2); // Tipuri de efecte (1 = REMOVE_CARD, 2 = RETURN_CARD, 3 = CREATE_HOLE)
+        std::uniform_int_distribution<> effectDist(1, 3); // Tipuri de efecte (1 = REMOVE_CARD, 2 = RETURN_CARD, 3 = CREATE_HOLE)
 
         int effectCount = 0;
 

@@ -15,7 +15,7 @@ int main()
 
 	// Test AMode
 	GameManager game;
-   // game.StartNewGame(player1, player2, "AMode");
+    game.StartNewGame(player1, player2, "AMode");
 
 
 	// Test BMode
@@ -24,7 +24,7 @@ int main()
 
 	//Test CMode
 
-	game.StartNewGame(player1, player2, "CMode");
+	//game.StartNewGame(player1, player2, "CMode");
 
 	/*try {
 		game.SaveGame();

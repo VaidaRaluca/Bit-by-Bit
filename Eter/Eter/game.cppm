@@ -2,6 +2,7 @@
 export module game;
 import player;
 import board;
+import explosion;
 namespace eter
 {
 	export class Game
@@ -12,6 +13,7 @@ namespace eter
 		Board m_board;
 		std::string m_gameMode;
 		bool m_isPlayerTurn;  // true pentru p1,false pentru p2
+		bool m_isUsedExplosion; 
 		uint8_t m_player1Wins;
 		uint8_t m_player2Wins;
 		uint8_t m_nrRound;   // numarul rundei in care ne aflam
@@ -19,6 +21,7 @@ namespace eter
 		//Functii ajutatoare
 		void handlePlayerTurn(Player& player);
 		void handlePlayerTurnWithIllusion(Player& player);
+		void handleActivateExplosion();
 		void getInputCoordinates(size_t& x, size_t& y, size_t& cardIndex);
 
 	public:
@@ -36,6 +39,7 @@ namespace eter
 
 		std::string GetGameMods();
 		bool GetIsPlayerTurn();
+		bool GetIsUsedExplosion();
 		uint8_t GetPlayer1Wins();
 		uint8_t GetPlayer2Wins();
 		uint8_t GetNrRound();
@@ -44,6 +48,7 @@ namespace eter
 		void SetBoard(Board board);
 		void SetGameMods(std::string gameMode);
 		void SetIsPlayerTurn();
+		void SetIsUsedExplosion(bool ok);
 		void IncrementPlayer1Wins();
 		void IncrementPlayer2Wins();
 		void IncrementNrRound();
