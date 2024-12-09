@@ -112,9 +112,10 @@ void Player::PrintCardsInHand()
 	}
 }
 
-void Player::AddToEliminatedCards(const Card& card)
+std::vector<Card> Player::AddToEliminatedCards(const Card& card)
 {
 	m_eliminatedCards.push_back(card);
+	return m_eliminatedCards;
 }
 
 void Player::AddPlayedCard(const Card& card)

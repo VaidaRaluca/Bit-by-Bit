@@ -383,41 +383,56 @@ void elementalPowerCards::activateASH(Player& player, Board& board)
 	auto& eliminatedCards = player.GetEliminatedCards();
 
 	if (eliminatedCards.empty())
-		throw std::runtime_error("No eliminated cards to choose from!");
+	{
+		std::cout << "No eliminated cards to choose from!\n";
+		return;
+	}
 
 	std::cout << "Choose a card to play from your eliminated cards:\n";
-	for (size_t i = 0; i < eliminatedCards.size(); ++i) 
-		std::cout << i + 1 << ". Card with value " << eliminatedCards[i].GetValue()
+	for (size_t i = 0; i < eliminatedCards.size(); ++i)
+	{
+		std::cout << i + 1 << ". Card with value " << eliminatedCards[i].GetValue() -1+1
 			<< " and color " << eliminatedCards[i].GetColor() << '\n';
+	}
 
 	size_t choice;
-	std::cin >> choice;
+	while (true)
+	{
+		std::cout << "Enter your choice (1-" << eliminatedCards.size() << "): ";
+		std::cin >> choice;
+
+		if (choice >= 1 && choice <= eliminatedCards.size())
+			break;
+
+		std::cout << "Invalid choice. Please try again.\n";
+	}
 
 	Card chosenCard = eliminatedCards[choice - 1];
 
-	bool cardPlaced = false;
-	for (int row = 0; row < board.GetRows(); ++row)
+	uint8_t row, col;
+	while (true)
 	{
-		for (int col = 0; col < board.GetCols(); ++col) 
-		{
-			if (board.canPlaceCard(row, col, chosenCard)) 
-			{
-				board.placeCard(row, col, chosenCard);
-				std::cout << "Card with value " << chosenCard.GetValue()
-					<< " and color " << chosenCard.GetColor()
-					<< " has been placed back on the board at position (" << row << ", " << col << ").\n";
-				cardPlaced = true;
-				break;
-			}
-		}
-		if (cardPlaced) break;
-	}
+		std::cout << "Enter the coordinates where you want to place the chosen card: ";
+		std::cin >> row >> col;
 
-	if (!cardPlaced) 
-		throw std::runtime_error("No valid position found to place the card!");
+		if (board.canPlaceCard(row, col, chosenCard))
+		{
+			board.placeCard(row, col, chosenCard);
+			std::cout << "Card with value " << chosenCard.GetValue()
+				<< " and color " << chosenCard.GetColor()
+				<< " has been placed back on the board at position (" << static_cast<int>(row)
+				<< ", " << static_cast<int>(col) << ").\n";
+			break;
+		}
+		else
+		{
+			std::cout << "The position to place the card is invalid! Please choose again.\n";
+		}
+	}
 
 	eliminatedCards.erase(eliminatedCards.begin() + (choice - 1));
 }
+
 void elementalPowerCards::activateSpark(Player& player, Board& board)
 {
 	auto& grid = board.GetGrid();
@@ -511,9 +526,9 @@ if (topCardValue != -1)
 
 void elementalPowerCards::activateEarthQuake(Player& player, Player& opponent, Board& board)
 {
-	for (int row = 0; row < board.GetRows(); ++row)
+	for (int row = 0; row < 4; ++row)
 	{
-		for (int col = 0; col < board.GetCols(); ++col) 
+		for (int col = 0; col < 4; ++col) 
 		{
 			auto& cell = board[{row, col}];
 			if (cell.has_value() && !cell->empty())
@@ -529,7 +544,8 @@ void elementalPowerCards::activateEarthQuake(Player& player, Player& opponent, B
 					else if (topCard.GetColor() == opponent.GetColor())
 						owner = &opponent;
 
-					if (owner) 
+					if (owner)
+		
 						owner->AddToEliminatedCards(topCard);
 
 					cell->pop();

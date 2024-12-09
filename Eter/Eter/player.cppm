@@ -46,7 +46,7 @@ namespace eter {
 		void SetCardsInHand(const std::vector<Card>& cards);
 
 		void PrintCardsInHand();
-		void AddToEliminatedCards(const Card& card);//Adauga o carte in m_eliminatedCards
+		std::vector<Card> AddToEliminatedCards(const Card& card);//Adauga o carte in m_eliminatedCards
 		void AddPlayedCard(const Card& card);
 		void AddCardToHand(const Card& card);//Adauga o carte in m_cardsInHand
 		void useIllusion(int x, int y, Board& board, Card& illusion);
