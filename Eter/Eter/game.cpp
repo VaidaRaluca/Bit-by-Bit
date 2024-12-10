@@ -193,14 +193,38 @@ void eter::Game::handleActivateExplosion()
 	if (m_board.isTwoLineComplete() && GetIsUsedExplosion() == false)
 	{
 		std::string playerName = GetIsPlayerTurn() ? m_player1.GetName() : m_player2.GetName();
-		std::cout << playerName << " fill the second line. Do you want to activate the explosion? (Y/N) \n";
+		std::cout << playerName << " fill the second line. Do you want to activate the explosion? (y/n) \n";
 		char choice;
 		std::cin >> choice;
-		if (choice == 'Y')
+		if (choice == 'y')
 		{
 			Explosion explosion(m_board.GetDimMax(), m_board);
-			m_board = explosion.applyEffects();
-			SetIsUsedExplosion(true);
+			explosion.generateRandomEffects();
+			explosion.printeffectMatrix();
+			std::cout << "Do you want to rotate the explosion card?\n";
+			std::cout << "Press l(for left rotation) r (for right rotation) or any key to end rotation.\n";
+			std::cin >> choice;
+			while (choice == 'l' || choice == 'r')
+			{
+				if (choice == 'l')
+				{
+					explosion.rotateCounterClockwise();
+					explosion.printeffectMatrix();
+				}
+				else
+				{
+					explosion.rotateClockwise();
+					explosion.printeffectMatrix();
+				}
+				std::cin >> choice;
+			}
+			std::cout << "Do you want to continue to activate the explosion ? (y/ n) \n";
+			std::cin >> choice;
+			if (choice == 'y')
+			{
+				m_board = explosion.applyEffects();
+				SetIsUsedExplosion(true);
+			}
 		}
 	}
 }
