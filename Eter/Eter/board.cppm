@@ -10,7 +10,7 @@ namespace eter {
 	export class Board {
 	private:
 		std::vector<std::vector<std::optional<std::stack<Card>>>>m_grid;
-		size_t m_rows = { 7 }, m_cols = { 7 }; 
+		size_t m_rows = { 7 }, m_cols = { 7 };   // ar trebui sterse deoarece le tine locul indexMax
 		size_t m_indexMax;
 		size_t m_dimMax;
 		size_t m_indexLineMin, m_indexColMin, m_indexLineMax, m_indexColMax;
@@ -24,18 +24,18 @@ namespace eter {
 		~Board() = default;
 
 		//Getters
-		uint8_t GetRows() const;
-		uint8_t GetCols() const;
+		const size_t& GetRows() const;
+		const size_t& GetCols() const;
 		const std::vector<std::vector<std::optional<std::stack<Card>>>>& GetGrid() const;
-	    size_t GetDimMax() const;
-		size_t GetIndexLineMin() const;
-		size_t GetIndexColMin() const;
-		size_t GetIndexLineMax() const;
-		size_t GetIndexColMax() const;
+		const size_t& GetDimMax() const;
+		const size_t& GetIndexLineMin() const;
+		const size_t& GetIndexColMin() const;
+		const size_t& GetIndexLineMax() const;
+		const size_t& GetIndexColMax() const;
 		std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos);
 		const std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos) const;
 
-		void SetDimMax(uint8_t dim);
+		void SetDimMax(const size_t& dim);
 
 		bool isValidPosition(size_t x, size_t y) const;
 		bool isAdjacentToOccupiedSpace(size_t x, size_t y)const;

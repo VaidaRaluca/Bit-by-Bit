@@ -7,7 +7,7 @@ import <random>;
 import<numeric>;     // pt std::iota 
 import<algorithm>;  // pt std::shuffle
 
-Explosion::Explosion(size_t size, Board board)
+Explosion::Explosion(const size_t& size, Board board)
 {
     m_size = size;
     m_originalBoard = board;
@@ -94,9 +94,9 @@ void eter::Explosion::printeffectMatrix()
     std::cout << " \/ represents CREATE_HOLE. \n";
     std::cout << " X represents REMOVE_CARD. \n";
     std::cout << " R represents RETURN_CARD. \n";
-    int size = static_cast<int>(m_effectMatrix.size());
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
+    size_t size = m_effectMatrix.size();
+    for (size_t i = 0; i < size; ++i) {
+        for (size_t j = 0; j < size; ++j) {
             switch (m_effectMatrix[i][j]) {
             case Effect::CREATE_HOLE:
                 std::cout << "/ ";
@@ -167,7 +167,7 @@ void eter::Explosion::verifyEffects()
                     if (cellBoard && !cellBoard->empty()) {
                         Card card = cellBoard->top();
                         m_board.removeCard(lineBoard, colBoard);
-                        m_returnedCards.push_back(card);
+                        //m_returnedCards.push_back(card);
                     }
                     if (areEffectsAdjacent() == false)
                     {
@@ -279,6 +279,7 @@ Board eter::Explosion::applyEffects()
     printeffectMatrix();*/
 
     verifyEffects();
+    std::cout << "Explosion card after verify: \n";
     printeffectMatrix();
     handleApplyEffects();
     m_board.updateAfterRemoval();

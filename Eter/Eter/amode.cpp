@@ -27,8 +27,7 @@ AMode::AMode(Game* game) : m_game{ game } {}
         Card{3,"red",true},
         Card{3,"red",true},
         Card{4,"red",true},
-        Card{5,"red",true}
-         };
+        };
         std::vector<Card>cardsForPlayer2A{
         Card{1,"blue",true},
         Card{1,"blue",true},
@@ -37,7 +36,6 @@ AMode::AMode(Game* game) : m_game{ game } {}
         Card{3,"blue",true},
         Card{3,"blue",true},
         Card{4,"blue",true},
-        Card{5,"blue",true}
          };
 
         if (m_game)
@@ -77,7 +75,8 @@ AMode::AMode(Game* game) : m_game{ game } {}
     {
         Player& currentPlayer = m_game->GetIsPlayerTurn() ? m_game->GetPlayer1Ref() : m_game->GetPlayer2Ref();
         std::cout << currentPlayer.GetName() << " activates an explosion.\n";
-        Explosion e(3, m_game->GetBoard());
+        size_t dim = m_game->GetBoard().GetDimMax();
+        Explosion e(dim, m_game->GetBoard());
         m_game->GetBoardRef() = e.applyEffects();
         m_game->SetIsPlayerTurn();
     }

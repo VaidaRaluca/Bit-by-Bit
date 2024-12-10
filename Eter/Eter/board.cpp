@@ -22,6 +22,7 @@ Board::Board(const Board& other)
 	, m_indexLineMax{ other.m_indexLineMax }
 	, m_indexColMin{ other.m_indexColMin }
 	, m_indexColMax{ other.m_indexColMax }
+	, m_dimMax{other.m_dimMax}
 {
 }
 
@@ -45,10 +46,12 @@ Board::Board(Board&& other) noexcept
 	m_indexLineMin{ other.m_indexLineMin },
 	m_indexLineMax{ other.m_indexLineMax },
 	m_indexColMin{ other.m_indexColMin },
-	m_indexColMax{ other.m_indexColMax }
+	m_indexColMax{ other.m_indexColMax },
+	m_dimMax{ other.m_dimMax }
 {
-	other.m_rows = 0;
-	other.m_cols = 0;
+	other.m_dimMax = 3;
+	other.m_rows = 7;
+	other.m_cols = 7;
 	other.m_indexLineMin = 10;
 	other.m_indexLineMax = 10;
 	other.m_indexColMin = 10;
@@ -65,10 +68,12 @@ Board& Board::operator=(Board&& other) noexcept
 	m_indexLineMax = other.m_indexLineMax;
 	m_indexColMin = other.m_indexColMin;
 	m_indexColMax = other.m_indexColMax;
+	m_dimMax = other.m_dimMax;
 
 
-	other.m_rows = 0;
-	other.m_cols = 0;
+	other.m_dimMax = 3;
+	other.m_rows = 7;
+	other.m_cols = 7;
 	other.m_indexLineMin = 10;
 	other.m_indexLineMax = 10;
 	other.m_indexColMin = 10;
@@ -77,12 +82,12 @@ Board& Board::operator=(Board&& other) noexcept
 	return *this;
 }
 
-uint8_t Board::GetRows() const
+const size_t& Board::GetRows() const
 {
 	return m_rows;
 }
 
-uint8_t Board::GetCols() const
+const size_t& Board::GetCols() const
 {
 	return m_cols;
 }
@@ -92,27 +97,27 @@ const std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGrid(
 	return m_grid;
 }
 
-size_t eter::Board::GetDimMax() const
+const size_t& eter::Board::GetDimMax() const
 {
 	return m_dimMax;
 }
 
-size_t eter::Board::GetIndexLineMin() const
+const size_t& eter::Board::GetIndexLineMin() const
 {
 	return m_indexLineMin;
 }
 
-size_t eter::Board::GetIndexColMin() const
+const size_t& eter::Board::GetIndexColMin() const
 {
 	return m_indexColMin;
 }
 
-size_t eter::Board::GetIndexLineMax() const
+const size_t& eter::Board::GetIndexLineMax() const
 {
 	return m_indexLineMax;
 }
 
-size_t eter::Board::GetIndexColMax() const
+const size_t& eter::Board::GetIndexColMax() const
 {
 	return m_indexColMax;
 }
@@ -135,7 +140,7 @@ const std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos
 	throw std::out_of_range("Invalid position");
 }
 
-void eter::Board::SetDimMax(uint8_t dim)
+void eter::Board::SetDimMax(const size_t& dim)
 {
 	m_dimMax = dim;
 }

@@ -192,13 +192,14 @@ void eter::Game::handleActivateExplosion()
 {
 	if (m_board.isTwoLineComplete() && GetIsUsedExplosion() == false)
 	{
+		std::cout << m_board;
 		std::string playerName = GetIsPlayerTurn() ? m_player1.GetName() : m_player2.GetName();
 		std::cout << playerName << " fill the second line. Do you want to activate the explosion? (y/n) \n";
 		char choice;
 		std::cin >> choice;
 		if (choice == 'y')
 		{
-			Explosion explosion(m_board.GetDimMax(), m_board);
+			Explosion explosion(m_board.GetDimMax(), GetBoard());
 			explosion.generateRandomEffects();
 			explosion.printeffectMatrix();
 			std::cout << "Do you want to rotate the explosion card?\n";
@@ -222,7 +223,7 @@ void eter::Game::handleActivateExplosion()
 			std::cin >> choice;
 			if (choice == 'y')
 			{
-				m_board = explosion.applyEffects();
+				GetBoardRef() = explosion.applyEffects();
 				SetIsUsedExplosion(true);
 			}
 		}
