@@ -2,17 +2,25 @@ module bmode;
 using namespace eter;
 import <random>;
 
-BMode::BMode(Game* game):
-    m_game{game}
+uint8_t eter::BMode::getRoundsForWin() const
 {
+    return 3;
 }
+
+uint8_t eter::BMode::getRounds() const
+{
+    return 5;
+}
+
+BMode::BMode(Game* game):
+    AMode{game}
+{}
 
 void BMode::applyModeRules()
 {
     m_game->GetBoardRef().SetDimMax((uint8_t)4);
-    assignCardsInHand();
     generateMage();
-    startMatch();
+    AMode::applyModeRules();
 }
 
 void BMode::assignCardsInHand()
@@ -27,7 +35,7 @@ void BMode::assignCardsInHand()
     Card{3,"red",true},
     Card{3,"red",true},
     Card{4,"red",true},
-    Card{5,"red",true},  //valoare=5 ->  Carte eter
+    Card{5,"red",true}  //valoare=5 ->  Carte eter
     };
     std::vector<Card>cardsForPlayer2{
     Card{1,"blue",true},
@@ -39,7 +47,7 @@ void BMode::assignCardsInHand()
     Card{3,"blue",true},
     Card{3,"blue",true},
     Card{4,"blue",true},
-    Card{5,"blue",true},  //valoare=5 ->  Carte eter
+    Card{5,"blue",true}  //valoare=5 ->  Carte eter
     };
 
     if (m_game)
@@ -67,7 +75,8 @@ void BMode::generateMage()
 
 void BMode::startMatch()
 {   
-    size_t countRound = 1;
+    AMode::startMatch();
+    /*size_t countRound = 1;
     std::cout << "The game in B mode has started \n";
     while(m_game->GetPlayer2Wins() < knrRoundsForWin && m_game->GetPlayer1Wins() < knrRoundsForWin)
     {
@@ -85,12 +94,13 @@ void BMode::startMatch()
     else
         std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this game!" << std::endl;
 
-    std::cout << "GAME OVER \n";
+    std::cout << "GAME OVER \n";*/
 }
 
 void BMode::startRound()
 {
-    char gameStatus = '0';
+    AMode::startRound();
+    /*char gameStatus = '0';
     while (gameStatus == '0')
     {
         handleOption();
@@ -119,7 +129,7 @@ void BMode::startRound()
         else
                 std::cout << "DRAW \n";
     }
-    std::cout << m_game->GetBoard();
+    std::cout << m_game->GetBoard();*/
 }
 
 void BMode::handleOption()

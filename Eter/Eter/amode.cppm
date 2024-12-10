@@ -5,23 +5,24 @@ import <memory>;
 
 namespace eter {
 	export class AMode {
-	private:
+	protected:
 
 		Game* m_game;
-		const uint8_t knrRoundsForWin = 2; 		
+		virtual uint8_t getRoundsForWin() const;
+		virtual uint8_t getRounds() const;
  
 	public:
 		AMode() = default;
 		 
 		AMode(Game* game);
-		void assignCardsInHandModeA();
-		void startMatchModeA();
-		void handleOptionModeA();  // afiseaza optiunile utilizatorului
-		void startRoundModeA();  //porneste runda
-		void applyModeRulesModeA(); // aplica toate regulile jocului
-		void handleActivateExplosionModeA();
+		virtual void assignCardsInHand();
+		virtual void startMatch();
+		virtual void handleOption();  // afiseaza optiunile utilizatorului
+		virtual void startRound();  //porneste runda
+		virtual void applyModeRules(); // aplica toate regulile jocului
+		virtual void handleActivateExplosion();
 
- 		~AMode() = default;
+ 		virtual ~AMode() = default;
 		
 	};
 	

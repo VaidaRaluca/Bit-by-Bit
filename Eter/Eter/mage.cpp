@@ -222,6 +222,7 @@ void eter::Mage::removeEntireRow(Player& player, Board& board) {
 	}
 	size_t selectedRow = row;
 	board.eliminateCardsOnRow(row);
+	board.updateAfterRemoval();
 	std::cout << "Row " << row << " has been removed!\n";
 }
 
@@ -251,6 +252,7 @@ void eter::Mage::removeEntireColumn(Player& player, Board& board) {
 	}
 	size_t selectedCol = col;
 	board.eliminateCardsOnColumn(col);
+	board.updateAfterRemoval();
 	std::cout << "Column " << col << " has been removed!\n";
 }
 

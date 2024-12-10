@@ -4,28 +4,40 @@ import explosion;
 import <vector>;
 import card;
     
-    AMode::AMode(Game* game) : m_game{ game } {}
+uint8_t eter::AMode::getRoundsForWin() const
+{
+    return 2;
+}
 
-	void AMode::assignCardsInHandModeA()
+uint8_t eter::AMode::getRounds() const
+{
+    return 3;
+}
+
+AMode::AMode(Game* game) : m_game{ game } {}
+
+	void AMode::assignCardsInHand()
 	{
 
         std::vector<Card>cardsForPlayer1A{
-        Card(1,"red",true),
-        Card(1,"red",true),
-        Card(2,"red",true),
-        Card(2,"red",true),
-        Card(3,"red",true),
-        Card(3,"red",true),
-        Card(4,"red",true),
+        Card{1,"red",true},
+        Card{1,"red",true},
+        Card{2,"red",true},
+        Card{2,"red",true},
+        Card{3,"red",true},
+        Card{3,"red",true},
+        Card{4,"red",true},
+        Card{5,"red",true}
          };
         std::vector<Card>cardsForPlayer2A{
-        Card(1,"blue",true),
-        Card(1,"blue",true),
-        Card(2,"blue",true),
-        Card(2,"blue",true),
-        Card(3,"blue",true),
-        Card(3,"blue",true),
-        Card(4,"blue",true),
+        Card{1,"blue",true},
+        Card{1,"blue",true},
+        Card{2,"blue",true},
+        Card{2,"blue",true},
+        Card{3,"blue",true},
+        Card{3,"blue",true},
+        Card{4,"blue",true},
+        Card{5,"blue",true}
          };
 
         if (m_game)
@@ -35,22 +47,22 @@ import card;
         }
 	}
 
-    void AMode::startMatchModeA()
+    void AMode::startMatch()
     {
         size_t countRound = 1;
-        std::cout << "The game in A mode has started \n";
-        while (m_game->GetPlayer2Wins() < knrRoundsForWin && m_game->GetPlayer1Wins() < knrRoundsForWin)
+        std::cout << "The game has started \n";
+        while (m_game->GetPlayer2Wins() < getRoundsForWin() && m_game->GetPlayer1Wins() < getRoundsForWin())
         {
-            std::cout << "Round " << countRound << " of 3 \n";
-            startRoundModeA();
+            std::cout << "Round " << countRound << " of "<< static_cast<int>(getRounds());
+            startRound();
             countRound++;
             std::cout << "The round has ended. \n";
-            std::cout << "Wins player 1: " << static_cast<int>(m_game->GetPlayer1Wins()) << "\n";
-            std::cout << "Wins player 2: " << static_cast<int>(m_game->GetPlayer2Wins()) << "\n";
+            std::cout << m_game->GetPlayer1().GetName() << " wins: " << static_cast<int> (m_game->GetPlayer1Wins()) << "\n";
+            std::cout << m_game->GetPlayer2().GetName() << " wins: " << static_cast<int> (m_game->GetPlayer2Wins()) << "\n";
 
             // Reset the board and reassign cards
+            assignCardsInHand();
             m_game->resetBoard();
-            assignCardsInHandModeA();
         }
 
         if (m_game->GetPlayer1Wins() > m_game->GetPlayer2Wins())
@@ -61,7 +73,7 @@ import card;
         std::cout << "GAME OVER \n";
     }
 
-    void AMode::handleActivateExplosionModeA()
+    void AMode::handleActivateExplosion()
     {
         Player& currentPlayer = m_game->GetIsPlayerTurn() ? m_game->GetPlayer1Ref() : m_game->GetPlayer2Ref();
         std::cout << currentPlayer.GetName() << " activates an explosion.\n";
@@ -70,7 +82,7 @@ import card;
         m_game->SetIsPlayerTurn();
     }
 
-    void AMode::handleOptionModeA()
+    void AMode::handleOption()
     {
         enum  Option
         {
@@ -103,7 +115,7 @@ import card;
             m_game->playIllusion();
             break;
         case OPTION_3:
-            handleActivateExplosionModeA();
+            handleActivateExplosion();
             break;
         default:
             std::cout << "Invalid option.\n";
@@ -111,12 +123,12 @@ import card;
         }
     }
 
-    void AMode::startRoundModeA()
+    void AMode::startRound()
     {
         char gameStatus = '0';
         while (gameStatus == '0')
         {
-            handleOptionModeA();
+            handleOption();
             gameStatus = m_game->VerifyGameOver();
             std::cout << "Game status: " << gameStatus << "\n";
         }
@@ -127,7 +139,7 @@ import card;
             std::cout << "Do you want to continue the game with a single move? (YES or NO) \n";
             std::cin >> choice;
             if (choice == "YES")
-                handleOptionModeA();
+                handleOption();
 
             if (m_game->GetPlayer1().GetColor() == m_game->GetBoard().findWinnerByScore())
             {
@@ -146,9 +158,9 @@ import card;
         std::cout << m_game->GetBoard();
     }
 
-    void AMode::applyModeRulesModeA()
+    void AMode::applyModeRules()
     {
-        assignCardsInHandModeA();
-        startMatchModeA();
+        assignCardsInHand();
+        startMatch();
     }
  
