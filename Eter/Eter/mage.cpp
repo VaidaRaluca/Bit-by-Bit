@@ -134,10 +134,12 @@ void Mage::removeOpponentCard(Player& player, Player& opponent, Board& board) {
 
 	size_t row, col;
 	bool validPosition = false;
-	while (!validPosition) {
+	while (!validPosition) 
+	{
 		std::cout << "Enter the position (row, column) of the opponent's card to cover: ";
 		std::cin >> row >> col;
-		if (!board.isValidPosition(row, col)) {
+		if (!board.isValidPosition(row, col))
+		{
 			std::cout << "Invalid position (" << row << ", " << col << ") on the board. Try again.\n";
 			continue;
 		}

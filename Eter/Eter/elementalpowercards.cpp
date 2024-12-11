@@ -6,7 +6,7 @@ import <stdexcept>;
 import <unordered_map>;
 import <iostream>;
 
-namespace eter{
+namespace eter {
 	void swap(elementalPowerCards& first, elementalPowerCards& second) noexcept
 	{
 		using std::swap;
@@ -14,258 +14,245 @@ namespace eter{
 		swap(first.m_used, second.m_used);
 	}
 	std::ostream& operator<<(std::ostream& os, elementalPowerCards::powerAbility ability) {
-	switch (ability) {
-	case elementalPowerCards::powerAbility::controlledExplosion:
-		os << "Controlled Explosion";
-		break;
-	case elementalPowerCards::powerAbility::destruction:
-		os << "Destruction";
-		break;
-	case elementalPowerCards::powerAbility::flame:
-		os << "Flame";
-		break;
-	case elementalPowerCards::powerAbility::fire:
-		os << "Fire";
-		break;
-	case elementalPowerCards::powerAbility::ash:
-		os << "ASH";
-		break;
-	case elementalPowerCards::powerAbility::spark:
-		os << "Spark";
-		break;
-	case elementalPowerCards::powerAbility::squall:
-		os << "Squall";
-		break;
-	case elementalPowerCards::powerAbility::gale:
-		os << "Gale";
-		break;
-	case elementalPowerCards::powerAbility::hurricane:
-		os << "Hurricane";
-		break;
-	case elementalPowerCards::powerAbility::gust:
-		os << "Gust";
-		break;
-	case elementalPowerCards::powerAbility::mirage:
-		os << "Mirage";
-		break;
-	case elementalPowerCards::powerAbility::storm:
-		os << "Storm";
-		break;
-	case elementalPowerCards::powerAbility::tide:
-		os << "Tide";
-		break;
-	case elementalPowerCards::powerAbility::mist:
-		os << "Mist";
-		break;
-	case elementalPowerCards::powerAbility::wave:
-		os << "Wave";
-		break;
-	case elementalPowerCards::powerAbility::whirlpool:
-		os << "Whirlpool";
-		break;
-	case elementalPowerCards::powerAbility::blizzard:
-		os << "Blizzard";
-		break;
-	case elementalPowerCards::powerAbility::waterfall:
-		os << "Waterfall";
-		break;
-	case elementalPowerCards::powerAbility::support:
-		os << "Support";
-		break;
-	case elementalPowerCards::powerAbility::earthQuake:
-		os << "Earthquake";
-		break;
-	case elementalPowerCards::powerAbility::crumble:
-		os << "Crumble";
-		break;
-	case elementalPowerCards::powerAbility::border:
-		os << "Border";
-		break;
-	case elementalPowerCards::powerAbility::avalanche:
-		os << "Avalanche";
-		break;
-	case elementalPowerCards::powerAbility::rock:
-		os << "Rock";
-		break;
-	default:
-		os << "Unknown Ability";
-		break;
-	}
-	return os;
-}
-
-elementalPowerCards::elementalPowerCards(powerAbility power) : 
-	m_power{power},
-	m_used{false}
-{}
-
-void elementalPowerCards:: setUsed(bool used)
-{
-	m_used = used;
-}
-
-bool elementalPowerCards::getUsed() const
-{
-	return m_used;
-}
-
-void elementalPowerCards::setAbility(powerAbility power)
-{
-	m_power = power;
-}
-
-elementalPowerCards::powerAbility elementalPowerCards::getAbility() const
-{
-	return powerAbility();
-}
-void elementalPowerCards::activate(Player& player, Player& opponent, Board& board) 
-{
-	if (m_used)
-		throw std::runtime_error("The elemental power has already been used!\n");
-	switch (m_power)
-	{
-	case eter::elementalPowerCards::powerAbility::controlledExplosion:
-		//se va apela o functie pentru puterea respectiva
-		break;
-	case eter::elementalPowerCards::powerAbility::destruction:
-		activateDestruction(player, opponent, board);
-		break;
-	case eter::elementalPowerCards::powerAbility::flame:
-		activateFlame(player,opponent,board);
-		break;
-	case eter::elementalPowerCards::powerAbility::fire:
-		activateFire(player, opponent, board);
-		break;
-	case eter::elementalPowerCards::powerAbility::ash:
-		activateASH(player, board);
-		break;
-	case eter::elementalPowerCards::powerAbility::spark:
-		activateSpark(player, board);
-		break;
-	case eter::elementalPowerCards::powerAbility::squall:
-		activateSquall(opponent,board);
-		break;
-	case eter::elementalPowerCards::powerAbility::gale:
-		activateGale(player, opponent, board);
-		break;
-	case eter::elementalPowerCards::powerAbility::hurricane:
-		activateHurricane(player, opponent,board);
-		break;
-	case eter::elementalPowerCards::powerAbility::gust:
-		activateGust(board);
-		break;
-	case eter::elementalPowerCards::powerAbility::mirage:
-		activateMirage(board, player);
-		break;
-	case eter::elementalPowerCards::powerAbility::storm:
-		activateStorm(board, player, opponent);
-		break;
-	case eter::elementalPowerCards::powerAbility::tide:
-		activateTide(board);
-		break;
-	case eter::elementalPowerCards::powerAbility::mist:
-		activateMist(player, board);
-		break;
-	case eter::elementalPowerCards::powerAbility::wave:
-		activateWave(board, player);
-		break;
-	case eter::elementalPowerCards::powerAbility::whirlpool:
-		activateWhirlpool(board, player);
-		break;
-	case eter::elementalPowerCards::powerAbility::blizzard:
-		activateBlizzard( board, player,opponent);
-		break;
-	case eter::elementalPowerCards::powerAbility::waterfall:
-		activateWaterfall(board);
-		break;
-	case eter::elementalPowerCards::powerAbility::support:
-		activateSupport(board, player);
-		break;
-	case eter::elementalPowerCards::powerAbility::earthQuake:
-		activateEarthQuake(player, opponent, board);
-		break;
-	case eter::elementalPowerCards::powerAbility::crumble:
-		activateCrumble(board, player);
-		break;
-	case eter::elementalPowerCards::powerAbility::border:
-		break;
-	case eter::elementalPowerCards::powerAbility::avalanche:
-		activateAvalanche(board);
-		break;
-	case eter::elementalPowerCards::powerAbility::rock:
-		activateRock(board,player);
-		break;
-	default:
-		throw std::invalid_argument("Unknown power!\n!");
-		break;
-	}
-	m_used = true;
-}
-void elementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board)
-{
-
-	const auto& opponentPlayedCards = opponent.GetPlayedCards();
-
-	if (opponentPlayedCards.empty())
-	{
-		std::cout << "The opponent has not played any cards!\n";
-		return;
-	}
-
-	const Card& lastCardPlayed = opponentPlayedCards.back();
-	std::cout << "Last card played by opponent: "
-		<< lastCardPlayed.GetValue() + 1 - 1 << " of color "
-		<< lastCardPlayed.GetColor() << "\n";
-
-	auto& grid = board.GetGrid();
-	bool cardFound = false;
-
-	for (size_t i = 0; i < 4; ++i) {
-		for (size_t j = 0; j < 4; ++j) {
-			auto& stackOpt = grid[i][j];
-
-			if (stackOpt.has_value()) 
-			{
-				const std::stack<Card>& cardStack = stackOpt.value();
-
-				if (!cardStack.empty()) {
-					std::cout << "Checking stack at position (" << i << ", " << j << "): ";
-					std::cout << "Top card: " << cardStack.top().GetValue() + 1 - 1
-						<< " of color " << cardStack.top().GetColor() << "\n";
-
-					if (cardStack.top() == lastCardPlayed)
-					{
-						std::stack<Card>& modifiableCardStack = const_cast<std::stack<Card>&>(stackOpt.value());
-						modifiableCardStack.pop();
-						std::cout << "The card with value " << lastCardPlayed.GetValue() + 1 - 1
-							<< " and color " << lastCardPlayed.GetColor()
-							<< " has been removed from the game!\n";
-						cardFound = true;
-						break;
-					}
-				}
-				else {
-					std::cout << "The stack at position (" << i << ", " << j << ") is empty.\n";
-				}
-			}
-			else {
-				std::cout << "No stack at position (" << i << ", " << j << ").\n";
-			}
-		}
-
-		if (cardFound) {
+		switch (ability) {
+		case elementalPowerCards::powerAbility::controlledExplosion:
+			os << "Controlled Explosion";
+			break;
+		case elementalPowerCards::powerAbility::destruction:
+			os << "Destruction";
+			break;
+		case elementalPowerCards::powerAbility::flame:
+			os << "Flame";
+			break;
+		case elementalPowerCards::powerAbility::fire:
+			os << "Fire";
+			break;
+		case elementalPowerCards::powerAbility::ash:
+			os << "ASH";
+			break;
+		case elementalPowerCards::powerAbility::spark:
+			os << "Spark";
+			break;
+		case elementalPowerCards::powerAbility::squall:
+			os << "Squall";
+			break;
+		case elementalPowerCards::powerAbility::gale:
+			os << "Gale";
+			break;
+		case elementalPowerCards::powerAbility::hurricane:
+			os << "Hurricane";
+			break;
+		case elementalPowerCards::powerAbility::gust:
+			os << "Gust";
+			break;
+		case elementalPowerCards::powerAbility::mirage:
+			os << "Mirage";
+			break;
+		case elementalPowerCards::powerAbility::storm:
+			os << "Storm";
+			break;
+		case elementalPowerCards::powerAbility::tide:
+			os << "Tide";
+			break;
+		case elementalPowerCards::powerAbility::mist:
+			os << "Mist";
+			break;
+		case elementalPowerCards::powerAbility::wave:
+			os << "Wave";
+			break;
+		case elementalPowerCards::powerAbility::whirlpool:
+			os << "Whirlpool";
+			break;
+		case elementalPowerCards::powerAbility::blizzard:
+			os << "Blizzard";
+			break;
+		case elementalPowerCards::powerAbility::waterfall:
+			os << "Waterfall";
+			break;
+		case elementalPowerCards::powerAbility::support:
+			os << "Support";
+			break;
+		case elementalPowerCards::powerAbility::earthQuake:
+			os << "Earthquake";
+			break;
+		case elementalPowerCards::powerAbility::crumble:
+			os << "Crumble";
+			break;
+		case elementalPowerCards::powerAbility::border:
+			os << "Border";
+			break;
+		case elementalPowerCards::powerAbility::avalanche:
+			os << "Avalanche";
+			break;
+		case elementalPowerCards::powerAbility::rock:
+			os << "Rock";
+			break;
+		default:
+			os << "Unknown Ability";
 			break;
 		}
+		return os;
 	}
 
-	if (cardFound) {
-		std::cout << "Power activated successfully!\n";
-		return;
+	elementalPowerCards::elementalPowerCards(powerAbility power) :
+		m_power{ power },
+		m_used{ false }
+	{
 	}
 
- 	std::cout << "The card was not found on the board!\n";
-}
+	void elementalPowerCards::setUsed(bool used)
+	{
+		m_used = used;
+	}
 
+	bool elementalPowerCards::getUsed() const
+	{
+		return m_used;
+	}
+
+	void elementalPowerCards::setAbility(powerAbility power)
+	{
+		m_power = power;
+	}
+
+	elementalPowerCards::powerAbility elementalPowerCards::getAbility() const
+	{
+		return powerAbility();
+	}
+	void elementalPowerCards::activate(Player& player, Player& opponent, Board& board)
+	{
+		if (m_used)
+			throw std::runtime_error("The elemental power has already been used!\n");
+		switch (m_power)
+		{
+		case eter::elementalPowerCards::powerAbility::controlledExplosion:
+			//se va apela o functie pentru puterea respectiva
+			break;
+		case eter::elementalPowerCards::powerAbility::destruction:
+			activateDestruction(player, opponent, board);
+			break;
+		case eter::elementalPowerCards::powerAbility::flame:
+			activateFlame(player, opponent, board);
+			break;
+		case eter::elementalPowerCards::powerAbility::fire:
+			activateFire(player, opponent, board);
+			break;
+		case eter::elementalPowerCards::powerAbility::ash:
+			activateASH(player, board);
+			break;
+		case eter::elementalPowerCards::powerAbility::spark:
+			activateSpark(player, board);
+			break;
+		case eter::elementalPowerCards::powerAbility::squall:
+			activateSquall(opponent, board);
+			break;
+		case eter::elementalPowerCards::powerAbility::gale:
+			activateGale(player, opponent, board);
+			break;
+		case eter::elementalPowerCards::powerAbility::hurricane:
+			activateHurricane(player, opponent, board);
+			break;
+		case eter::elementalPowerCards::powerAbility::gust:
+			activateGust(board);
+			break;
+		case eter::elementalPowerCards::powerAbility::mirage:
+			activateMirage(board, player);
+			break;
+		case eter::elementalPowerCards::powerAbility::storm:
+			activateStorm(board, player, opponent);
+			break;
+		case eter::elementalPowerCards::powerAbility::tide:
+			activateTide(board);
+			break;
+		case eter::elementalPowerCards::powerAbility::mist:
+			activateMist(player, board);
+			break;
+		case eter::elementalPowerCards::powerAbility::wave:
+			activateWave(board, player);
+			break;
+		case eter::elementalPowerCards::powerAbility::whirlpool:
+			activateWhirlpool(board, player);
+			break;
+		case eter::elementalPowerCards::powerAbility::blizzard:
+			activateBlizzard(board, player, opponent);
+			break;
+		case eter::elementalPowerCards::powerAbility::waterfall:
+			activateWaterfall(board);
+			break;
+		case eter::elementalPowerCards::powerAbility::support:
+			activateSupport(board, player);
+			break;
+		case eter::elementalPowerCards::powerAbility::earthQuake:
+			activateEarthQuake(player, opponent, board);
+			break;
+		case eter::elementalPowerCards::powerAbility::crumble:
+			activateCrumble(board, player);
+			break;
+		case eter::elementalPowerCards::powerAbility::border:
+			break;
+		case eter::elementalPowerCards::powerAbility::avalanche:
+			activateAvalanche(board);
+			break;
+		case eter::elementalPowerCards::powerAbility::rock:
+			activateRock(board, player);
+			break;
+		default:
+			throw std::invalid_argument("Unknown power!\n!");
+			break;
+		}
+		m_used = true;
+	}
+
+	void elementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board) {
+		// Obținem vectorul de cărți jucate ale adversarului
+		auto& opponentPlayedCards = opponent.GetPlayedCardsForPower();
+
+		// Verificăm dacă adversarul a jucat cel puțin o carte
+		if (opponentPlayedCards.empty()) {
+			std::cout << "The opponent has no played cards to remove.\n";
+			return;
+		}
+
+		// Obținem ultima carte jucată de adversar și poziția sa
+		const auto& lastPlayedCardWithPos = opponentPlayedCards.back();
+		const Card& lastCardPlayed = lastPlayedCardWithPos.first;
+		const uint8_t x = lastPlayedCardWithPos.second.first;
+		const uint8_t y = lastPlayedCardWithPos.second.second;
+
+		std::cout << "Debug: Last card played by the opponent is value " << lastCardPlayed.GetValue()+1-1
+			<< " and color " << lastCardPlayed.GetColor() << " at position (" << (int)x << ", " << (int)y << ").\n";
+
+		// Verificăm dacă poziția este validă pe tablă și există o carte pe acea poziție
+		auto& cellOpt = board[{x, y}];
+		if (cellOpt.has_value()) {
+			auto& cell = cellOpt.value();
+			if (!cell.empty()) {
+				const Card& topCard = cell.top();
+				// Dacă cartea de sus din celulă este aceeași cu ultima carte jucată de adversar
+				if (topCard == lastCardPlayed) {
+					// Eliminăm cartea de pe tablă
+					cell.pop();
+					if (cell.empty()) {
+						cellOpt.reset(); // Golim celula
+					}
+
+					// Eliminăm cartea din lista de cărți jucate ale adversarului
+					opponentPlayedCards.pop_back();
+
+					// Adăugăm cartea eliminată în lista de cărți eliminate ale jucătorului curent
+					player.AddToEliminatedCards(lastCardPlayed);
+
+					std::cout << "Removed opponent's card with value " << lastCardPlayed.GetValue()+1-1
+						<< " and color " << lastCardPlayed.GetColor()
+						<< " from position (" << (int)x << ", " << (int)y << ").\n";
+					std::cout << "Power activated successfully!\n";
+					return;
+				}
+			}
+		}
+
+		std::cout << "The last card played by the opponent was not found on the board.\n";
+	}
 
 
 void elementalPowerCards::activateSquall(Player& opponent, Board& board)

@@ -18,7 +18,9 @@ namespace eter {
 		bool m_hasUsedIllusion = false;
 		std::vector<Card> m_playedCards;
 		std::vector<Card> m_eliminatedCards;
-	public:
+		std::vector<std::pair<Card, std::pair<uint8_t, uint8_t>>> m_playedCardsP;//pentru puteri ca aveam nevoie sa stiu si pozitia
+		//la care a pus ultima carte
+ 	public:
 		//Rule of 5
 		Player() = default;
 		Player(const std::string& name, const std::string& color);
@@ -52,6 +54,10 @@ namespace eter {
 		void useIllusion(int x, int y, Board& board, Card& illusion);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
 		bool placeCard(size_t x, size_t y, const Card& card, Board& board);
+		void addPlayedCardForPower(const Card& card, int x, int y);
+
+		std::vector<std::pair<Card, std::pair<uint8_t, uint8_t>>>& GetPlayedCardsForPower();//geterul pentru puteri care imi da vectorul cu ultima carte si cu pozitia sa
+		
 
 		void swap(Player& other) noexcept;
 

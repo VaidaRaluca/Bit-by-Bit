@@ -404,6 +404,7 @@ bool eter::Board::isSecondaryDiagonalLine(const std::string& lineColor) const {
 }
 
 bool eter::Board::isHorizontalLine(const std::string& lineColor) const {
+
 	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
 		size_t consecutiveCount = 0;
 		for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {

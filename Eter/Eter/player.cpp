@@ -142,6 +142,7 @@ bool Player::placeCard(size_t x, size_t y, const Card& card, Board& board)
 	{
 		m_cardsInHand.erase(it);
 		m_playedCards.push_back(card);
+		addPlayedCardForPower(card, x, y);
 		return true;
 	}
 	else
@@ -150,6 +151,14 @@ bool Player::placeCard(size_t x, size_t y, const Card& card, Board& board)
 	}
 }
 
+void eter::Player::addPlayedCardForPower(const Card& card, int x, int y)//functia cu vectorul pentru puteri care obtine si pozitia ultimei carti
+{
+	m_playedCardsP.emplace_back(card, std::make_pair(x, y));
+}
+std::vector<std::pair<Card, std::pair<uint8_t, uint8_t>>>& eter::Player::GetPlayedCardsForPower()
+{
+	return m_playedCardsP;
+}
 void eter::Player::swap(Player& other) noexcept
 {
 	using std::swap;
