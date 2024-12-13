@@ -42,6 +42,8 @@ namespace eter
 		std::string HandleFileNameOverwrite() const;
 		bool ConfirmOverwrite(const std::string& fileName) const;
 		void DisplaySaveFiles() const;
+		bool ConfirmAction(const std::string& actionDescription) const;
+		bool ConfirmationForSave(const std::string& fileName) const;
 
 	};
 }
