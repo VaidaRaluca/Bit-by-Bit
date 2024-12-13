@@ -1,6 +1,7 @@
 export module gamemanager;
 
 import <memory>;
+import<filesystem>;
 import game;
 import board;
 import bmode;
@@ -40,7 +41,7 @@ namespace eter
 
 		std::string HandleFileNameOverwrite() const;
 		bool ConfirmOverwrite(const std::string& fileName) const;
-
+		void DisplaySaveFiles() const;
 
 	};
 }

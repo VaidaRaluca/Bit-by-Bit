@@ -54,9 +54,24 @@ void GameManager::StartNewGame(Player player1, Player player2, const std::string
 }
 
 void GameManager::LoadGame() {
-    std::string fileName = GetFileNameToLoad();
+    const std::string saveDirectory = "saves/";
+    std::cout << "Enter the name of the save file to load, or press 'L' to list all save files: ";
+    std::string fileName;
+    std::getline(std::cin, fileName);
 
-    std::ifstream inFile(fileName, std::ios::binary);
+    if (fileName == "L" || fileName == "l") {
+        DisplaySaveFiles(); 
+        std::cout << "Enter the name of the save file to load: ";
+        std::getline(std::cin, fileName); 
+    }
+
+    if (fileName.empty()) {
+        std::cout << "No file name provided. Load operation canceled.\n";
+        return;
+    }
+
+    const std::string filePath = saveDirectory + fileName;
+    std::ifstream inFile(filePath, std::ios::binary);
     if (!inFile.is_open()) {
         throw std::runtime_error("Failed to open file for loading the game.");
     }
@@ -69,7 +84,7 @@ void GameManager::LoadGame() {
         inFile.close();
 
         StartNewGame(player1, player2, "LoadedMode");
-        std::cout << "Game successfully loaded from '" << fileName << "'!\n";
+        std::cout << "Game successfully loaded from '" << filePath << "'!\n";
     }
     catch (const std::exception& e) {
         inFile.close();
@@ -257,4 +272,30 @@ bool GameManager::ConfirmOverwrite(const std::string& fileName) const {
         return (toupper(choice) == 'Y');
     }
     return true; 
+}
+
+void GameManager::DisplaySaveFiles() const {
+    const std::string saveDirectory = "saves/";
+    std::vector<std::string> saveFiles;
+
+    try {
+        for (const auto& entry : std::filesystem::directory_iterator(saveDirectory)) {
+            if (entry.is_regular_file()) {
+                saveFiles.push_back(entry.path().filename().string());
+            }
+        }
+
+        if (saveFiles.empty()) {
+            std::cout << "No save files found in '" << saveDirectory << "'.\n";
+        }
+        else {
+            std::cout << "Available save files:\n";
+            for (const auto& file : saveFiles) {
+                std::cout << " - " << file << '\n';
+            }
+        }
+    }
+    catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Error accessing save directory: " << e.what() << '\n';
+    }
 }
