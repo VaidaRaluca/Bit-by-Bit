@@ -78,14 +78,17 @@ void GameManager::LoadGame() {
 }
 
 void GameManager::SaveGame() {
-    std::string fileName = GetFileName();
-    std::ofstream outFile(fileName, std::ios::binary);
+    
+    std::string fileName = HandleFileNameOverwrite();
 
+    
+    std::ofstream outFile(fileName, std::ios::binary);
     if (!outFile.is_open()) {
         throw std::runtime_error("Failed to open file for saving the game.");
     }
 
     try {
+        
         SavePlayer(outFile, m_game.GetPlayer1(), "# Player 1");
         SavePlayer(outFile, m_game.GetPlayer2(), "# Player 2");
         SaveBoard(outFile, m_game.GetBoard());
@@ -221,4 +224,37 @@ Board GameManager::LoadBoard(std::ifstream& inFile) const {
     }
 
     return board;
+}
+
+std::string GameManager::HandleFileNameOverwrite() const {
+    std::string fileName = GetFileName(); 
+
+    std::ifstream checkFile(fileName);
+    if (checkFile.is_open()) {
+        checkFile.close();
+        std::cout << "File '" << fileName << "' already exists.\n";
+        std::cout << "Do you want to overwrite it or change the file name? (O for overwrite / C for change): ";
+        char choice;
+        std::cin >> choice;
+
+        if (toupper(choice) == 'C') {
+            std::cout << "Enter a new file name: ";
+            std::cin.ignore(); 
+            std::getline(std::cin, fileName); 
+        }
+    }
+
+    return fileName; 
+}
+
+bool GameManager::ConfirmOverwrite(const std::string& fileName) const {
+    std::ifstream checkFile(fileName);
+    if (checkFile.is_open()) {
+        checkFile.close();
+        std::cout << "File '" << fileName << "' already exists. Do you want to overwrite it? (Y/N): ";
+        char choice;
+        std::cin >> choice;
+        return (toupper(choice) == 'Y');
+    }
+    return true; 
 }

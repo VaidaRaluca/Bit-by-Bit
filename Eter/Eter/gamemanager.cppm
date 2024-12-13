@@ -38,5 +38,9 @@ namespace eter
 		Player LoadPlayer(std::ifstream& inFile) const;
 		Board LoadBoard(std::ifstream& inFile) const;
 
+		std::string HandleFileNameOverwrite() const;
+		bool ConfirmOverwrite(const std::string& fileName) const;
+
+
 	};
 }
