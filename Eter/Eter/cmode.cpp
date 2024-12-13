@@ -9,16 +9,27 @@ import <iostream>;
 import <string>;
 import<ostream>;
 
-CMode::CMode(Game* game): m_game{game}
-{}
+CMode::CMode(Game* game) : AMode{ game }
+{
+}
+
+uint8_t eter::CMode::getRoundsForWin() const
+{
+    return 3;
+}
+
+uint8_t eter::CMode::getRounds() const
+{
+    return 5;
+}
 
 void CMode::applyModeRules()
 {
     m_game->GetBoardRef().SetDimMax((uint8_t)4);
-    assignCardsInHand();
     generatePower();
-    startMatch();
+    AMode::applyModeRules();
 }
+
 void eter::CMode::generatePower()
 {
     std::random_device rd;
@@ -38,26 +49,26 @@ void eter::CMode::generatePower()
 void CMode::assignCardsInHand()
 {
     std::vector<Card>cardsForPlayer1{
-   Card(1,"red",true),
-   Card(2,"red",true),
-   Card(2,"red",true),
-   Card(2,"red",true),
-   Card(3,"red",true),
-   Card(3,"red",true),
-   Card(3,"red",true),
-   Card(4,"red",true),
-   Card(5,"red",true), //eter
+   Card{1,"red",true},
+   Card{2,"red",true},
+   Card{2,"red",true},
+   Card{2,"red",true},
+   Card{3,"red",true},
+   Card{3,"red",true},
+   Card{3,"red",true},
+   Card{4,"red",true},
+   Card{5,"red",true}, //eter
     };
     std::vector<Card>cardsForPlayer2{
-    Card(1,"blue",true),
-    Card(2,"blue",true),
-    Card(2,"blue",true),
-    Card(2,"blue",true),
-    Card(3,"blue",true),
-    Card(3,"blue",true),
-    Card(3,"blue",true),
-    Card(4,"blue",true),
-    Card(5,"blue",true), 
+    Card{1,"blue",true },
+    Card{2,"blue",true },
+    Card{2,"blue",true},
+    Card{2,"blue",true},
+    Card{3,"blue",true},
+    Card{3,"blue",true},
+    Card{3,"blue",true},
+    Card{4,"blue",true},
+    Card{5,"blue",true},
     };
     if (m_game)
     {
@@ -68,7 +79,8 @@ void CMode::assignCardsInHand()
 
 void CMode::startRound()
 {
-    char gameStatus = '0';
+    AMode::startRound();
+    /*char gameStatus = '0';
     while (gameStatus == '0')
     {
         handleOption();
@@ -97,11 +109,12 @@ void CMode::startRound()
             else
                 std::cout << "DRAW \n";
     }
-    std::cout << m_game->GetBoard();
+    std::cout << m_game->GetBoard();*/
 }
 void CMode::startMatch()
 {
-    size_t countRound = 1;
+    AMode::startMatch();
+    /*size_t countRound = 1;
     std::cout << "The game in C mode has started \n";
     while (m_game->GetPlayer2Wins() < knrRoundsForWin && m_game->GetPlayer1Wins() < knrRoundsForWin)
     {
@@ -119,7 +132,7 @@ void CMode::startMatch()
     else
         std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this game!" << std::endl;
 
-    std::cout << "GAME OVER \n";
+    std::cout << "GAME OVER \n";*/
 }
 
 void eter::CMode::handleOption()
