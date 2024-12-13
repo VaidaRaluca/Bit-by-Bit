@@ -132,6 +132,8 @@
   <ItemGroup>
     <ClCompile Include="amode.cpp" />
     <ClCompile Include="amode.cppm" />
+    <ClCompile Include="bcmode.cpp" />
+    <ClCompile Include="bcmode.cppm" />
     <ClCompile Include="bmode.cpp" />
     <ClCompile Include="bmode.cppm" />
     <ClCompile Include="board.cpp" />

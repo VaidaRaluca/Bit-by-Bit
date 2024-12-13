@@ -84,5 +84,11 @@
     <ClCompile Include="explosion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bcmode.cppm">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bcmode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

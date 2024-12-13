@@ -7,7 +7,7 @@ import card;
 import amode;
 import <vector>;
 namespace eter {
-	export class CMode : public AMode {
+	export class CMode : virtual public AMode {
 	private:
 		std::vector<elementalPowerCards>m_power{ elementalPowerCards{elementalPowerCards::powerAbility::controlledExplosion},
 		elementalPowerCards{elementalPowerCards::powerAbility::destruction},

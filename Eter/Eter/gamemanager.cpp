@@ -45,6 +45,12 @@ void GameManager::StartNewGame(Player player1, Player player2, const std::string
             std::cout << "Starting C mode game\n";
 			m_cmode->applyModeRules();
 		}
+        if (gameMode == "BCMode")
+        {
+            m_bcmode = std::make_unique<BCMode>(&m_game);
+            std::cout << "Starting B+C mode game\n";
+            m_bcmode->applyModeRules();
+        }
 }
 
 void GameManager::LoadGame() {

@@ -6,7 +6,7 @@ import board;
 import bmode;
 import amode;
 import cmode;
-
+import bcmode;
 
 namespace eter
 {
@@ -17,6 +17,7 @@ namespace eter
 		std::unique_ptr<AMode> m_amode;
 		std::unique_ptr<BMode> m_bmode;
 		std::unique_ptr<CMode> m_cmode;
+		std::unique_ptr<BCMode> m_bcmode;
 	public:
 		GameManager() = default;
 		GameManager(const Game& game);
