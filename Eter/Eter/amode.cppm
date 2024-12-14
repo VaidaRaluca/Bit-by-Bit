@@ -8,12 +8,12 @@ namespace eter {
 	protected:
 
 		Game* m_game;
-		virtual uint8_t getRoundsForWin() const;
-		virtual uint8_t getRounds() const;
+	
  
 	public:
 		AMode() = default;
-		 
+		virtual uint8_t getRoundsForWin() const;
+		virtual uint8_t getRounds() const;
 		AMode(Game* game);
 		virtual void assignCardsInHand();
 		virtual void startMatch();

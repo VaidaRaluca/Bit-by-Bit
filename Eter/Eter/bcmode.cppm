@@ -9,7 +9,7 @@ import<vector>;
 
 namespace eter {
 	export class BCMode : public BMode, public CMode {
-	//private:
+	private:
 	//	std::vector<Mage> m_mages{ Mage{Mage::MagicAbility::removeOpponentCard},
 	//	Mage{Mage::MagicAbility::removeEntireLine},
 	//	Mage{Mage::MagicAbility::coverOpponentCard},
@@ -21,12 +21,11 @@ namespace eter {
 	//	Mage m_magePlayer1;
 	//	Mage m_magePlayer2;
 	//	//Game* m_game;
-		uint8_t getRoundsForWin() const override;
-		uint8_t getRounds() const override;
-
 	public:
 		BCMode() = default;
 		explicit BCMode(Game* game);
+		uint8_t getRoundsForWin() const override;
+		uint8_t getRounds() const override;
 		void assignCardsInHand() override; //artibuie cate un set de carti pentru fiecare player
 		void generateMageAndPower();  // genereaza cate un vrajitor pentru fiecare player
 		void startMatch() override;   // porneste meciul

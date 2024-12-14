@@ -19,12 +19,13 @@ namespace eter {
 		Mage{Mage::MagicAbility::shiftEdge} };
 	
 		//Game* m_game;
-		uint8_t getRoundsForWin() const override;
-		uint8_t getRounds() const override;
+
 
 	public:
 		BMode()=default;
 		explicit BMode(Game* game);
+		uint8_t getRoundsForWin() const override;
+		uint8_t getRounds() const override;
 		void assignCardsInHand() override; //artibuie cate un set de carti pentru fiecare player
 		void generateMage();  // genereaza cate un vrajitor pentru fiecare player
 		void startMatch() override;   // porneste meciul

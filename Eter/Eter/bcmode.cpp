@@ -12,7 +12,7 @@ uint8_t eter::BCMode::getRounds() const
     return 5;
 }
 
-BCMode::BCMode(Game* game): BMode(game), CMode(game){}
+BCMode::BCMode(Game* game): AMode(game){}
 
 void eter::BCMode::assignCardsInHand()
 {
@@ -59,6 +59,7 @@ void eter::BCMode::handleOption()
     std::cout << "Press 2 to activate an illusion \n";
     std::cout << "Press 3 to activate an explosion \n";
     std::cout << "Press 4 to activate the mage \n";
+    std::cout << "Press 5 to activate the elemental power \n";
     std::cin >> key;
     Option option = static_cast<Option>(key);
 

@@ -36,11 +36,12 @@ namespace eter {
 		elementalPowerCards m_power1, m_power2;
 		/*Game* m_game;
 		Player m_player;*/
-		uint8_t getRoundsForWin() const override;
-		uint8_t getRounds() const override;
+
 	public:
 		CMode() = default;
 		explicit CMode(Game* game);
+		uint8_t getRoundsForWin() const override;
+		uint8_t getRounds() const override;
 		void applyModeRules() override;
 		void generatePower();
 		void assignCardsInHand() override;
