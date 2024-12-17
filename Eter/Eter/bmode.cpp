@@ -23,6 +23,16 @@ void BMode::applyModeRules()
     AMode::applyModeRules();
 }
 
+Mage eter::BMode::GetMageForPlayer1() const
+{
+    return m_magePlayer1;
+}
+
+Mage eter::BMode::GetMageForPlayer2() const
+{
+    return m_magePlayer2;
+}
+
 void BMode::assignCardsInHand()
 {
     std::vector<Card>cardsForPlayer1{

@@ -19,7 +19,8 @@ namespace eter {
 		Mage{Mage::MagicAbility::shiftEdge} };
 	
 		//Game* m_game;
-
+		Mage m_magePlayer1;
+		Mage m_magePlayer2;
 
 	public:
 		BMode()=default;
@@ -34,9 +35,11 @@ namespace eter {
 		void applyModeRules() override; // aplica toate regulile jocului
 
 		//Made them public just for testing, i will make getters for them later
-		Mage m_magePlayer1;
-		Mage m_magePlayer2;
+
 		virtual ~BMode() = default;
+
+		Mage GetMageForPlayer1() const;
+		Mage GetMageForPlayer2() const;
 
 	};
 

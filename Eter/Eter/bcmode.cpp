@@ -77,12 +77,12 @@ void eter::BCMode::handleOption()
     case OPTION_4:
         if (m_game->GetIsPlayerTurn())
         {
-            m_magePlayer1.activate(m_game->GetPlayer1Ref(), m_game->GetPlayer2Ref(), m_game->GetBoardRef());
+            GetMageForPlayer1().activate(m_game->GetPlayer1Ref(), m_game->GetPlayer2Ref(), m_game->GetBoardRef());
             m_game->SetIsPlayerTurn();
         }
         else
         {
-            m_magePlayer2.activate(m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
+            GetMageForPlayer2().activate(m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
             m_game->SetIsPlayerTurn();
         }
         break;

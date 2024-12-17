@@ -15,25 +15,25 @@ int main()
 
 	// Test AMode
 	GameManager game;
-   // game.StartNewGame(player1, player2, "AMode");
+    game.StartNewGame(player1, player2, "AMode");
 
 
 	// Test BMode
 
-	// game.StartNewGame(player1, player2, "BMode");
+	 game.StartNewGame(player1, player2, "BMode");
 
 	//Test CMode
 
 	// game.StartNewGame(player1, player2, "CMode");
 
-     game.StartNewGame(player1, player2, "BCMode");
+    // game.StartNewGame(player1, player2, "BCMode");
 
-	/*try {
-		game.SaveGame();
-	}
-	catch (const std::exception& e) {
-		std::cerr << "Error saving game: " << e.what() << std::endl;
-	}*/
+	//try {
+	//	game.SaveGame();
+	//}
+	//catch (const std::exception& e) {
+	//	std::cerr << "Error saving game: " << e.what() << std::endl;
+	//}
 
 	return 0;
 }
