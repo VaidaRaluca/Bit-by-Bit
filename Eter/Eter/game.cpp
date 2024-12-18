@@ -112,6 +112,14 @@ void Game::IncrementNrRound()
 }
 
 void Game::playTurn() {
+	if (m_countTurnForReturnedCards == 3)
+	{
+		distributeReturnedCards();
+	}
+	else
+	if (m_countTurnForReturnedCards ==1||m_countTurnForReturnedCards==2)
+		m_countTurnForReturnedCards ++;
+
 	if (m_isPlayerTurn) {
 		m_player1.PrintCardsInHand();
 		handlePlayerTurn(GetPlayer1Ref());
@@ -120,6 +128,7 @@ void Game::playTurn() {
 		m_player2.PrintCardsInHand();
 		handlePlayerTurn(GetPlayer2Ref());
 	}
+
 	handleActivateExplosion();
 	SetIsPlayerTurn();
 }
@@ -190,7 +199,7 @@ void eter::Game::handlePlayerTurnWithIllusion(Player& player) {
 
 void eter::Game::handleActivateExplosion()
 {
-	if (m_board.isTwoLineComplete() && GetIsUsedExplosion() == false)
+	if (GetIsUsedExplosion() == false && m_board.isTwoLineComplete())
 	{
 		std::cout << m_board;
 		std::string playerName = GetIsPlayerTurn() ? m_player1.GetName() : m_player2.GetName();
@@ -224,9 +233,12 @@ void eter::Game::handleActivateExplosion()
 			if (choice == 'y')
 			{
 				GetBoardRef() = explosion.applyEffects();
-				SetIsUsedExplosion(true);
+				m_returnedCards = explosion.GetReturnedCards();
+				m_countTurnForReturnedCards = 1;
 			}
 		}
+		SetIsUsedExplosion(true);
+
 	}
 }
 
@@ -235,6 +247,24 @@ void Game::getInputCoordinates(size_t& x, size_t& y, size_t& cardIndex) {
 	std::cout << "x = "; std::cin >> x;
 	std::cout << "y = "; std::cin >> y;
 	std::cout << "index of the card = "; std::cin >> cardIndex;
+}
+
+void eter::Game::distributeReturnedCards()
+{
+	auto it = m_returnedCards.begin();
+	while (it != m_returnedCards.end())
+	{
+		if (it->GetColor() == m_player1.GetColor())
+		{
+			m_player1.AddCardToHand(*it);
+			it = m_returnedCards.erase(it); 
+		}
+		else if (it->GetColor() == m_player2.GetColor())
+		{
+			m_player2.AddCardToHand(*it);
+			it = m_returnedCards.erase(it); 
+		}
+	}
 }
 
 char Game::VerifyGameOver()

@@ -22,6 +22,7 @@ namespace eter {
         std::vector<Card> m_returnedCards;
     public:
         Explosion(const size_t& size, Board board);
+        const std::vector<Card>& GetReturnedCards();
         void generateRandomEffects();
         void rotateClockwise(); // rotirea matricei de efecte la 90 de grade in sensul acelor de ceasornic
         void rotateCounterClockwise(); // rotirea matricei de efecte la 90 de grade in sens invers acelor de ceasornic

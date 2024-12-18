@@ -18,12 +18,15 @@ namespace eter
 		uint8_t m_player2Wins;
 		uint8_t m_nrRound;   // numarul rundei in care ne aflam
 
+		std::vector<Card> m_returnedCards; //vectorul de carti returnate
+		uint8_t m_countTurnForReturnedCards=0; 
+
 		//Functii ajutatoare
 		void handlePlayerTurn(Player& player);
 		void handlePlayerTurnWithIllusion(Player& player);
 		void handleActivateExplosion();
 		void getInputCoordinates(size_t& x, size_t& y, size_t& cardIndex);
-
+		void distributeReturnedCards();
 	public:
 		Game() = default;
 		Game(Player player1, Player player2, std::string gameMode);

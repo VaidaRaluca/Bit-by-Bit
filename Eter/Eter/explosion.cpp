@@ -13,6 +13,11 @@ Explosion::Explosion(const size_t& size, Board board)
     m_originalBoard = board;
 }
 
+const std::vector<Card>& eter::Explosion::GetReturnedCards()
+{
+    return m_returnedCards;
+}
+
 
 void Explosion::generateRandomEffects()
 {
@@ -55,7 +60,7 @@ void Explosion::generateRandomEffects()
 
         }
 
-    } while (effectCount < minEffects); // Verificăm dacă avem suficiente efecte
+    } while (effectCount < minEffects); 
 
 
 }
@@ -71,7 +76,7 @@ void eter::Explosion::rotateClockwise()
         }
     }
 
-    m_effectMatrix = std::move(rotated); // Înlocuim matricea originală cu cea rotită
+    m_effectMatrix = std::move(rotated); 
 }
 
 void eter::Explosion::rotateCounterClockwise()
@@ -259,23 +264,7 @@ void eter::Explosion::handleApplyEffects()
 
 Board eter::Explosion::applyEffects()
 {
-    /* do {
-         generateRandomEffects();
-         printeffectMatrix();
-         handleApplyEffects();
-         std::cout << m_board;
-         for (size_t line = m_board.GetIndexLineMin();line <= m_board.GetIndexLineMax();++line)
-         {
-             for (size_t col = m_board.GetIndexColMin();col <= m_board.GetIndexColMax();++col)
-             {
-                 std::cout << (m_board.GetGrid()[line][col].has_value() && !m_board.GetGrid()[line][col].value().empty()) << " ";
-             }
-             std::cout << "\n";
-         }
-
-     } while (areEffectsAdjacent()==false);*/
-
-    /*generateRandomEffects();
+   /* generateRandomEffects();
     printeffectMatrix();*/
 
     verifyEffects();

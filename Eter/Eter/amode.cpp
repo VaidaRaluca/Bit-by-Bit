@@ -61,6 +61,7 @@ void AMode::startMatch()
 		// Reset the board and reassign cards
 		assignCardsInHand();
 		m_game->resetBoard();
+		m_game->SetIsUsedExplosion(false);
 	}
 
 	if (m_game->GetPlayer1Wins() > m_game->GetPlayer2Wins())
