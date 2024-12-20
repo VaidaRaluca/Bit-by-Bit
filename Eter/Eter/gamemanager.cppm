@@ -35,6 +35,8 @@ namespace eter
 		void LoadAutoSave();
 		void BackupAutosave();
 		void DisplaySaveFileSize(const std::string& filePath) const;
+		void DeleteSave(const std::string& saveFileName);
+		void DeleteSaveInteractive();
 
 	private:
 		void StartAutoSaveTimer();

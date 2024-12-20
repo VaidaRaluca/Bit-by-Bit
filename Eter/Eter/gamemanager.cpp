@@ -61,6 +61,14 @@ void GameManager::LoadGame() {
         std::string fileName;
         std::getline(std::cin, fileName);
 
+        if (fileName == "D" || fileName == "d") {
+            std::cout << "Enter the name of the save file to delete: ";
+            std::string deleteFileName;
+            std::getline(std::cin, deleteFileName);
+            DeleteSave(deleteFileName);
+            continue;
+        }
+
         if (fileName == "AUTO" || fileName == "auto") {
             LoadAutoSave();
             return;
@@ -256,6 +264,37 @@ void GameManager::DisplaySaveFileSize(const std::string& filePath) const {
     }
     catch (const std::filesystem::filesystem_error& e) {
         std::cerr << "Error retrieving file size: " << e.what() << '\n';
+    }
+}
+
+void GameManager::DeleteSaveInteractive() {
+    std::cout << "Enter the name of the save file to delete, or press 'Q' to quit: ";
+    std::string saveFileName;
+    std::getline(std::cin, saveFileName);
+
+    if (saveFileName == "Q" || saveFileName == "q") {
+        std::cout << "Exiting delete save operation.\n";
+        return;
+    }
+
+    DeleteSave(saveFileName);
+}
+
+void GameManager::DeleteSave(const std::string& saveFileName) {
+    const std::string saveDirectory = "saves/";
+    const std::string filePath = saveDirectory + saveFileName;
+
+    try {
+        if (std::filesystem::exists(filePath)) {
+            std::filesystem::remove(filePath); 
+            std::cout << "Save file '" << filePath << "' has been deleted successfully.\n";
+        }
+        else {
+            std::cerr << "Error: Save file '" << filePath << "' does not exist.\n";
+        }
+    }
+    catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Error deleting file '" << filePath << "': " << e.what() << '\n';
     }
 }
 
