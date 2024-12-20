@@ -24,7 +24,7 @@ int main()
 
 	//Test CMode
 
-	 game.StartNewGame(player1, player2, "CMode");
+	// game.StartNewGame(player1, player2, "CMode");
 
     // game.StartNewGame(player1, player2, "BCMode");
 

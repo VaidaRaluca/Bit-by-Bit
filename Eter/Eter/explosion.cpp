@@ -153,7 +153,11 @@ void eter::Explosion::verifyEffects()
             auto& cellBoard = m_board.GetGrid()[lineBoard][colBoard];
             std::cout << "Effect applied at (" << lineBoard << ", " << colBoard << "): "
                 << static_cast<int>(cellMatrixEffect) << "\n";
-
+            if (cellBoard.has_value() && cellBoard.value().top().GetValue() == 5)
+            {
+                m_effectMatrix[lineMatrixEffect][colMatrixEffect] = Effect::NONE;
+            }
+            else
             if (cellMatrixEffect != Effect::NONE) {
                 switch (cellMatrixEffect) {
                 case Effect::REMOVE_CARD:
@@ -172,7 +176,6 @@ void eter::Explosion::verifyEffects()
                     if (cellBoard && !cellBoard->empty()) {
                         Card card = cellBoard->top();
                         m_board.removeCard(lineBoard, colBoard);
-                        //m_returnedCards.push_back(card);
                     }
                     if (areEffectsAdjacent() == false)
                     {
@@ -264,9 +267,6 @@ void eter::Explosion::handleApplyEffects()
 
 Board eter::Explosion::applyEffects()
 {
-   /* generateRandomEffects();
-    printeffectMatrix();*/
-
     verifyEffects();
     std::cout << "Explosion card after verify: \n";
     printeffectMatrix();
