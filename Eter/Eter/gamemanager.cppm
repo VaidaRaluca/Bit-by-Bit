@@ -34,6 +34,7 @@ namespace eter
 		void AutoSave(const std::string& autosaveFile = "saves/autosave.dat");
 		void LoadAutoSave();
 		void BackupAutosave();
+		void DisplaySaveFileSize(const std::string& filePath) const;
 
 	private:
 		void StartAutoSaveTimer();

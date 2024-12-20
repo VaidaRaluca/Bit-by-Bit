@@ -87,6 +87,9 @@ void GameManager::LoadGame() {
         }
 
         const std::string filePath = saveDirectory + fileName;
+
+        DisplaySaveFileSize(filePath);
+
         std::ifstream inFile(filePath, std::ios::binary);
         if (!inFile.is_open()) {
             std::cerr << "Error: File '" << filePath << "' could not be opened. Please try again.\n";
@@ -156,6 +159,9 @@ void GameManager::SaveGame() {
             }
 
             std::cout << "Game successfully saved to '" << filePath << "'!\n";
+
+            DisplaySaveFileSize(filePath);
+
             return;
         }
         catch (const std::exception& e) {
@@ -242,6 +248,16 @@ void GameManager::BackupAutosave() {
     std::cout << "Backup of autosave created successfully.\n";
 }
 
+void GameManager::DisplaySaveFileSize(const std::string& filePath) const {
+    try {
+        std::uintmax_t fileSize = std::filesystem::file_size(filePath);
+        std::cout << "The save file '" << filePath << "' occupies "
+            << fileSize / 1024.0 << " KB.\n"; 
+    }
+    catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Error retrieving file size: " << e.what() << '\n';
+    }
+}
 
 //Functii auxiliare
 
