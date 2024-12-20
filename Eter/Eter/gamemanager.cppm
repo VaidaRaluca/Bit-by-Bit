@@ -2,6 +2,8 @@ export module gamemanager;
 
 import <memory>;
 import<filesystem>;
+import<thread>;
+import<chrono>;
 import game;
 import board;
 import bmode;
@@ -29,7 +31,13 @@ namespace eter
 		void SaveGame();   // Metoda pentru salvarea unui joc
 		void LoadGame();   // Metoda pentru incarcarea unui joc
 
+		void AutoSave(const std::string& autosaveFile = "saves/autosave.dat");
+		void LoadAutoSave();
+		void BackupAutosave();
+
 	private:
+		void StartAutoSaveTimer();
+
 		std::string GetFileName() const;
 		void SavePlayer(std::ofstream& outFile, const Player& player, const std::string& header) const;
 		void SaveBoard(std::ofstream& outFile, const Board& board) const;

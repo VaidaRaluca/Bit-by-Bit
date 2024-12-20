@@ -9,48 +9,48 @@ import player;
 import game;
 using namespace eter;
 
-GameManager::GameManager(const Game& game):
-	m_game{game}
+GameManager::GameManager(const Game& game) :
+    m_game{ game }
 {
 }
 
 const Game& GameManager::GetGame() const
 {
-	return m_game;
+    return m_game;
 }
 
 void GameManager::SetGame(Game game)
 {
-	m_game=Game( game) ;
+    m_game = Game(game);
 }
 
 void GameManager::StartNewGame(Player player1, Player player2, const std::string& gameMode)
 {
-		m_game = Game(player1, player2, gameMode);
-		if (gameMode == "AMode")
-		{
-			m_amode= std::make_unique<AMode>(&m_game);
-			std::cout << "Starting A mode game\n";
-			m_amode->applyModeRules();
-		}
-		if (gameMode == "BMode")
-		{
-			m_bmode = std::make_unique<BMode>(&m_game); 
-            std::cout << "Starting B mode game\n";
-			m_bmode->applyModeRules(); 
-		}
-		if (gameMode == "CMode")
-		{
-			m_cmode = std::make_unique<CMode>(&m_game);
-            std::cout << "Starting C mode game\n";
-			m_cmode->applyModeRules();
-		}
-        if (gameMode == "BCMode")
-        {
-            m_bcmode = std::make_unique<BCMode>(&m_game);
-            std::cout << "Starting B+C mode game\n";
-            m_bcmode->applyModeRules();
-        }
+    m_game = Game(player1, player2, gameMode);
+    if (gameMode == "AMode")
+    {
+        m_amode = std::make_unique<AMode>(&m_game);
+        std::cout << "Starting A mode game\n";
+        m_amode->applyModeRules();
+    }
+    if (gameMode == "BMode")
+    {
+        m_bmode = std::make_unique<BMode>(&m_game);
+        std::cout << "Starting B mode game\n";
+        m_bmode->applyModeRules();
+    }
+    if (gameMode == "CMode")
+    {
+        m_cmode = std::make_unique<CMode>(&m_game);
+        std::cout << "Starting C mode game\n";
+        m_cmode->applyModeRules();
+    }
+    if (gameMode == "BCMode")
+    {
+        m_bcmode = std::make_unique<BCMode>(&m_game);
+        std::cout << "Starting B+C mode game\n";
+        m_bcmode->applyModeRules();
+    }
 }
 
 void GameManager::LoadGame() {
@@ -61,31 +61,36 @@ void GameManager::LoadGame() {
         std::string fileName;
         std::getline(std::cin, fileName);
 
+        if (fileName == "AUTO" || fileName == "auto") {
+            LoadAutoSave();
+            return;
+        }
+
         if (fileName == "L" || fileName == "l") {
-            DisplaySaveFiles(); 
-            continue;          
+            DisplaySaveFiles();
+            continue;
         }
 
         if (fileName == "Q" || fileName == "q") {
             std::cout << "Exiting LoadGame.\n";
-            return; 
+            return;
         }
 
         if (fileName.empty()) {
             std::cout << "No file name provided. Please try again.\n";
-            continue; 
+            continue;
         }
 
         if (!ConfirmAction("Player, do you want to load the save file '" + fileName + "'")) {
             std::cout << "File load canceled. You can choose another file or quit.\n";
-            continue; 
+            continue;
         }
 
         const std::string filePath = saveDirectory + fileName;
         std::ifstream inFile(filePath, std::ios::binary);
         if (!inFile.is_open()) {
             std::cerr << "Error: File '" << filePath << "' could not be opened. Please try again.\n";
-            continue; 
+            continue;
         }
 
         try {
@@ -97,7 +102,7 @@ void GameManager::LoadGame() {
 
             StartNewGame(player1, player2, "LoadedMode");
             std::cout << "Game successfully loaded from '" << filePath << "'!\n";
-            return; 
+            return;
         }
         catch (const std::exception& e) {
             inFile.close();
@@ -115,29 +120,29 @@ void GameManager::SaveGame() {
         std::string fileName;
         std::getline(std::cin, fileName);
 
-       
+
         if (fileName == "Q" || fileName == "q") {
             std::cout << "Exiting SaveGame.\n";
-            return; 
+            return;
         }
 
         if (fileName.empty()) {
             std::cout << "No file name provided. Please try again.\n";
-            continue; 
+            continue;
         }
 
         const std::string filePath = saveDirectory + fileName;
 
         if (!ConfirmationForSave(fileName)) {
             std::cout << "Save operation canceled. You can choose another file or quit.\n";
-            continue; 
+            continue;
         }
 
-       
+
         std::ofstream outFile(filePath, std::ios::binary);
         if (!outFile.is_open()) {
             std::cerr << "Error: Could not open file '" << filePath << "' for saving. Please try again.\n";
-            continue; 
+            continue;
         }
 
         try {
@@ -151,7 +156,7 @@ void GameManager::SaveGame() {
             }
 
             std::cout << "Game successfully saved to '" << filePath << "'!\n";
-            return; 
+            return;
         }
         catch (const std::exception& e) {
             outFile.close();
@@ -161,8 +166,93 @@ void GameManager::SaveGame() {
     }
 }
 
+void GameManager::AutoSave(const std::string& autosaveFile) {
+    BackupAutosave();
+
+    try {
+        const std::string saveDirectory = autosaveFile.substr(0, autosaveFile.find_last_of("/\\"));
+        if (!std::filesystem::exists(saveDirectory)) {
+            std::filesystem::create_directories(saveDirectory);
+            std::cout << "Directory '" << saveDirectory << "' created for autosave.\n";
+        }
+
+        std::ofstream outFile(autosaveFile, std::ios::binary);
+        if (!outFile.is_open()) {
+            std::cerr << "Error: Could not open file '" << autosaveFile << "' for autosaving.\n";
+            return;
+        }
+
+        SavePlayer(outFile, m_game.GetPlayer1(), "# Player 1");
+        SavePlayer(outFile, m_game.GetPlayer2(), "# Player 2");
+        SaveBoard(outFile, m_game.GetBoard());
+
+        outFile.close();
+        if (outFile.fail()) {
+            throw std::runtime_error("Failed to write game data to the autosave file.");
+        }
+
+        std::cout << "Autosave completed successfully to '" << autosaveFile << "'.\n";
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error during autosaving: " << e.what() << "\n";
+    }
+}
+
+void GameManager::LoadAutoSave() {
+    const std::string autosaveFile = "saves/autosave.dat";
+
+    std::ifstream inFile(autosaveFile, std::ios::binary);
+    if (!inFile.is_open()) {
+        std::cerr << "Error: Autosave file not found.\n";
+        return;
+    }
+
+    try {
+        Player player1 = LoadPlayer(inFile);
+        Player player2 = LoadPlayer(inFile);
+        Board board = LoadBoard(inFile);
+
+        inFile.close();
+
+        StartNewGame(player1, player2, "LoadedMode");
+        std::cout << "Game successfully loaded from autosave.\n";
+    }
+    catch (const std::exception& e) {
+        inFile.close();
+        std::cerr << "Error during loading autosave: " << e.what() << "\n";
+    }
+}
+
+void GameManager::BackupAutosave() {
+    const std::string autosaveFile = "saves/autosave.dat";
+    const std::string backupFile = "saves/autosave_backup.dat";
+
+    std::ifstream src(autosaveFile, std::ios::binary);
+    std::ofstream dest(backupFile, std::ios::binary);
+
+    if (!src.is_open() || !dest.is_open()) {
+        std::cerr << "Error creating backup of autosave.\n";
+        return;
+    }
+
+    dest << src.rdbuf();
+    src.close();
+    dest.close();
+
+    std::cout << "Backup of autosave created successfully.\n";
+}
+
 
 //Functii auxiliare
+
+void GameManager::StartAutoSaveTimer() {
+    std::thread([this]() {
+        while (true) {
+            std::this_thread::sleep_for(std::chrono::minutes(1));
+            AutoSave();
+        }
+        }).detach();
+}
 
 std::string GameManager::GetFileName() const {
     std::string fileName;
@@ -284,7 +374,7 @@ Board GameManager::LoadBoard(std::ifstream& inFile) const {
 }
 
 std::string GameManager::HandleFileNameOverwrite() const {
-    std::string fileName = GetFileName(); 
+    std::string fileName = GetFileName();
 
     std::ifstream checkFile(fileName);
     if (checkFile.is_open()) {
@@ -296,12 +386,12 @@ std::string GameManager::HandleFileNameOverwrite() const {
 
         if (toupper(choice) == 'C') {
             std::cout << "Enter a new file name: ";
-            std::cin.ignore(); 
-            std::getline(std::cin, fileName); 
+            std::cin.ignore();
+            std::getline(std::cin, fileName);
         }
     }
 
-    return fileName; 
+    return fileName;
 }
 
 bool GameManager::ConfirmOverwrite(const std::string& fileName) const {
@@ -313,7 +403,7 @@ bool GameManager::ConfirmOverwrite(const std::string& fileName) const {
         std::cin >> choice;
         return (toupper(choice) == 'Y');
     }
-    return true; 
+    return true;
 }
 
 void GameManager::DisplaySaveFiles() const {
@@ -351,14 +441,14 @@ bool GameManager::ConfirmAction(const std::string& actionDescription) const {
     std::cout << actionDescription << " (Y/N): ";
     char choice;
     std::cin >> choice;
-    std::cin.ignore(); 
-    return (toupper(choice) == 'Y'); 
+    std::cin.ignore();
+    return (toupper(choice) == 'Y');
 }
 
 bool GameManager::ConfirmationForSave(const std::string& fileName) const {
     std::cout << "Do you want to save the game to '" << fileName << "'? (Y/N): ";
     char choice;
     std::cin >> choice;
-    std::cin.ignore(); 
-    return (toupper(choice) == 'Y'); 
+    std::cin.ignore();
+    return (toupper(choice) == 'Y');
 }
