@@ -31,6 +31,7 @@ namespace eter {
         void verifyEffects();
         void handleApplyEffects();
         Board applyEffects();
+        void rotateExplosion();
 
     };
 }

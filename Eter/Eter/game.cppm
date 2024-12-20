@@ -46,6 +46,8 @@ namespace eter
 		uint8_t GetPlayer1Wins();
 		uint8_t GetPlayer2Wins();
 		uint8_t GetNrRound();
+		const std::vector<Card>& GetReturnedCards() const;
+		uint8_t GetCountTurnForReturnedCards();
 
 
 		void SetBoard(Board board);
@@ -55,6 +57,9 @@ namespace eter
 		void IncrementPlayer1Wins();
 		void IncrementPlayer2Wins();
 		void IncrementNrRound();
+		void SetReturnedCards(const std::vector<Card>& cards);
+		void SetCountTurnForReturnedCards(uint8_t count);
+
 
 		void playTurn();
 		void playIllusion();

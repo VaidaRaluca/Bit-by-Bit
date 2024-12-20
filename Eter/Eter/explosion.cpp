@@ -279,3 +279,27 @@ Board eter::Explosion::applyEffects()
 
     return m_board;
 }
+
+void eter::Explosion::rotateExplosion()
+{
+    generateRandomEffects();
+    printeffectMatrix();
+    std::cout << "Do you want to rotate the explosion card?\n";
+    std::cout << "Press l(for left rotation) r (for right rotation) or any key to end rotation.\n";
+    char choice;
+    std::cin >> choice;
+    while (choice == 'l' || choice == 'r')
+    {
+        if (choice == 'l')
+        {
+            rotateCounterClockwise();
+            printeffectMatrix();
+        }
+        else
+        {
+            rotateClockwise();
+            printeffectMatrix();
+        }
+        std::cin >> choice;
+    }
+}

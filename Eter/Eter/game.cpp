@@ -75,6 +75,16 @@ uint8_t Game::GetNrRound()
 	return m_nrRound;
 }
 
+const std::vector<Card>& eter::Game::GetReturnedCards() const
+{
+	return m_returnedCards;
+}
+
+uint8_t eter::Game::GetCountTurnForReturnedCards()
+{
+	return m_countTurnForReturnedCards;
+}
+
 
 void Game::SetBoard(Board board)
 {
@@ -109,6 +119,16 @@ void Game::IncrementPlayer2Wins()
 void Game::IncrementNrRound()
 {
 	++m_nrRound;
+}
+
+void eter::Game::SetReturnedCards(const std::vector<Card>& cards)
+{
+	m_returnedCards = cards;
+}
+
+void eter::Game::SetCountTurnForReturnedCards(uint8_t count)
+{
+	m_countTurnForReturnedCards = count;
 }
 
 void Game::playTurn() {
@@ -209,25 +229,7 @@ void eter::Game::handleActivateExplosion()
 		if (choice == 'y')
 		{
 			Explosion explosion(m_board.GetDimMax(), GetBoard());
-			explosion.generateRandomEffects();
-			explosion.printeffectMatrix();
-			std::cout << "Do you want to rotate the explosion card?\n";
-			std::cout << "Press l(for left rotation) r (for right rotation) or any key to end rotation.\n";
-			std::cin >> choice;
-			while (choice == 'l' || choice == 'r')
-			{
-				if (choice == 'l')
-				{
-					explosion.rotateCounterClockwise();
-					explosion.printeffectMatrix();
-				}
-				else
-				{
-					explosion.rotateClockwise();
-					explosion.printeffectMatrix();
-				}
-				std::cin >> choice;
-			}
+			explosion.rotateExplosion();
 			std::cout << "Do you want to continue to activate the explosion ? (y/ n) \n";
 			std::cin >> choice;
 			if (choice == 'y')

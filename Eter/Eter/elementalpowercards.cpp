@@ -119,14 +119,14 @@ namespace eter {
 	{
 		return powerAbility();
 	}
-	void elementalPowerCards::activate(Player& player, Player& opponent, Board& board)
+	void elementalPowerCards::activate(Game* game,Player& player, Player& opponent, Board& board)
 	{
 		if (m_used)
 			throw std::runtime_error("The elemental power has already been used!\n");
 		switch (m_power)
 		{
 		case eter::elementalPowerCards::powerAbility::controlledExplosion:
-			//se va apela o functie pentru puterea respectiva
+			activateExplosion(game);
 			break;
 		case eter::elementalPowerCards::powerAbility::destruction:
 			activateDestruction(player, opponent, board);
@@ -201,6 +201,21 @@ namespace eter {
 			break;
 		}
 		m_used = true;
+	}
+
+	void elementalPowerCards::activateExplosion(Game* game)
+	{
+		Explosion explosion(game->GetBoard().GetDimMax(), game->GetBoard());
+		explosion.rotateExplosion();
+		std::cout << "Do you want to continue to activate the explosion ? (y/ n) \n";
+		char choice;
+		std::cin >> choice;
+		if (choice == 'y')
+		{
+			game->GetBoardRef() = explosion.applyEffects();
+			game->SetReturnedCards(explosion.GetReturnedCards());
+			game->SetCountTurnForReturnedCards (1);
+		}
 	}
 
 	void elementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board) {

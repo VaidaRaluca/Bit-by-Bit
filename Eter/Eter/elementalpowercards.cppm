@@ -1,6 +1,8 @@
 ﻿export module elementalpowercards;
 import board;
 import player;
+import game;
+import explosion;
 import std;
 import <ostream>;
 
@@ -75,9 +77,10 @@ namespace eter {
 		bool getUsed() const { return m_used; }
 		void setAbility(powerAbility power) { m_power = power; }
 		powerAbility getAbility() const { return m_power; }
-		void activate(Player& player, Player& opponent, Board& board);
+		void activate(Game* game,Player& player, Player& opponent, Board& board);
 
 	private:
+		void activateExplosion(Game* game);
  		void activateDestruction(Player& player, Player& opponent, Board& board);
 		void activateSquall(Player& opponent, Board& board);
 		void activateFire(Player& player, Player& opponent, Board& board);

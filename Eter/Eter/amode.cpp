@@ -72,15 +72,6 @@ void AMode::startMatch()
 	std::cout << "GAME OVER \n";
 }
 
-void AMode::handleActivateExplosion()
-{
-	Player& currentPlayer = m_game->GetIsPlayerTurn() ? m_game->GetPlayer1Ref() : m_game->GetPlayer2Ref();
-	std::cout << currentPlayer.GetName() << " activates an explosion.\n";
-	size_t dim = m_game->GetBoard().GetDimMax();
-	Explosion e(dim, m_game->GetBoard());
-	m_game->GetBoardRef() = e.applyEffects();
-	m_game->SetIsPlayerTurn();
-}
 
 void AMode::handleOption()
 {
@@ -88,7 +79,6 @@ void AMode::handleOption()
 	{
 		OPTION_1 = 1,
 		OPTION_2,
-		OPTION_3,
 	};
 
 	std::cout << m_game->GetBoard();
@@ -103,7 +93,6 @@ void AMode::handleOption()
 	std::cout << "Choose an option: \n";
 	std::cout << "Press 1 to place a card on the board \n";
 	std::cout << "Press 2 to activate an illusion \n";
-	std::cout << "Press 3 to activate an explosion \n";
 	std::cin >> key;
 	Option option = static_cast<Option>(key);
 
@@ -113,9 +102,6 @@ void AMode::handleOption()
 		break;
 	case OPTION_2:
 		m_game->playIllusion();
-		break;
-	case OPTION_3:
-		handleActivateExplosion();
 		break;
 	default:
 		std::cout << "Invalid option.\n";
