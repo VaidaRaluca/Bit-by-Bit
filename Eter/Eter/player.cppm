@@ -15,10 +15,10 @@ namespace eter {
 		uint32_t m_score;
 		std::string m_color;
 		std::vector<Card> m_cardsInHand;
-		bool m_hasUsedIllusion = false;
+		bool m_hasUsedIllusion ;
 		std::vector<Card> m_playedCards;
 		std::vector<Card> m_eliminatedCards;
-		std::vector<std::pair<Card, std::pair<uint8_t, uint8_t>>> m_playedCardsP;//pentru puteri ca aveam nevoie sa stiu si pozitia
+		std::vector<std::pair<Card, std::pair<size_t, size_t>>> m_playedCardsP;//pentru puteri ca aveam nevoie sa stiu si pozitia
 		//la care a pus ultima carte
  	public:
 		//Rule of 5
@@ -51,12 +51,13 @@ namespace eter {
 		std::vector<Card> AddToEliminatedCards(const Card& card);//Adauga o carte in m_eliminatedCards
 		void AddPlayedCard(const Card& card);
 		void AddCardToHand(const Card& card);//Adauga o carte in m_cardsInHand
-		void useIllusion(int x, int y, Board& board, Card& illusion);
+		void useIllusion(size_t x, size_t y, Board& board, Card& illusion);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
 		bool placeCard(size_t x, size_t y, const Card& card, Board& board);
-		void addPlayedCardForPower(const Card& card, int x, int y);
 
-		std::vector<std::pair<Card, std::pair<uint8_t, uint8_t>>>& GetPlayedCardsForPower();//geterul pentru puteri care imi da vectorul cu ultima carte si cu pozitia sa
+
+		void addPlayedCardForPower(const Card& card, size_t x, size_t y);
+     	std::vector<std::pair<Card, std::pair<size_t, size_t>>>& GetPlayedCardsForPower();//geterul pentru puteri care imi da vectorul cu ultima carte si cu pozitia sa
 		
 
 		void swap(Player& other) noexcept;

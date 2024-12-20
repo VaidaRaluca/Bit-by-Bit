@@ -5,7 +5,7 @@ Player::Player(const std::string& name, const std::string& color)
 	: m_name{ name }
 	, m_score{ 0 }
 	, m_color{ color }
-	//, m_hasUsedIllusion{ false }
+	, m_hasUsedIllusion{ false }
 {}
 
 Player::Player(const Player& other)
@@ -151,11 +151,12 @@ bool Player::placeCard(size_t x, size_t y, const Card& card, Board& board)
 	}
 }
 
-void eter::Player::addPlayedCardForPower(const Card& card, int x, int y)//functia cu vectorul pentru puteri care obtine si pozitia ultimei carti
+void eter::Player::addPlayedCardForPower(const Card& card, size_t x, size_t y)//functia cu vectorul pentru puteri care obtine si pozitia ultimei carti
 {
 	m_playedCardsP.emplace_back(card, std::make_pair(x, y));
 }
-std::vector<std::pair<Card, std::pair<uint8_t, uint8_t>>>& eter::Player::GetPlayedCardsForPower()
+
+std::vector<std::pair<Card, std::pair<size_t, size_t>>>& eter::Player::GetPlayedCardsForPower()
 {
 	return m_playedCardsP;
 }
@@ -179,7 +180,7 @@ std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board) // this function
 				return { rows,cols };
 }
 
-void Player::useIllusion(int x, int y, Board& board, Card& illusion)
+void Player::useIllusion(size_t x, size_t y, Board& board, Card& illusion)
 {
 	if (!board.isValidPosition(x, y)) {
 		std::cout << "The position (" << x << ", " << y << ") is not valid on the board.\n";

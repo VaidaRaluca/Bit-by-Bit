@@ -199,7 +199,7 @@ void eter::CMode::handleOption()
                 elementalPower.activate(m_game,m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
             }
             elementalPower.setUsed(true);
-            std::cout << "Power activated successfully!\n";
+            m_game->SetIsPlayerTurn();
         }
         break;
     }

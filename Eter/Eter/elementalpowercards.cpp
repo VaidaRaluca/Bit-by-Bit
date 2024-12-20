@@ -201,6 +201,7 @@ namespace eter {
 			break;
 		}
 		m_used = true;
+		std::cout << "Power activated successfully!\n";
 	}
 
 	void elementalPowerCards::activateExplosion(Game* game)
@@ -215,6 +216,7 @@ namespace eter {
 			game->GetBoardRef() = explosion.applyEffects();
 			game->SetReturnedCards(explosion.GetReturnedCards());
 			game->SetCountTurnForReturnedCards (1);
+			game->SetIsUsedExplosion(true);
 		}
 	}
 
@@ -225,49 +227,29 @@ namespace eter {
 		// Verificăm dacă adversarul a jucat cel puțin o carte
 		if (opponentPlayedCards.empty()) {
 			std::cout << "The opponent has no played cards to remove.\n";
-			return;
 		}
+		else
+		{
+			// Obținem ultima carte jucată de adversar și poziția sa
+			const auto& lastPlayedCardWithPos = opponentPlayedCards.back();
+			const Card& lastCardPlayed = lastPlayedCardWithPos.first;
+			const uint8_t x = lastPlayedCardWithPos.second.first;
+			const uint8_t y = lastPlayedCardWithPos.second.second;
 
-		// Obținem ultima carte jucată de adversar și poziția sa
-		const auto& lastPlayedCardWithPos = opponentPlayedCards.back();
-		const Card& lastCardPlayed = lastPlayedCardWithPos.first;
-		const uint8_t x = lastPlayedCardWithPos.second.first;
-		const uint8_t y = lastPlayedCardWithPos.second.second;
+			std::cout << "Debug: Last card played by the opponent is value " << lastCardPlayed.GetValue() + 1 - 1
+				<< " and color " << lastCardPlayed.GetColor() << " at position (" << (int)x << ", " << (int)y << ").\n";
 
-		std::cout << "Debug: Last card played by the opponent is value " << lastCardPlayed.GetValue()+1-1
-			<< " and color " << lastCardPlayed.GetColor() << " at position (" << (int)x << ", " << (int)y << ").\n";
+			board.removeCard(x, y);
+			// Eliminăm cartea din lista de cărți jucate ale adversarului
+			opponentPlayedCards.pop_back();
 
-		// Verificăm dacă poziția este validă pe tablă și există o carte pe acea poziție
-		auto& cellOpt = board[{x, y}];
-		if (cellOpt.has_value()) {
-			auto& cell = cellOpt.value();
-			if (!cell.empty()) {
-				const Card& topCard = cell.top();
-				// Dacă cartea de sus din celulă este aceeași cu ultima carte jucată de adversar
-				if (topCard == lastCardPlayed) {
-					// Eliminăm cartea de pe tablă
-					cell.pop();
-					if (cell.empty()) {
-						cellOpt.reset(); // Golim celula
-					}
+			// Adăugăm cartea eliminată în lista de cărți eliminate ale jucătorului curent
+			player.AddToEliminatedCards(lastCardPlayed);
 
-					// Eliminăm cartea din lista de cărți jucate ale adversarului
-					opponentPlayedCards.pop_back();
-
-					// Adăugăm cartea eliminată în lista de cărți eliminate ale jucătorului curent
-					player.AddToEliminatedCards(lastCardPlayed);
-
-					std::cout << "Removed opponent's card with value " << lastCardPlayed.GetValue()+1-1
-						<< " and color " << lastCardPlayed.GetColor()
-						<< " from position (" << (int)x << ", " << (int)y << ").\n";
-					std::cout << "Power activated successfully!\n";
-					return;
-				}
-			}
+			std::cout << "Removed opponent's card with value " << lastCardPlayed.GetValue() + 1 - 1 << " and color " << lastCardPlayed.GetColor()
+				<< " from position (" << (int)x << ", " << (int)y << ").\n";
 		}
-
-		std::cout << "The last card played by the opponent was not found on the board.\n";
-	}
+}
 
 
 void elementalPowerCards::activateSquall(Player& opponent, Board& board)
