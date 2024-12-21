@@ -221,49 +221,32 @@ namespace eter {
 	}
 
 	void elementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board) {
-		std::cout << "Remove from play the last card played bythe opponent.";
-
+		// Obținem vectorul de cărți jucate ale adversarului
 		auto& opponentPlayedCards = opponent.GetPlayedCardsForPower();
 
-		if (opponentPlayedCards.empty())
-		{
+		// Verificăm dacă adversarul a jucat cel puțin o carte
+		if (opponentPlayedCards.empty()) {
 			std::cout << "The opponent has no played cards to remove.\n";
-			return;
 		}
+		else
+		{
+			// Obținem ultima carte jucată de adversar și poziția sa
+			const auto& lastPlayedCardWithPos = opponentPlayedCards.back();
+			const Card& lastCardPlayed = lastPlayedCardWithPos.first;
+			size_t  x = lastPlayedCardWithPos.second.first;
+			size_t  y = lastPlayedCardWithPos.second.second;
 
-		const auto& lastPlayedCardWithPos = opponentPlayedCards.back();
-		const Card& lastCardPlayed = lastPlayedCardWithPos.first;
-		const uint8_t x = lastPlayedCardWithPos.second.first;
-		const uint8_t y = lastPlayedCardWithPos.second.second;
+			std::cout << "Debug: Last card played by the opponent is value " << lastCardPlayed.GetValue() + 1 - 1
+				<< " and color " << lastCardPlayed.GetColor() << " at position (" << (int)x << ", " << (int)y << ").\n";
 
-		std::cout << "Debug: Last card played by the opponent is value " << lastCardPlayed.GetValue() + 1 - 1
-			<< " and color " << lastCardPlayed.GetColor() << " at position (" << (int)x << ", " << (int)y << ").\n";
+			board.removeCard(x, y);
+			opponentPlayedCards.pop_back();
 
-		auto& cellOpt = board[{x, y}];
-		if (cellOpt.has_value()) {
-			auto& cell = cellOpt.value();
-			if (!cell.empty()) {
-				const Card& topCard = cell.top();
-				if (topCard == lastCardPlayed) {
-					cell.pop();
-					if (cell.empty()) {
-						cellOpt.reset();
-					}
+			opponent.AddToEliminatedCards(lastCardPlayed);
 
-					opponentPlayedCards.pop_back();
-
-					player.AddToEliminatedCards(lastCardPlayed);
-
-					std::cout << "Removed opponent's card with value " << lastCardPlayed.GetValue() + 1 - 1
-						<< " and color " << lastCardPlayed.GetColor()
-						<< " from position (" << (int)x << ", " << (int)y << ").\n";
-					std::cout << "Power activated successfully!\n";
-					return;
-				}
-			}
+			std::cout << "Removed opponent's card with value " << lastCardPlayed.GetValue() + 1 - 1 << " and color " << lastCardPlayed.GetColor()
+				<< " from position (" << (int)x << ", " << (int)y << ").\n";
 		}
-
-		std::cout << "The last card played by the opponent was not found on the board.\n";
 	}
 
 
