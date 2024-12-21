@@ -323,16 +323,17 @@ namespace eter {
 
 
 	void elementalPowerCards::activateFire(Player& player, Player& opponent, Board& board) {
-		std::vector<std::pair<Card, std::pair<size_t, size_t>>> visibleCards;
+		std::cout << "Activate fire" << std::endl;
 
-		for (size_t i = 0; i < board.GetRows(); ++i) {
-			for (size_t j = 0; j < board.GetCols(); ++j) {
+		std::vector<std::tuple<Card, size_t, size_t>> visibleCards;
+
+ 		for (size_t i = board.GetIndexLineMin(); i <= board.GetIndexLineMax(); ++i) {
+			for (size_t j = board.GetIndexColMin(); j <= board.GetIndexColMax(); ++j) {
 				auto& cellOpt = board[{i, j}];
-
 				if (cellOpt.has_value() && !cellOpt->empty()) {
 					const Card& topCard = cellOpt->top();
-					if (topCard.GetPosition()) {
-						visibleCards.push_back({ topCard, {i, j} });
+					if (topCard.GetPosition()) {    
+						visibleCards.push_back({ topCard, i, j });
 						std::cout << "Visible card at (" << i << ", " << j << ") with value "
 							<< static_cast<int>(topCard.GetValue()) << std::endl;
 					}
@@ -340,25 +341,23 @@ namespace eter {
 			}
 		}
 
-		if (visibleCards.empty()) {
-			std::cout << "No visible cards on the board.\n";
+		 
+		if (visibleCards.size() < 2) {
+			std::cout << "Not enough visible cards on the board.\n";
 			return;
 		}
 
 		int chosenNumber = 0;
 
+		 
 		while (true) {
 			std::cout << "Enter a number with at least two visible cards on the board: ";
 			std::cin >> chosenNumber;
 
-			std::cout << "Chosen number (raw input): " << chosenNumber << "\n";
-
 			size_t count = std::count_if(visibleCards.begin(), visibleCards.end(),
-				[chosenNumber](const auto& cardPair) {
-					return cardPair.first.GetValue() == chosenNumber;
+				[chosenNumber](const auto& cardInfo) {
+					return std::get<0>(cardInfo).GetValue() == chosenNumber;
 				});
-
-			std::cout << "Number of visible cards with value " << chosenNumber << ": " << count << "\n";
 
 			if (count >= 2) {
 				std::cout << "You chose the number " << chosenNumber << " with " << count << " visible cards.\n";
@@ -369,32 +368,61 @@ namespace eter {
 			}
 		}
 
+		 
 		for (auto it = visibleCards.begin(); it != visibleCards.end();) {
-			const Card& card = it->first;
-			size_t row = it->second.first;
-			size_t col = it->second.second;
+			const Card& card = std::get<0>(*it);
+			size_t row = std::get<1>(*it);
+			size_t col = std::get<2>(*it);
 
 			if (card.GetValue() == chosenNumber) {
 				board.removeCard(row, col);
+				std::cout << "Removed card with value " << static_cast<int>(card.GetValue())
+					<< " from position (" << row << ", " << col << ").\n";
 
-				if (std::find(player.GetPlayedCards().begin(), player.GetPlayedCards().end(), card) != player.GetPlayedCards().end()) {
-					player.AddCardToHand(card);
-					std::cout << "The card with value " << static_cast<int>(card.GetValue())
-						<< " has been returned to player's hand.\n";
-				}
-				else if (std::find(opponent.GetPlayedCards().begin(), opponent.GetPlayedCards().end(), card) != opponent.GetPlayedCards().end()) {
-					opponent.AddCardToHand(card);
-					std::cout << "The card with value " << static_cast<int>(card.GetValue())
-						<< " has been returned to opponent's hand.\n";
+				bool cardReturned = false;
+
+ 				for (auto& playerCard : player.GetPlayedCards()) {
+					if (playerCard == card) {
+						player.GetPlayedCards().erase(std::remove(player.GetPlayedCards().begin(),
+							player.GetPlayedCards().end(), card),
+							player.GetPlayedCards().end());
+						player.AddCardToHand(card);
+						std::cout << "Returned card to player's hand.\n";
+						cardReturned = true;
+						break;
+					}
 				}
 
-				it = visibleCards.erase(it);
+				if (!cardReturned) {
+					for (auto& opponentCard : opponent.GetPlayedCards()) {
+						if (opponentCard == card) {
+							opponent.GetPlayedCards().erase(std::remove(opponent.GetPlayedCards().begin(),
+								opponent.GetPlayedCards().end(), card),
+								opponent.GetPlayedCards().end());
+							opponent.AddCardToHand(card);
+							std::cout << "Returned card to opponent's hand.\n";
+							cardReturned = true;
+							break;
+						}
+					}
+				}
+
+				if (!cardReturned) {
+					std::cout << "Card not found in either player's hand.\n";
+				}
+
+				it = visibleCards.erase(it);   
 			}
 			else {
 				++it;
 			}
 		}
+
+		std::cout << "Power activated successfully!" << std::endl;
 	}
+
+
+
 
 	void elementalPowerCards::activateASH(Player& player, Board& board)
 	{
