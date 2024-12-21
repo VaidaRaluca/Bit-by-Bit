@@ -141,7 +141,7 @@ namespace eter {
 			activateASH(player, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::spark:
-			activateSpark(player, board);
+			activateSpark(player,opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::squall:
 			activateSquall(opponent, player, board);
@@ -396,186 +396,170 @@ namespace eter {
 		}
 	}
 
-void elementalPowerCards::activateASH(Player& player, Board& board)
-{
-	auto& eliminatedCards = player.GetEliminatedCards();
-
-	if (eliminatedCards.empty())
+	void elementalPowerCards::activateASH(Player& player, Board& board)
 	{
-		std::cout << "No eliminated cards to choose from!\n";
-		return;
-	}
+		auto& eliminatedCards = player.GetEliminatedCards();
 
-	std::cout << "Choose a card to play from your eliminated cards:\n";
-	for (size_t i = 0; i < eliminatedCards.size(); ++i)
-	{
-		std::cout << i + 1 << ". Card with value " << eliminatedCards[i].GetValue() -1+1
-			<< " and color " << eliminatedCards[i].GetColor() << '\n';
-	}
-
-	size_t choice;
-	while (true)
-	{
-		std::cout << "Enter your choice (1-" << eliminatedCards.size() << "): ";
-		std::cin >> choice;
-
-		if (choice >= 1 && choice <= eliminatedCards.size())
-			break;
-
-		std::cout << "Invalid choice. Please try again.\n";
-	}
-
-	Card chosenCard = eliminatedCards[choice - 1];
-
-	uint8_t row, col;
-	while (true)
-	{
-		std::cout << "Enter the coordinates where you want to place the chosen card: ";
-		std::cin >> row >> col;
-
-		if (board.canPlaceCard(row, col, chosenCard))
+		if (eliminatedCards.empty())
 		{
-			board.placeCard(row, col, chosenCard);
-			std::cout << "Card with value " << chosenCard.GetValue()
-				<< " and color " << chosenCard.GetColor()
-				<< " has been placed back on the board at position (" << static_cast<int>(row)
-				<< ", " << static_cast<int>(col) << ").\n";
-			break;
+			std::cout << "No eliminated cards to choose from!\n";
+			return;
 		}
-		else
+
+		std::cout << "Choose a card to play from your eliminated cards:\n";
+		for (size_t i = 0; i < eliminatedCards.size(); ++i)
 		{
-			std::cout << "The position to place the card is invalid! Please choose again.\n";
+			std::cout << i + 1 << ". Card with value " << eliminatedCards[i].GetValue() - 1 + 1
+				<< " and color " << eliminatedCards[i].GetColor() << '\n';
 		}
-	}
 
-	eliminatedCards.erase(eliminatedCards.begin() + (choice - 1));
-}
-
-void elementalPowerCards::activateSpark(Player& player, Board& board)
-{
-	auto& grid = board.GetGrid();
-	 
-	for (size_t row = 0; row < 4; ++row)
-	{
-		for (size_t col = 0; col < 4; ++col)
+		size_t choice;
+		while (true)
 		{
-			auto& stackOpt = grid[row][col];
-			if (stackOpt.has_value()) 
+			std::cout << "Enter your choice (1-" << eliminatedCards.size() << "): ";
+			std::cin >> choice;
+
+			if (choice >= 1 && choice <= eliminatedCards.size())
+				break;
+
+			std::cout << "Invalid choice. Please try again.\n";
+		}
+
+		Card chosenCard = eliminatedCards[choice - 1];
+
+		size_t row, col;
+		while (true)
+		{
+			std::cout << "Enter the coordinates where you want to place the chosen card: ";
+			std::cin >> row >> col;
+
+			if (board.placeCard(row, col, chosenCard))
 			{
-				std::stack<Card> cardStack = stackOpt.value();
-				while (!cardStack.empty());
+				player.AddPlayedCard(chosenCard);
+				player.addPlayedCardForPower(chosenCard, row, col);
+				std::cout << "Card with value " << chosenCard.GetValue()
+					<< " and color " << chosenCard.GetColor()
+					<< " has been placed back on the board at position (" << static_cast<int>(row)
+					<< ", " << static_cast<int>(col) << ").\n";
+				break;
+			}
+			else
+			{
+				std::cout << "The position to place the card is invalid! Please choose again.\n";
+			}
+		}
+
+		eliminatedCards.erase(eliminatedCards.begin() + (choice - 1));
+	}
+	void elementalPowerCards::activateSpark(Player& player, Player& opponent, Board& board)
+	{
+		std::vector<std::tuple<Card, size_t, size_t>> coveredCards;
+
+		for (size_t i = board.GetIndexLineMin(); i < board.GetIndexLineMax(); ++i)
+		{
+			for (size_t j = board.GetIndexColMin(); j < board.GetIndexColMax(); ++j)
+			{
+				auto& cellOpt = board[{i, j}];
+				if (cellOpt.has_value() && !cellOpt->empty())
 				{
-					const Card& topCard = cardStack.top();
-					if (topCard.GetColor() == player.GetColor()) 
+					while (!cellOpt->empty())
 					{
-						std::cout << "Card with value " << static_cast<int>(topCard.GetValue())
-							<< " at position (" << row << ", " << col << ")" << std::endl;
+						Card& topCard = cellOpt.value().top();
+						std::string color = topCard.GetColor();
+						cellOpt.value().pop();
+						topCard = cellOpt.value().top();
+						if (color == opponent.GetColor() && topCard.GetColor() == player.GetColor())
+						{
+							coveredCards.push_back({ topCard, i, j });
+						}
+						cellOpt.value().pop();
 					}
-					cardStack.pop();
+				}
+			}
+		}
+
+		if (coveredCards.empty())
+		{
+			std::cout << "No cards of yours are covered by the opponent.\n";
+			return;
+		}
+
+		int chosenValue = 0, chosenRow = -1, chosenCol = -1;
+
+		while (true)
+		{
+			std::cout << "Enter the value,the row and the col of the card you want to move: ";
+			std::cin >> chosenValue >> chosenRow >> chosenCol;
+
+			auto it = std::find_if(coveredCards.begin(), coveredCards.end(),
+				[chosenValue, chosenRow, chosenCol](const auto& cardInfo) {
+					return std::get<0>(cardInfo).GetValue() == chosenValue && std::get<1>(cardInfo) == chosenValue && std::get<2>(cardInfo) == chosenValue;
+				});
+
+			if (it != coveredCards.end())
+			{
+				std::cout << "You chose a card with value " << chosenValue << ".\n";
+				break;
+			}
+			else {
+				std::cout << "No card with this value is covered by the opponent. Please try again.\n";
+			}
+		}
+
+		auto& cellOpt = board[{chosenRow, chosenCol}];
+		if (cellOpt.has_value())
+		{
+			if (!cellOpt->empty() && cellOpt->top().GetValue() == chosenValue)
+			{
+				board.removeCard(chosenRow, chosenCol);
+				std::cout << "Card with value " << chosenValue << " removed from the original stack.\n";
+			}
+			cellOpt->pop();
+		}
+		size_t newX, newY;
+		std::cout << "Choose the new position (x y) to place the card: ";
+		std::cin >> newX >> newY;
+
+		Card card(chosenValue, player.GetColor(), true);
+		board.placeCard(newX, newY, card);
+		std::cout << "Card moved to position (" << (int)newX << ", " << (int)newY << ").\n";
+	}
+
+	void elementalPowerCards::activateEarthQuake(Player& player, Player& opponent, Board& board)
+	{
+		for (size_t i = board.GetIndexLineMin(); i <= board.GetIndexLineMax(); ++i)
+		{
+			for (size_t j = board.GetIndexColMin(); j <= board.GetIndexColMax(); ++j)
+			{
+				auto& cellOpt = board[{i, j}];
+
+				if (cellOpt.has_value() && !cellOpt->empty())
+				{
+					const Card& topCard = cellOpt->top();
+					if (topCard.GetValue() == 1) 
+					{
+						Player* owner = nullptr;
+						if (topCard.GetColor() == player.GetColor())
+						{
+							owner = &player;
+						}
+						else if (topCard.GetColor() == opponent.GetColor())
+						{
+							owner = &opponent;
+						}
+
+						if (owner)
+						{
+							owner->AddToEliminatedCards(topCard);
+							std::cout << "The card with value " << static_cast<int>(topCard.GetValue())
+								<< " has been eliminated.\n";
+						}
+						board.removeCard(i, j);
+					}
 				}
 			}
 		}
 	}
-
- 	std::vector<std::tuple<size_t, size_t, int>> coveredCards;  
-	for (size_t row = 0; row < 4; ++row)
-	{
-		for (size_t col = 0; col < 4; ++col)
-		{
-			auto& stackOpt = grid[row][col];
-			if (stackOpt.has_value())  
-			{
-				std::stack<Card> cardStack = stackOpt.value();
-				int topCardValue = -1;
-				while (!cardStack.empty())
-				{
-					const Card& topCard = cardStack.top();
-					if (topCard.GetColor() == player.GetColor())
-					{
-						topCardValue = static_cast<int>(topCard.GetValue());
-					}
-					else 
-if (topCardValue != -1)  
-					{
-						coveredCards.emplace_back(row, col, topCardValue);
-						cardStack.pop();
-						break;  
-					}
-					cardStack.pop();
-				}
-			}
-		}
-	}
-
-	if (coveredCards.empty())
-	{
-		std::cout << "There are not any of your card covered" << std::endl;
-		return;
-	}
-
- 	std::cout << "Choose the position and the value of the card you want to move";
-	uint8_t x, y;
-	int value;
-	std::cin >> x >> y >> value;
-
- 	bool found = false;
-	for (const auto& [row, col, cardValue] : coveredCards)
-	{
-		if (row == x && col == y && cardValue == value)
-		{
-			found = true;
-			break;
-		}
-	}
-
-	if (!found)
-	{
-		std::cout << "The chosen position does not contain the indicated value" << std::endl;
-		return;
-	}
-
- 	std::cout << "Choose another position on the board to place the card ";
-	uint8_t newX, newY;
-	std::cin >> newX >> newY;
-	Card card(value,player.GetColor(),true);
-	board.placeCard(newX, newY, card);
-}
-
-
-void elementalPowerCards::activateEarthQuake(Player& player, Player& opponent, Board& board)
-{
-	for (int row = 0; row < 4; ++row)
-	{
-		for (int col = 0; col < 4; ++col) 
-		{
-			auto& cell = board[{row, col}];
-			if (cell.has_value() && !cell->empty())
-			{
-				Card& topCard = cell->top();
-				if (topCard.GetValue() == 1)
-				{
-					Player* owner = nullptr;
-
-					if (topCard.GetColor() == player.GetColor()) 
-						owner = &player;
-
-					else if (topCard.GetColor() == opponent.GetColor())
-						owner = &opponent;
-
-					if (owner)
-		
-						owner->AddToEliminatedCards(topCard);
-
-					cell->pop();
-					std::cout << "Removed card with value 1 at position (" << row << ", " << col << ").\n";
-
-					if (cell->empty()) 
-						cell.reset();
-				}
-			}
-		}
-	}
-}
 
 void elementalPowerCards::activateMist(Player& player, Board& board)
 {

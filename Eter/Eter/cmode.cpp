@@ -50,6 +50,7 @@ void CMode::assignCardsInHand()
 {
     std::vector<Card>cardsForPlayer1{
    Card{1,"red",true},
+   Card{1,"red",true},
    Card{2,"red",true},
    Card{2,"red",true},
    Card{2,"red",true},
@@ -60,6 +61,7 @@ void CMode::assignCardsInHand()
    Card{5,"red",true}, //eter
     };
     std::vector<Card>cardsForPlayer2{
+    Card{1,"blue",true },
     Card{1,"blue",true },
     Card{2,"blue",true },
     Card{2,"blue",true},
