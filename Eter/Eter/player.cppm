@@ -55,7 +55,8 @@ namespace eter {
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
 		bool placeCard(size_t x, size_t y, const Card& card, Board& board);
 
-
+		void RemovePlayedCard(const Card& card);
+		void RemovePlayedCardForPower(const Card& card, size_t row, size_t col);
 		void addPlayedCardForPower(const Card& card, size_t x, size_t y);
      	std::vector<std::pair<Card, std::pair<size_t, size_t>>>& GetPlayedCardsForPower();//geterul pentru puteri care imi da vectorul cu ultima carte si cu pozitia sa
 		

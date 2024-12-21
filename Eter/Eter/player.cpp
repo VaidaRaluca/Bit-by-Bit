@@ -207,3 +207,29 @@ void eter::swap(Player& first, Player& second) noexcept
 const std::vector<Card>& Player::GetCardsInHand() const {
 	return m_cardsInHand;
 }
+
+void Player::RemovePlayedCard(const Card& card)
+{
+	auto it = std::find(m_playedCards.begin(),m_playedCards.end(), card);
+	if (it != m_playedCards.end())
+	{
+		m_playedCards.erase(it);
+		std::cout << "Card removed from playedCards.\n";
+	}
+}
+
+void Player::RemovePlayedCardForPower(const Card& card, size_t row, size_t col)
+{
+	auto it = std::find_if(m_playedCardsP.begin(), m_playedCardsP.end(),
+		[&card, row, col](const auto& playedCardInfo) {
+			const Card& storedCard = playedCardInfo.first;
+			size_t storedRow = playedCardInfo.second.first;
+			size_t storedCol = playedCardInfo.second.second;
+			return storedCard == card && storedRow == row && storedCol == col;
+		});
+
+	if (it != m_playedCardsP.end())
+	{
+		m_playedCardsP.erase(it);
+	}
+}
