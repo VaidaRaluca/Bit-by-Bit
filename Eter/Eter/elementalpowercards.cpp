@@ -162,7 +162,7 @@ namespace eter {
 			activateStorm(board, player, opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::tide:
-			activateTide(board);
+			activateTide(player, opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::mist:
 			activateMist(player, board);
@@ -809,58 +809,65 @@ void elementalPowerCards::activateGust(Board& board, Player& player, Player& opp
 }
 
 
-void elementalPowerCards::activateTide(Board& board)
+void elementalPowerCards::activateTide(Player& player, Player& opponent, Board& board)
 {
-	int row1, col1, row2, col2;
-	std::cout << "Enter the coordinates for the first stack (row, column): ";
-	std::cin >> row1 >> col1;
-	if (row1 < 0 || row1 >= board.GetRows() || col1 < 0 || col1 >= board.GetCols())
-	{
-		std::cout << "Invalid position for the first stack. Try again.\n";
-		return;
-	}
-	std::cout << "Enter the coordinates for the second stack (row, column): ";
-	std::cin >> row2 >> col2;
+	std::cout << "Activate tide" << std::endl;
 
-	if (row2 < 0 || row2 >= board.GetRows() || col2 < 0 || col2 >= board.GetCols())
-	{
-		std::cout << "Invalid position for the second stack. Try again.\n";
-		return;
+	std::vector<std::tuple<size_t, size_t>> visibleCardPositions;
+
+	for (size_t i = board.GetIndexLineMin(); i <= board.GetIndexLineMax(); ++i) {
+		for (size_t j = board.GetIndexColMin(); j <= board.GetIndexColMax(); ++j) {
+			auto& cellOpt = board[{i, j}];
+			if (cellOpt.has_value() && !cellOpt->empty()) {
+				visibleCardPositions.push_back({ i, j });
+				std::cout << "Stack of cards at (" << i << ", " << j << ") detected." << std::endl;
+			}
+		}
 	}
 
-	auto& stack1 = board[{row1, col1}];
-	auto& stack2 = board[{row2, col2}];
-
-	if (!stack1.has_value() || !stack2.has_value())
+	if (visibleCardPositions.size() < 2)
 	{
-		std::cout << "One or both of the positions do not contain any stacks of cards.\n";
+		std::cout << "Not enough stacks of cards on the board to swap positions.\n";
 		return;
 	}
 
-	if (stack1.value().size() <= 1 || stack2.value().size() <= 1)
+	size_t firstRow, firstCol, secondRow, secondCol;
+
+	std::cout << "Choose the first stack to swap (row and column):\n";
+	while (true)
 	{
-		std::cout << "Both stacks must contain more than one card to be swapped.\n";
-		return;
+		std::cin >> firstRow >> firstCol;
+		if (std::find(visibleCardPositions.begin(), visibleCardPositions.end(), std::make_tuple(firstRow, firstCol)) != visibleCardPositions.end()) {
+			break;
+		}
+		else {
+			std::cout << "Invalid position. Please choose a valid stack.\n";
+		}
 	}
 
-	std::stack<Card> tempStack;
-	while (!stack1.value().empty())
-	{
-		tempStack.push(stack1.value().top());
-		stack1.value().pop();
+	std::cout << "Choose the second stack to swap (row and column):\n";
+	while (true) {
+		std::cin >> secondRow >> secondCol;
+		if (std::find(visibleCardPositions.begin(), visibleCardPositions.end(), std::make_tuple(secondRow, secondCol)) != visibleCardPositions.end() &&
+			!(firstRow == secondRow && firstCol == secondCol)) {
+			break;
+		}
+		else {
+			std::cout << "Invalid position. Please choose a valid and different stack.\n";
+		}
 	}
 
-	while (!stack2.value().empty())
-	{
-		stack1.value().push(stack2.value().top());
-		stack2.value().pop();
-	}
+	// Swap the stacks of cards
+	auto firstStack = board[{firstRow, firstCol}];
+	auto secondStack = board[{secondRow, secondCol}];
 
-	while (!tempStack.empty())
-	{
-		stack2.value().push(tempStack.top());
-		tempStack.pop();
-	}
+	board[{firstRow, firstCol}] = secondStack;
+	board[{secondRow, secondCol}] = firstStack;
+
+	std::cout << "Swapped stacks between positions (" << firstRow << ", " << firstCol << ") and ("
+		<< secondRow << ", " << secondCol << ").\n";
+
+	std::cout << "Tide power activated successfully!" << std::endl;
 }
 
 void elementalPowerCards::activateWave(Board& board, Player& player)
@@ -1147,68 +1154,84 @@ void elementalPowerCards::activateWhirlpool(Board& board, Player& player)
 		std::cout << "The positions are not adjacent. Please select adjacent positions.\n";
 }
 
-void eter::elementalPowerCards::activateFlame(Player& player,Player& opponent, Board& board)
-{
-	bool illusionFound = false;
+void elementalPowerCards::activateFlame(Player& player, Player& opponent, Board& board) {
+	std::cout << "Activate flame" << std::endl;
 
-	for (size_t row = 0; row < board.GetRows(); ++row) 
-	{
-		for (size_t col = 0; col < board.GetCols(); ++col)
-		{
-			auto& cell = board[{static_cast<int>(row), static_cast<int>(col)}];
-			if (cell.has_value())
-			{
-				auto& stack = cell.value();
-				if (!stack.empty())
-				{
-					Card& topCard = stack.top();
-					if (!topCard.GetPosition() && topCard.GetColor() == opponent.GetColor())
-					{
-						topCard.SetPosition(true);
-						illusionFound = true;
-						break;
-					}
+	std::vector<std::tuple<Card*, size_t, size_t>> illusionCards;
+
+	for (size_t i = board.GetIndexLineMin(); i <= board.GetIndexLineMax(); ++i) {
+		for (size_t j = board.GetIndexColMin(); j <= board.GetIndexColMax(); ++j) {
+			auto& cellOpt = board[{i, j}];
+			if (cellOpt.has_value() && !cellOpt->empty()) {
+				Card& topCard = cellOpt->top();
+				if (!topCard.GetPosition() && topCard.GetColor() == opponent.GetColor()) {
+					illusionCards.push_back({ &topCard, i, j });
+					std::cout << "Found illusion card at (" << i << ", " << j << ").\n";
 				}
 			}
 		}
-		if (illusionFound) break;
 	}
 
-	if (!illusionFound) 
-		std::cout << "No illusion card found for the opponent.\n";
+	if (illusionCards.empty()) {
+		std::cout << "No illusion cards played by the opponent  found on the board.\n";
+	}
+	else
+	{
+		auto [illusionCard, row, col] = illusionCards.front();
+		illusionCard->SetPosition(true);
+		std::cout << "Revealed illusion card at (" << row << ", " << col << ").\n";
+	}
 
 	auto& cardsInHand = player.GetCardsInHand();
 
-	int choice;
-	std::cout << "Enter the number of the card you want to play: ";
-	std::cin >> choice;
-
-	if (choice <= 0 || choice > static_cast<int>(cardsInHand.size())) 
+	if (cardsInHand.empty())
 	{
-		std::cout << "Invalid choice.\n";
+		std::cout << "No cards in hand to place on the board.\n";
 		return;
 	}
-	Card selectedCard = cardsInHand[choice - 1];
-	cardsInHand.erase(cardsInHand.begin() + (choice - 1));
-	player.AddPlayedCard(selectedCard);
 
-	int row, col;
-	std::cout << "Choose a position (x,y) to place the selected card.\n";
-	std::cout << "Enter row: ";
-	std::cin >> row;
-	std::cout << "Enter column: ";
-	std::cin >> col;
-
-	if (row < 0 || row >= static_cast<int>(board.GetRows()) || col < 0 || col >= static_cast<int>(board.GetCols())) 
-	{
-		std::cout << "Invalid position.\n";
-		return;
+	std::cout << "Choose a card from your hand to place: \n";
+	for (size_t i = 0; i < cardsInHand.size(); ++i) {
+		const Card& card = cardsInHand[i];
+		std::cout << i + 1 << ": Card with value " << static_cast<int>(card.GetValue()) << "\n";
 	}
-	auto& cell = board[{row, col}];
-	if (!cell.has_value()) 
-		cell.emplace(); // stack nou dacă poziția este goală
 
+	size_t chosenIndex;
+	while (true) {
+		std::cout << "Enter the index of the card to place: ";
+		std::cin >> chosenIndex;
+		if (chosenIndex >= 1 && chosenIndex <= cardsInHand.size()) {
+			break;
+		}
+		else {
+			std::cout << "Invalid choice. Try again.\n";
+		}
+	}
+
+	Card selectedCard = cardsInHand[chosenIndex - 1];
+	cardsInHand.erase(cardsInHand.begin() + (chosenIndex - 1));
+
+	size_t targetRow, targetCol;
+	while (true) {
+		std::cout << "Enter the row and column to place the card: ";
+		std::cin >> targetRow >> targetCol;
+		if (board.isValidPosition(targetRow, targetCol) && (!board[{targetRow, targetCol}].has_value() || board[{targetRow, targetCol}]->empty())) {
+			break;
+		}
+		else {
+			std::cout << "Invalid position. Try again.\n";
+		}
+	}
+
+	auto& cell = board[{targetRow, targetCol}];
+	if (!cell.has_value()) {
+		cell.emplace();
+	}
 	cell->push(selectedCard);
+	std::cout << "Placed card with value " << static_cast<int>(selectedCard.GetValue()) << " at ("
+		<< targetRow << ", " << targetCol << ").\n";
+
+	std::cout << "Flame power activated successfully!" << std::endl;
 }
 
 void eter::elementalPowerCards::activateHurricane(Player& player, Player& opponent,Board& board)
