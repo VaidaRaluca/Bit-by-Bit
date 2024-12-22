@@ -153,7 +153,7 @@ namespace eter {
 			activateHurricane(player, opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::gust:
-			activateGust(board);
+			activateGust(board,player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::mirage:
 			activateMirage(board, player);
@@ -726,70 +726,88 @@ void elementalPowerCards::activateGale(Player& player, Player& opponent, Board& 
 	}
 }
 
-void elementalPowerCards::activateGust(Board& board)
+void elementalPowerCards::activateGust(Board& board, Player& player, Player& opponent)
 {
-	int selectedRow, selectedCol;
+	size_t selectedRow, selectedCol;
 	bool validCardSelected = false;
+	std::optional<std::stack<Card>> selectedStack;
+
 	while (!validCardSelected)
 	{
-		std::cout << "Select a visible card (row, column): ";
+		std::cout << "Select a card (row, column): ";
 		std::cin >> selectedRow >> selectedCol;
-		if (selectedRow < 0 || selectedRow >= board.GetRows() || selectedCol < 0 || selectedCol >= board.GetCols())
+
+		if (selectedRow < board.GetIndexLineMin() || selectedRow > board.GetIndexLineMax() ||
+			selectedCol < board.GetIndexColMin() || selectedCol > board.GetIndexColMax())
 		{
 			std::cout << "Invalid position. Try again.\n";
 			continue;
 		}
-		auto& selectedStack = board[{selectedRow, selectedCol}];
-		if (selectedStack.has_value() && !selectedStack->empty())
-			validCardSelected = true;
-		else
-			std::cout << "No visible card at this position. Try again.\n";
-	}
 
-	std::vector<std::pair<int, int>> adjacentPositions = {{selectedRow - 1, selectedCol},
-		{selectedRow + 1, selectedCol}, 
-		{selectedRow, selectedCol - 1},
-		{selectedRow, selectedCol + 1} 
-	};
-
-	std::vector<std::pair<int, int>> validPositions;
-
-	auto& selectedStack = board[{selectedRow, selectedCol}];
-	auto selectedCardValue = selectedStack->top().GetValue(); 
-
-	for (const auto& [adjRow, adjCol] : adjacentPositions)
-	{
-		if (adjRow >= 0 && adjRow < board.GetRows() && adjCol >= 0 && adjCol < board.GetCols())
+		selectedStack = board[{selectedRow, selectedCol}];
+		if (!selectedStack.has_value() || selectedStack->empty())
 		{
-			auto& adjacentStack = board[{adjRow, adjCol}];
-			if (adjacentStack.has_value() && !adjacentStack->empty() &&
-				adjacentStack->top().GetValue() < selectedCardValue)
-			{
-				validPositions.push_back({ adjRow, adjCol });
-			}
+			std::cout << "No visible card at this position. Try again.\n";
+			continue;
 		}
+
+		if (selectedStack->size() > 1)
+		{
+			std::cout << "The position has a stack of cards. Choose a position that has only 1 card.\n";
+			continue;
+		}
+
+		validCardSelected = true;
 	}
 
-	if (validPositions.empty())
-	{
-		std::cout << "No valid move found for the selected card.\n";
-		return;
-	}
-	int chosenPositionIndex;
-	std::cout << "Choose a position to place the card (0 - " << validPositions.size() - 1 << "): ";
-	std::cin >> chosenPositionIndex;
+	bool placedCard = false;
+	size_t finalRow = selectedRow, finalCol = selectedCol;
 
-	if (chosenPositionIndex < 0 || chosenPositionIndex >= validPositions.size())
+	while (!placedCard)
 	{
-		std::cout << "Invalid position chosen. Aborting move.\n";
-		return;
+		std::cout << "Select the direction where you want to move the card: U(up), D(down), L(left), R(right): ";
+		char direction;
+		std::cin >> direction;
+		switch (direction)
+		{
+		case 'U': finalRow = selectedRow - 1; finalCol = selectedCol; break;
+		case 'D': finalRow = selectedRow + 1; finalCol = selectedCol; break;
+		case 'L': finalRow = selectedRow; finalCol = selectedCol - 1; break;
+		case 'R': finalRow = selectedRow; finalCol = selectedCol + 1; break;
+		default:
+			std::cout << "Invalid direction. Try again.\n";
+			continue;
+		}
+		if (finalRow < board.GetIndexLineMin() || finalRow > board.GetIndexLineMax() ||
+			finalCol < board.GetIndexColMin() || finalCol > board.GetIndexColMax())
+		{
+			std::cout << "Invalid position. Try again.\n";
+			continue;
+		}
+
+		auto& finalStack = board[{finalRow, finalCol}];
+		if (finalStack.has_value() && !finalStack->empty() &&
+			finalStack->top().GetValue() < selectedStack->top().GetValue())
+		{
+			placedCard = true;
+		}
+		else
+			std::cout << "Invalid move. The card at the target position must have a lower value. Try again.\n";
 	}
-	auto [chosenRow, chosenCol] = validPositions[chosenPositionIndex];
-	auto& destinationStack = board[{chosenRow, chosenCol}];
-	destinationStack->push(selectedStack->top());
-	selectedStack->pop(); 
-	std::cout << "Card placed successfully on position (" << chosenRow << ", " << chosenCol << ").\n";
+	board.placeCard(finalRow, finalCol, selectedStack->top());
+	if (selectedStack->top().GetColor() == player.GetColor())
+	{
+		player.RemovePlayedCardForPower(selectedStack->top(), selectedRow, selectedCol);
+		player.addPlayedCardForPower(selectedStack->top(), finalRow, finalCol);
+	}
+	else
+	{
+		opponent.RemovePlayedCardForPower(selectedStack->top(), selectedRow, selectedCol);
+		opponent.addPlayedCardForPower(selectedStack->top(), finalRow, finalCol);
+	}
+	board.removeCard(selectedRow, selectedCol);
 }
+
 
 void elementalPowerCards::activateTide(Board& board)
 {
