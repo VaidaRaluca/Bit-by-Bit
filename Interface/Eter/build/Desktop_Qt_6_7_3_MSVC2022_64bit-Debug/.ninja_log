@@ -1,0 +1,33 @@
+# ninja log v6
+85	333	7566919370601362	Eter_autogen/timestamp	3d290c45b5fc6da2
+85	333	7566919370601362	Eter_autogen/mocs_compilation.cpp	3d290c45b5fc6da2
+85	333	7566919370601362	C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/build/Desktop_Qt_6_7_3_MSVC2022_64bit-Debug/Eter_autogen/timestamp	3d290c45b5fc6da2
+338	3357	7566919373122314	CMakeFiles/Eter.dir/mainwindow.cpp.obj	ddf40c2fb8c6431
+85	333	7566919370601362	C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/build/Desktop_Qt_6_7_3_MSVC2022_64bit-Debug/Eter_autogen/mocs_compilation.cpp	3d290c45b5fc6da2
+349	928	7565147343519848	CMakeFiles/Eter.dir/amode.cpp.obj	45870717d29e6480
+883	4435	7564804941898520	CMakeFiles/Eter.dir/main.cpp.obj	8401c9f07d694f3
+870	4375	7564804941763313	CMakeFiles/Eter.dir/Eter_autogen/mocs_compilation.cpp.obj	aa8c8beafa72e9ca
+442	2763	7566918444144670	CMakeFiles/Eter.dir/board.cpp.obj	8b653c57c31524da
+3358	4062	7566919403321710	Eter.exe	cd4e0b48cdd06114
+374	870	7565147343752571	CMakeFiles/Eter.dir/bmode.cpp.obj	88994854bdac6397
+909	1025	7565147349121581	CMakeFiles/Eter.dir/mage.cpp.obj	193c71f4ccf948af
+284	930	7565147342871843	CMakeFiles/Eter.dir/game.cpp.obj	ca73213f0ceaf442
+411	2731	7566918443830723	CMakeFiles/Eter.dir/player.cpp.obj	339d87301a75d47b
+387	908	7565147343879912	CMakeFiles/Eter.dir/cmode.cpp.obj	82b5c1ce985a1b1a
+363	926	7565147343657197	CMakeFiles/Eter.dir/bcmode.cpp.obj	7912e4fba05c4e69
+270	929	7565147342705404	CMakeFiles/Eter.dir/gamemanager.cpp.obj	30991bc28f1b40dc
+894	1015	7565147348970410	CMakeFiles/Eter.dir/explosion.cpp.obj	e1165fbb8a0d0356
+871	1024	7565147348736387	CMakeFiles/Eter.dir/elementalpowercards.cpp.obj	804c089e45045964
+352	1737	7566919373264010	CMakeFiles/Eter.dir/card.cpp.obj	a9000ce07eb317db
+61	276	7566924606918164	Eter_autogen/timestamp	3d290c45b5fc6da2
+61	276	7566924606918164	Eter_autogen/mocs_compilation.cpp	3d290c45b5fc6da2
+61	276	7566924606918164	C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/build/Desktop_Qt_6_7_3_MSVC2022_64bit-Debug/Eter_autogen/timestamp	3d290c45b5fc6da2
+61	276	7566924606918164	C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/build/Desktop_Qt_6_7_3_MSVC2022_64bit-Debug/Eter_autogen/mocs_compilation.cpp	3d290c45b5fc6da2
+279	3237	7566924609087550	CMakeFiles/Eter.dir/mainwindow.cpp.obj	ddf40c2fb8c6431
+63	319	7566924986179191	Eter_autogen/timestamp	3d290c45b5fc6da2
+63	319	7566924986179191	Eter_autogen/mocs_compilation.cpp	3d290c45b5fc6da2
+63	319	7566924986179191	C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/build/Desktop_Qt_6_7_3_MSVC2022_64bit-Debug/Eter_autogen/timestamp	3d290c45b5fc6da2
+63	319	7566924986179191	C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/build/Desktop_Qt_6_7_3_MSVC2022_64bit-Debug/Eter_autogen/mocs_compilation.cpp	3d290c45b5fc6da2
+343	1902	7566924989005537	CMakeFiles/Eter.dir/player.cpp.obj	339d87301a75d47b
+325	3298	7566924988820670	CMakeFiles/Eter.dir/mainwindow.cpp.obj	ddf40c2fb8c6431
+3298	3627	7566925018549915	Eter.exe	cd4e0b48cdd06114
