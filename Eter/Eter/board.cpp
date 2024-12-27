@@ -651,6 +651,101 @@ void eter::Board::moveRow(size_t fromRow, size_t toRow) {
 		});
 }
 
+std::vector<Card> Board::shiftRowForward(size_t row) {
+	std::vector<Card> returnedCards;
+	auto temp = std::move(m_grid[row][m_indexColMax]);
+
+	// Salvăm cărțile din ultima celulă
+	if (temp.has_value() && !temp->empty()) {
+		while (!temp->empty()) {
+			returnedCards.push_back(temp->top());
+			temp->pop();
+		}
+	}
+
+	// Mutăm toate celulele spre dreapta
+	for (size_t col = m_indexColMax; col > m_indexColMin; --col) {
+		m_grid[row][col] = std::move(m_grid[row][col - 1]);
+	}
+
+	// Prima celulă devine goală
+	m_grid[row][m_indexColMin].reset();
+
+	return returnedCards;
+}
+
+ 
+std::vector<Card> Board::shiftRowBackward(size_t row) {
+	std::vector<Card> returnedCards;
+	auto temp = std::move(m_grid[row][m_indexColMin]);
+
+	// Salvăm cărțile din prima celulă
+	if (temp.has_value() && !temp->empty()) {
+		while (!temp->empty()) {
+			returnedCards.push_back(temp->top());
+			temp->pop();
+		}
+	}
+
+	// Mutăm toate celulele spre stânga
+	for (size_t col = m_indexColMin; col < m_indexColMax; ++col) {
+		m_grid[row][col] = std::move(m_grid[row][col + 1]);
+	}
+
+	// Ultima celulă devine goală
+	m_grid[row][m_indexColMax].reset();
+
+	return returnedCards;
+}
+
+
+std::vector<Card> Board::shiftColumnForward(size_t col) {
+	std::vector<Card> returnedCards;
+	auto temp = std::move(m_grid[m_indexLineMax][col]);
+
+	// Salvăm cărțile din ultima celulă
+	if (temp.has_value() && !temp->empty()) {
+		while (!temp->empty()) {
+			returnedCards.push_back(temp->top());
+			temp->pop();
+		}
+	}
+
+	// Mutăm toate celulele în jos
+	for (size_t row = m_indexLineMax; row > m_indexLineMin; --row) {
+		m_grid[row][col] = std::move(m_grid[row - 1][col]);
+	}
+
+	// Prima celulă devine goală
+	m_grid[m_indexLineMin][col].reset();
+
+	return returnedCards;
+}
+
+std::vector<Card> Board::shiftColumnBackward(size_t col) {
+	std::vector<Card> returnedCards;
+	auto temp = std::move(m_grid[m_indexLineMin][col]);
+
+	// Salvăm cărțile din prima celulă
+	if (temp.has_value() && !temp->empty()) {
+		while (!temp->empty()) {
+			returnedCards.push_back(temp->top());
+			temp->pop();
+		}
+	}
+
+	// Mutăm toate celulele în sus
+	for (size_t row = m_indexLineMin; row < m_indexLineMax; ++row) {
+		m_grid[row][col] = std::move(m_grid[row + 1][col]);
+	}
+
+	// Ultima celulă devine goală
+	m_grid[m_indexLineMax][col].reset();
+
+	return returnedCards;
+}
+
+
 
 void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
 	std::transform(
@@ -667,6 +762,8 @@ void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
 			cell.reset();
 		});
 }
+
+ 
 
 bool Board::isEmptyCell(size_t x, size_t y)
 {

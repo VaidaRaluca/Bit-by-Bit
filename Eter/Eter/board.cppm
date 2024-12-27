@@ -63,7 +63,11 @@ namespace eter {
 		bool isEdgeColumn(size_t column) const;
 		void moveRow(size_t fromRow, size_t toRow);
 		void moveColumn(size_t fromCol, size_t toCol);
-
+		std::vector<Card> shiftRowForward(size_t row);
+		std::vector<Card> shiftRowBackward(size_t row);
+		std::vector<Card> shiftColumnForward(size_t col);
+		std::vector<Card> shiftColumnBackward(size_t col);
+ 
 
 		size_t countOccupiedCellsOnRow(size_t row);
 		bool containsOwnCardOnRow(size_t row, const std::string& playerColor);

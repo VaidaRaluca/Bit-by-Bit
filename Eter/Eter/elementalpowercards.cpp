@@ -1233,178 +1233,91 @@ void elementalPowerCards::activateFlame(Player& player, Player& opponent, Board&
 
 	std::cout << "Flame power activated successfully!" << std::endl;
 }
+void elementalPowerCards::activateHurricane(Player& player, Player& opponent, Board& board) {
+	std::cout << "Activate hurricane" << std::endl;
 
-void eter::elementalPowerCards::activateHurricane(Player& player, Player& opponent,Board& board)
-{
-	char type;
+	size_t rowOrCol;
+	bool isRow;
+
+ 	while (true) 
+	{
+		std::cout << "Do you want to shift a row or a column? (0 for row, 1 for column): ";
+		std::cin >> rowOrCol;
+		if (rowOrCol == 0 || rowOrCol == 1) {
+			isRow = (rowOrCol == 0);
+			break;
+		}
+		std::cout << "Invalid choice. Please enter 0 for row or 1 for column.\n";
+	}
+
 	size_t index;
-	char direction;
+	bool validSelection = false;
 
-	std::cout << "Choose 'R' for row or 'C' for column: ";
-	std::cin >> type;
-	std::cout << "Enter the index of the row/column: ";
-	std::cin >> index;
-	std::cout << "Enter direction ('L', 'R' for row; 'U', 'D' for column): ";
-	std::cin >> direction;
+ 	while (!validSelection) {
+		std::cout << "Enter the " << (isRow ? "row" : "column") << " number to shift: ";
+		std::cin >> index;
 
-	if (type == 'R')
-	{ 
-		if (index >= board.GetRows())
-		{
-			std::cout << "Invalid row index.\n";
-			return;
-		}
-
-		size_t occupiedCount = 0;
-		for (size_t col = 0; col < board.GetCols(); ++col) 
-		{
-			if (board[{index, col}].has_value())
-				++occupiedCount;
-		}
-		if (occupiedCount != board.GetCols())
-		{
-			std::cout << "The selected row is not fully occupied.\n";
-			return;
-		}
-
-		if (direction == 'L')
-		{
-			auto tempStack = board[{index, 0}];
-			for (size_t col = 0; col < board.GetCols() - 1; ++col)
-			{
-				board[{index, col}] = board[{index, col + 1}];
-			}
-			board[{index, board.GetCols() - 1}].reset(); 
-
-			if (tempStack.has_value())
-			{
-				auto& stack = tempStack.value();
-				while (!stack.empty())
-				{
-					Card topCard = stack.top();
-					stack.pop();
-					if (topCard.GetColor() == player.GetColor()) 
-					{
-						player.AddCardToHand(topCard);
-					}
-					else if (topCard.GetColor() == opponent.GetColor())
-					{
-						opponent.AddCardToHand(topCard);
-					}
-				}
-			}
-		}
-		else if (direction == 'R') 
-		{
-			auto tempStack = board[{index, board.GetCols() - 1}];
-			for (int col = board.GetCols() - 1; col > 0; --col)
-			{
-				board[{index, col}] = board[{index, col - 1}];
-			}
-			board[{index, 0}].reset(); 
-
-			if (tempStack.has_value()) 
-			{
-				auto& stack = tempStack.value();
-				while (!stack.empty()) 
-				{
-					Card topCard = stack.top();
-					stack.pop();
-					if (topCard.GetColor() == player.GetColor())
-					{
-						player.AddCardToHand(topCard);
-					}
-					else if (topCard.GetColor() == opponent.GetColor())
-					{
-						opponent.AddCardToHand(topCard);
-					}
-				}
-			}
+		if ((isRow && index >= board.GetIndexLineMin() && index <= board.GetIndexLineMax()) ||
+			(!isRow && index >= board.GetIndexColMin() && index <= board.GetIndexColMax())) {
+			validSelection = true;
 		}
 		else {
-			std::cout << "Invalid direction.\n";
+			std::cout << "Invalid choice. Please enter a valid " << (isRow ? "row" : "column") << " index within the board limits.\n";
 		}
 	}
-	else if (type == 'C') 
-	{
-		if (index >= board.GetCols())
-		{
-			std::cout << "Invalid column index.\n";
-			return;
-		}
 
-		size_t occupiedCount = 0;
-		for (size_t row = 0; row < board.GetRows(); ++row)
-		{
-			if (board[{row, index}].has_value())
-				++occupiedCount;
-		}
-		if (occupiedCount != board.GetRows()) 
-		{
-			std::cout << "The selected column is not fully occupied.\n";
-			return;
-		}
+ 	bool isFullyOccupied = isRow
+		? (board.countOccupiedCellsOnRow(index) == (board.GetIndexColMax() - board.GetIndexColMin() + 1))
+		: (board.countOccupiedCellsOnColumn(index) == (board.GetIndexLineMax() - board.GetIndexLineMin() + 1));
 
-		if (direction == 'U') 
-		{ 
-			auto tempStack = board[{0, index}];
-			for (size_t row = 0; row < board.GetRows() - 1; ++row)
-			{
-				board[{row, index}] = board[{row + 1, index}];
-			}
-			board[{board.GetRows() - 1, index}].reset(); 
+ 	std::cout << "Occupied cells in " << (isRow ? "row" : "column") << " " << index << ": "
+		<< (isRow ? board.countOccupiedCellsOnRow(index) : board.countOccupiedCellsOnColumn(index))
+		<< " (needed: "
+		<< (isRow ? (board.GetIndexColMax() - board.GetIndexColMin() + 1)
+			: (board.GetIndexLineMax() - board.GetIndexLineMin() + 1))
+		<< ")\n";
 
-			if (tempStack.has_value()) 
-			{
-				auto& stack = tempStack.value();
-				while (!stack.empty())
-				{
-					Card topCard = stack.top();
-					stack.pop();
-					if (topCard.GetColor() == player.GetColor()) {
-						player.AddCardToHand(topCard);
-					}
-					else if (topCard.GetColor() == opponent.GetColor())
-					{
-						opponent.AddCardToHand(topCard);
-					}
-				}
-			}
-		}
-		else if (direction == 'D') 
-		{ 
-			auto tempStack = board[{board.GetRows() - 1, index}];
-			for (int row = board.GetRows() - 1; row > 0; --row)
-			{
-				board[{row, index}] = board[{row - 1, index}];
-			}
-			board[{0, index}].reset();
+	if (!isFullyOccupied) {
+		std::cout << "The " << (isRow ? "row" : "column") << " is not fully occupied and cannot be shifted.\n";
+		return;
+	}
 
-			if (tempStack.has_value()) 
-			{
-				auto& stack = tempStack.value();
-				while (!stack.empty()) {
-					Card topCard = stack.top();
-					stack.pop();
-					if (topCard.GetColor() == player.GetColor())
-					{
-						player.AddCardToHand(topCard);
-					}
-					else if (topCard.GetColor() == opponent.GetColor())
-					{
-						opponent.AddCardToHand(topCard);
-					}
-				}
-			}
+	int direction;
+	while (true) {
+		std::cout << "Enter shift direction (1 for forward, -1 for backward): ";
+		std::cin >> direction;
+		if (direction == 1 || direction == -1) {
+			break;
 		}
-		else {
-			std::cout << "Invalid direction.\n";
-		}
+		std::cout << "Invalid direction. Please enter 1 for forward or -1 for backward.\n";
+	}
+
+	std::vector<Card> returnedCards;
+
+ 	if (isRow) {
+		returnedCards = (direction == 1)
+			? board.shiftRowForward(index)
+			: board.shiftRowBackward(index);
 	}
 	else {
-		std::cout << "Invalid type. Choose 'R' or 'C'.\n";
+		returnedCards = (direction == 1)
+			? board.shiftColumnForward(index)
+			: board.shiftColumnBackward(index);
 	}
+
+ 	for (const auto& card : returnedCards) {
+		if (card.GetColor() == player.GetColor()) {
+			player.AddCardToHand(card);
+		}
+		else {
+			opponent.AddCardToHand(card);
+		}
+	}
+
+	std::cout << "The " << (isRow ? "row" : "column") << " has been shifted successfully." << std::endl;
 }
+
+
 
 void eter::elementalPowerCards::activateMirage(Board& board, Player& player)
 {
