@@ -223,6 +223,31 @@ void GameManager::DeleteSave(const std::string& saveFileName) {
     }
 }
 
+void GameManager::ResetGame() {
+    std::cout << "Resetting the game to its initial state...\n";
+
+    // Resetăm tabla de joc
+    m_game.GetBoardRef().clear();
+
+    m_game.GetPlayer1Ref().SetScore(0);
+    m_game.GetPlayer2Ref().SetScore(0);
+
+    m_game.GetPlayer1Ref().GetCardsInHand().clear();
+    m_game.GetPlayer1Ref().GetPlayedCards().clear();
+    m_game.GetPlayer1Ref().GetEliminatedCards().clear();
+
+    m_game.GetPlayer2Ref().GetCardsInHand().clear();
+    m_game.GetPlayer2Ref().GetPlayedCards().clear();
+    m_game.GetPlayer2Ref().GetEliminatedCards().clear();
+
+    m_game.SetIsUsedExplosion(false);
+    m_game.SetCountTurnForReturnedCards(0);
+    m_game.SetGameMods(""); 
+
+    std::cout << "Game has been reset. You can start a new game.\n";
+}
+
+
 //Functii auxiliare
 
 void GameManager::StartAutoSaveTimer() {

@@ -38,6 +38,8 @@ namespace eter
 		void DeleteSave(const std::string& saveFileName);
 		void DeleteSaveInteractive();
 
+		void ResetGame();
+
 	private:
 		void StartAutoSaveTimer();
 
