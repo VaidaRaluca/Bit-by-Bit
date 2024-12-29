@@ -56,9 +56,13 @@ namespace eter
 		bool ConfirmAction(const std::string& actionDescription) const;
 		bool ConfirmationForSave(const std::string& fileName) const;
 
+		//LoadGame
 		std::string PromptFileName();
 		bool HandleSpecialCommands(const std::string& fileName, const std::string& saveDirectory);
 		bool LoadGameFromFile(const std::string& filePath);
 
+		//SaveGame
+		std::string PromptFileNameForSave();
+		bool SaveGameToFile(const std::string& filePath);
 	};
 }

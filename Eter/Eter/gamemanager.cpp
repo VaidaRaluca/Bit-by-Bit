@@ -85,55 +85,22 @@ void GameManager::SaveGame() {
     const std::string saveDirectory = "saves/";
 
     while (true) {
-        std::cout << "Enter the name of the save file, or press 'Q' to quit: ";
-        std::string fileName;
-        std::getline(std::cin, fileName);
-
-
-        if (fileName == "Q" || fileName == "q") {
-            std::cout << "Exiting SaveGame.\n";
-            return;
-        }
+        std::string fileName = PromptFileNameForSave();
 
         if (fileName.empty()) {
             std::cout << "No file name provided. Please try again.\n";
             continue;
         }
 
-        const std::string filePath = saveDirectory + fileName;
-
         if (!ConfirmationForSave(fileName)) {
             std::cout << "Save operation canceled. You can choose another file or quit.\n";
             continue;
         }
 
-
-        std::ofstream outFile(filePath, std::ios::binary);
-        if (!outFile.is_open()) {
-            std::cerr << "Error: Could not open file '" << filePath << "' for saving. Please try again.\n";
-            continue;
-        }
-
-        try {
-            SavePlayer(outFile, m_game.GetPlayer1(), "# Player 1");
-            SavePlayer(outFile, m_game.GetPlayer2(), "# Player 2");
-            SaveBoard(outFile, m_game.GetBoard());
-
-            outFile.close();
-            if (outFile.fail()) {
-                throw std::runtime_error("Failed to write game data to the file.");
-            }
-
-            std::cout << "Game successfully saved to '" << filePath << "'!\n";
-
+        const std::string filePath = saveDirectory + fileName;
+        if (SaveGameToFile(filePath)) {
             DisplaySaveFileSize(filePath);
-
             return;
-        }
-        catch (const std::exception& e) {
-            outFile.close();
-            std::cerr << "Error during saving: " << e.what() << "\n";
-            std::cout << "Save operation failed. You can choose another file or quit.\n";
         }
     }
 }
@@ -466,6 +433,8 @@ bool GameManager::ConfirmationForSave(const std::string& fileName) const {
     return (toupper(choice) == 'Y');
 }
 
+//LoadGame
+
 std::string GameManager::PromptFileName() {
     std::cout << "Enter the name of the save file to load, or press 'L' to list all save files, or 'Q' to quit: ";
     std::string fileName;
@@ -524,6 +493,49 @@ bool GameManager::LoadGameFromFile(const std::string& filePath) {
         inFile.close();
         std::cerr << "Error during loading: " << e.what() << "\n";
         std::cout << "Please choose another file or quit.\n";
+        return false;
+    }
+}
+
+//SaveGame
+
+std::string GameManager::PromptFileNameForSave() {
+    std::cout << "Enter the name of the save file, or press 'Q' to quit: ";
+    std::string fileName;
+    std::getline(std::cin, fileName);
+
+    if (fileName == "Q" || fileName == "q") {
+        std::cout << "Exiting SaveGame.\n";
+        return "";
+    }
+
+    return fileName;
+}
+
+bool GameManager::SaveGameToFile(const std::string& filePath) {
+    std::ofstream outFile(filePath, std::ios::binary);
+    if (!outFile.is_open()) {
+        std::cerr << "Error: Could not open file '" << filePath << "' for saving. Please try again.\n";
+        return false;
+    }
+
+    try {
+        SavePlayer(outFile, m_game.GetPlayer1(), "# Player 1");
+        SavePlayer(outFile, m_game.GetPlayer2(), "# Player 2");
+        SaveBoard(outFile, m_game.GetBoard());
+
+        outFile.close();
+        if (outFile.fail()) {
+            throw std::runtime_error("Failed to write game data to the file.");
+        }
+
+        std::cout << "Game successfully saved to '" << filePath << "'!\n";
+        return true;
+    }
+    catch (const std::exception& e) {
+        outFile.close();
+        std::cerr << "Error during saving: " << e.what() << "\n";
+        std::cout << "Save operation failed. You can choose another file or quit.\n";
         return false;
     }
 }
