@@ -57,35 +57,14 @@ void GameManager::LoadGame() {
     const std::string saveDirectory = "saves/";
 
     while (true) {
-        std::cout << "Enter the name of the save file to load, or press 'L' to list all save files, or 'Q' to quit: ";
-        std::string fileName;
-        std::getline(std::cin, fileName);
-
-        if (fileName == "D" || fileName == "d") {
-            std::cout << "Enter the name of the save file to delete: ";
-            std::string deleteFileName;
-            std::getline(std::cin, deleteFileName);
-            DeleteSave(deleteFileName);
-            continue;
-        }
-
-        if (fileName == "AUTO" || fileName == "auto") {
-            LoadAutoSave();
-            return;
-        }
-
-        if (fileName == "L" || fileName == "l") {
-            DisplaySaveFiles();
-            continue;
-        }
-
-        if (fileName == "Q" || fileName == "q") {
-            std::cout << "Exiting LoadGame.\n";
-            return;
-        }
+        std::string fileName = PromptFileName();
 
         if (fileName.empty()) {
             std::cout << "No file name provided. Please try again.\n";
+            continue;
+        }
+
+        if (HandleSpecialCommands(fileName, saveDirectory)) {
             continue;
         }
 
@@ -95,31 +74,10 @@ void GameManager::LoadGame() {
         }
 
         const std::string filePath = saveDirectory + fileName;
-
-        DisplaySaveFileSize(filePath);
-
-        std::ifstream inFile(filePath, std::ios::binary);
-        if (!inFile.is_open()) {
-            std::cerr << "Error: File '" << filePath << "' could not be opened. Please try again.\n";
+        if (!LoadGameFromFile(filePath)) {
             continue;
         }
-
-        try {
-            Player player1 = LoadPlayer(inFile);
-            Player player2 = LoadPlayer(inFile);
-            Board board = LoadBoard(inFile);
-
-            inFile.close();
-
-            StartNewGame(player1, player2, "LoadedMode");
-            std::cout << "Game successfully loaded from '" << filePath << "'!\n";
-            return;
-        }
-        catch (const std::exception& e) {
-            inFile.close();
-            std::cerr << "Error during loading: " << e.what() << "\n";
-            std::cout << "Please choose another file or quit.\n";
-        }
+        return;
     }
 }
 
@@ -506,4 +464,66 @@ bool GameManager::ConfirmationForSave(const std::string& fileName) const {
     std::cin >> choice;
     std::cin.ignore();
     return (toupper(choice) == 'Y');
+}
+
+std::string GameManager::PromptFileName() {
+    std::cout << "Enter the name of the save file to load, or press 'L' to list all save files, or 'Q' to quit: ";
+    std::string fileName;
+    std::getline(std::cin, fileName);
+    return fileName;
+}
+
+bool GameManager::HandleSpecialCommands(const std::string& fileName, const std::string& saveDirectory) {
+    if (fileName == "D" || fileName == "d") {
+        std::cout << "Enter the name of the save file to delete: ";
+        std::string deleteFileName;
+        std::getline(std::cin, deleteFileName);
+        DeleteSave(deleteFileName);
+        return true;
+    }
+
+    if (fileName == "AUTO" || fileName == "auto") {
+        LoadAutoSave();
+        return true;
+    }
+
+    if (fileName == "L" || fileName == "l") {
+        DisplaySaveFiles();
+        return true;
+    }
+
+    if (fileName == "Q" || fileName == "q") {
+        std::cout << "Exiting LoadGame.\n";
+        return true;
+    }
+
+    return false;
+}
+
+bool GameManager::LoadGameFromFile(const std::string& filePath) {
+    DisplaySaveFileSize(filePath);
+
+    std::ifstream inFile(filePath, std::ios::binary);
+    if (!inFile.is_open()) {
+        std::cerr << "Error: File '" << filePath << "' could not be opened. Please try again.\n";
+        return false;
+    }
+
+    try {
+        Player player1 = LoadPlayer(inFile);
+        Player player2 = LoadPlayer(inFile);
+        Board board = LoadBoard(inFile);
+
+        inFile.close();
+
+        StartNewGame(player1, player2, "LoadedMode");
+        std::cout << "Game successfully loaded from '" << filePath << "'!\n";
+        return true;
+    }
+    catch (const std::exception& e) {
+        inFile.close();
+        std::cerr << "Error during loading: " << e.what() << "\n";
+        std::cout << "Please choose another file or quit.\n";
+        return false;
+    }
 }
