@@ -875,7 +875,7 @@ void elementalPowerCards::activateWave(Board& board, Player& player)
 	int row, col;
 	std::cout << "Enter the coordinates of the stack to move (row, column): ";
 	std::cin >> row >> col;
-	if (row < 0 || row >= board.GetRows() || col < 0 || col >= board.GetCols())
+	if (row < 0 || row >= board.GetIndexMax() || col < 0 || col >= board.GetIndexMax())
 	{
 		std::cout << "Invalid position. Try again.\n";
 		return;
@@ -925,9 +925,9 @@ void elementalPowerCards::activateWave(Board& board, Player& player)
 
 void elementalPowerCards::activateStorm(Board& board, Player& player, Player& opponent)
 {
-	for (size_t row = 0; row < board.GetRows(); ++row)
+	for (size_t row = 0; row < board.GetIndexMax(); ++row)
 	{
-		for (size_t col = 0; col < board.GetCols(); ++col)
+		for (size_t col = 0; col < board.GetIndexMax(); ++col)
 		{
 			auto& stack = board[{static_cast<int>(row), static_cast<int>(col)}];
 			if (stack.has_value() && stack.value().size() >= 2)
@@ -960,14 +960,14 @@ void elementalPowerCards::activateWaterfall(Board& board)
 		char direction;
 		std::cout << "Enter the row number with at least 3 occupied positions: ";
 		std::cin >> row;
-		if (row < 0 || row >= board.GetRows())
+		if (row < 0 || row >= board.GetIndexMax())
 		{
 			std::cout << "Invalid row. Try again.\n";
 			return;
 		}
 
 		int occupiedCount = 0;
-		for (size_t col = 0; col < board.GetCols(); ++col)
+		for (size_t col = 0; col < board.GetIndexMax(); ++col)
 			if (board[{row, static_cast<int>(col)}].has_value())
 				++occupiedCount;
 
@@ -988,7 +988,7 @@ void elementalPowerCards::activateWaterfall(Board& board)
 		std::stack<Card> finalStack;
 		if (direction == 'D')
 		{
-			for (size_t col = 0; col < board.GetCols(); ++col)
+			for (size_t col = 0; col < board.GetIndexMax(); ++col)
 			{
 				if (board[{row, static_cast<int>(col)}].has_value())
 				{
@@ -1005,7 +1005,7 @@ void elementalPowerCards::activateWaterfall(Board& board)
 		}
 		else if (direction == 'U')
 		{
-			for (int col = static_cast<int>(board.GetCols() - 1); col >= 0; --col)
+			for (int col = static_cast<int>(board.GetIndexMax() - 1); col >= 0; --col)
 			{
 				if (board[{row, col}].has_value())
 				{
@@ -1018,7 +1018,7 @@ void elementalPowerCards::activateWaterfall(Board& board)
 					board[{row, col}].reset();
 				}
 			}
-			board[{row, static_cast<int>(board.GetCols() - 1)}] = finalStack;
+			board[{row, static_cast<int>(board.GetIndexMax() - 1)}] = finalStack;
 		}
 	}
 	else if (choice == 'C') {
@@ -1026,13 +1026,13 @@ void elementalPowerCards::activateWaterfall(Board& board)
 		char direction;
 		std::cout << "Enter the column number with at least 3 occupied positions: ";
 		std::cin >> col;
-		if (col < 0 || col >= board.GetCols()) {
+		if (col < 0 || col >= board.GetIndexMax()) {
 			std::cout << "Invalid column. Try again.\n";
 			return;
 		}
 
 		int occupiedCount = 0;
-		for (size_t row = 0; row < board.GetRows(); ++row) {
+		for (size_t row = 0; row < board.GetIndexMax(); ++row) {
 			if (board[{static_cast<int>(row), col}].has_value()) {
 				++occupiedCount;
 			}
@@ -1053,7 +1053,7 @@ void elementalPowerCards::activateWaterfall(Board& board)
 
 		std::stack<Card> finalStack;
 		if (direction == 'U') {
-			for (size_t row = 0; row < board.GetRows(); ++row) {
+			for (size_t row = 0; row < board.GetIndexMax(); ++row) {
 				if (board[{static_cast<int>(row), col}].has_value()) {
 					auto& currentStack = board[{static_cast<int>(row), col}].value();
 					while (!currentStack.empty()) {
@@ -1066,7 +1066,7 @@ void elementalPowerCards::activateWaterfall(Board& board)
 			board[{0, col}] = finalStack;
 		}
 		else if (direction == 'D') {
-			for (int row = static_cast<int>(board.GetRows() - 1); row >= 0; --row) {
+			for (int row = static_cast<int>(board.GetIndexMax() - 1); row >= 0; --row) {
 				if (board[{row, col}].has_value()) {
 					auto& currentStack = board[{row, col}].value();
 					while (!currentStack.empty()) {
@@ -1076,7 +1076,7 @@ void elementalPowerCards::activateWaterfall(Board& board)
 					board[{row, col}].reset();
 				}
 			}
-			board[{static_cast<int>(board.GetRows() - 1), col}] = finalStack;
+			board[{static_cast<int>(board.GetIndexMax() - 1), col}] = finalStack;
 		}
 	}
 	else {
@@ -1321,8 +1321,8 @@ void elementalPowerCards::activateHurricane(Player& player, Player& opponent, Bo
 
 void eter::elementalPowerCards::activateMirage(Board& board, Player& player)
 {
-	for (size_t row = 0; row < board.GetRows(); ++row) {
-		for (size_t col = 0; col < board.GetCols(); ++col) {
+	for (size_t row = 0; row < board.GetIndexMax(); ++row) {
+		for (size_t col = 0; col < board.GetIndexMax(); ++col) {
 			auto& cell = board[{row, col}];
 
 			if (cell.has_value() && !cell->empty()) 
@@ -1362,9 +1362,9 @@ void eter::elementalPowerCards::activateMirage(Board& board, Player& player)
 void eter::elementalPowerCards::activateBlizzard(Board& board, Player& player, Player& opponent)
 {
 	bool hasFreeSpace = false;
-	for (size_t row = 0; row < board.GetRows(); ++row) 
+	for (size_t row = 0; row < board.GetIndexMax(); ++row)
 	{
-		for (size_t col = 0; col < board.GetCols(); ++col)
+		for (size_t col = 0; col < board.GetIndexMax(); ++col)
 		{
 			if (!board[{row, col}].has_value())
 			{
@@ -1384,7 +1384,7 @@ void eter::elementalPowerCards::activateBlizzard(Board& board, Player& player, P
 	std::cout << "Enter the position (row and column) to place the Blizzard card: ";
 	std::cin >> x >> y;
 
-	if (x < 0 || x >= board.GetRows() || y < 0 || y >= board.GetCols())
+	if (x < 0 || x >= board.GetIndexMax() || y < 0 || y >= board.GetIndexMax())
 	{
 		std::cout << "Invalid position. Blizzard cancelled.\n";
 		return;
@@ -1422,7 +1422,7 @@ void eter::elementalPowerCards::activateSupport(Board& board, Player& player)
 	std::cout << "Enter the row and column of the card to boost (1/2/3): ";
 	std::cin >> row >> col;
 
-	if (row < 0 || row >= board.GetRows() || col < 0 || col >= board.GetCols()) {
+	if (row < 0 || row >= board.GetIndexMax() || col < 0 || col >= board.GetIndexMax()) {
 		std::cout << "Invalid position on the board.\n";
 		return;
 	}
@@ -1449,7 +1449,7 @@ void eter::elementalPowerCards::activateCrumble(Board& board, Player& player)
 	std::cout << "Enter the row and column of the card to boost (1/2/3): ";
 	std::cin >> row >> col;
 
-	if (row < 0 || row >= board.GetRows() || col < 0 || col >= board.GetCols()) {
+	if (row < 0 || row >= board.GetIndexMax() || col < 0 || col >= board.GetIndexMax()) {
 		std::cout << "Invalid position on the board.\n";
 		return;
 	}
@@ -1474,9 +1474,9 @@ void eter::elementalPowerCards::activateRock(Board& board, Player& player)
 {
 	std::vector<std::pair<int, int>> illusionPositions;
 
-	for (size_t row = 0; row < board.GetRows(); ++row) 
+	for (size_t row = 0; row < board.GetIndexMax(); ++row)
 	{
-		for (size_t col = 0; col < board.GetCols(); ++col)
+		for (size_t col = 0; col < board.GetIndexMax(); ++col)
 		{
 			auto& cell = board[{row, col}];
 			if (cell.has_value() && !cell->empty()) 
@@ -1536,22 +1536,22 @@ void elementalPowerCards::activateAvalanche(Board& board) //DE VERIFICAT!!
 		{ 
 			if (col1 > 0 && !board[{row1, col1 - 1}].has_value()) 
 				emptyPositions.push_back({ row1, col1 - 1 });
-			if (col1 + 1 < board.GetCols() && !board[{row1, col1 + 1}].has_value()) 
+			if (col1 + 1 < board.GetIndexMax() && !board[{row1, col1 + 1}].has_value())
 				emptyPositions.push_back({ row1, col1 + 1 });
 			if (col2 > 0 && !board[{row2, col2 - 1}].has_value()) 
 				emptyPositions.push_back({ row2, col2 - 1 });
-			if (col2 + 1 < board.GetCols() && !board[{row2, col2 + 1}].has_value()) 
+			if (col2 + 1 < board.GetIndexMax() && !board[{row2, col2 + 1}].has_value())
 				emptyPositions.push_back({ row2, col2 + 1 });
 		}
 		else if (col1 == col2) 
 		{ 
 			if (row1 > 0 && !board[{row1 - 1, col1}].has_value())
 				emptyPositions.push_back({ row1 - 1, col1 });
-			if (row1 + 1 < board.GetRows() && !board[{row1 + 1, col1}].has_value()) 
+			if (row1 + 1 < board.GetIndexMax() && !board[{row1 + 1, col1}].has_value())
 				emptyPositions.push_back({ row1 + 1, col1 });
 			if (row2 > 0 && !board[{row2 - 1, col1}].has_value()) 
 				emptyPositions.push_back({ row2 - 1, col1 });
-			if (row2 + 1 < board.GetRows() && !board[{row2 + 1, col1}].has_value()) 
+			if (row2 + 1 < board.GetIndexMax() && !board[{row2 + 1, col1}].has_value())
 				emptyPositions.push_back({ row2 + 1, col1 });
 		}
 		if (!emptyPositions.empty()) 

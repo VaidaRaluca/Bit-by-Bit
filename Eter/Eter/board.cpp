@@ -5,7 +5,7 @@ const std::string_view kEmpyBoardCell{ "____" };
 import <iostream>;
 import <algorithm>;
 
-eter::Board::Board()
+Board::Board()
 	: m_dimMax{ 3 }, m_indexMax{ 7 },
 	m_indexLineMin{ 10 }, m_indexLineMax{ 10 },
 	m_indexColMin{ 10 }, m_indexColMax{ 10 }
@@ -16,13 +16,12 @@ eter::Board::Board()
 
 Board::Board(const Board& other)
 	: m_grid{ other.m_grid }
-	, m_rows{ other.m_rows }
-	, m_cols{ other.m_cols }
+	, m_indexMax{ other.m_indexMax }
 	, m_indexLineMin{ other.m_indexLineMin }
 	, m_indexLineMax{ other.m_indexLineMax }
 	, m_indexColMin{ other.m_indexColMin }
 	, m_indexColMax{ other.m_indexColMax }
-	, m_dimMax{other.m_dimMax}
+	, m_dimMax{ other.m_dimMax }
 {
 }
 
@@ -41,8 +40,7 @@ Board& Board::operator=(const Board& other) {
 
 Board::Board(Board&& other) noexcept
 	: m_grid{ std::move(other.m_grid) },
-	m_rows{ other.m_rows },
-	m_cols{ other.m_cols },
+	m_indexMax{ other.m_indexMax },
 	m_indexLineMin{ other.m_indexLineMin },
 	m_indexLineMax{ other.m_indexLineMax },
 	m_indexColMin{ other.m_indexColMin },
@@ -50,8 +48,7 @@ Board::Board(Board&& other) noexcept
 	m_dimMax{ other.m_dimMax }
 {
 	other.m_dimMax = 3;
-	other.m_rows = 7;
-	other.m_cols = 7;
+	other.m_indexMax = 7;
 	other.m_indexLineMin = 10;
 	other.m_indexLineMax = 10;
 	other.m_indexColMin = 10;
@@ -62,8 +59,7 @@ Board& Board::operator=(Board&& other) noexcept
 {
 	if (this == &other) return *this;
 	m_grid = std::move(other.m_grid);
-	m_rows = other.m_rows;
-	m_cols = other.m_cols;
+	m_indexMax = other.m_indexMax;
 	m_indexLineMin = other.m_indexLineMin;
 	m_indexLineMax = other.m_indexLineMax;
 	m_indexColMin = other.m_indexColMin;
@@ -72,8 +68,7 @@ Board& Board::operator=(Board&& other) noexcept
 
 
 	other.m_dimMax = 3;
-	other.m_rows = 7;
-	other.m_cols = 7;
+	other.m_indexMax = 7;
 	other.m_indexLineMin = 10;
 	other.m_indexLineMax = 10;
 	other.m_indexColMin = 10;
@@ -82,15 +77,6 @@ Board& Board::operator=(Board&& other) noexcept
 	return *this;
 }
 
-const size_t& Board::GetRows() const
-{
-	return m_rows;
-}
-
-const size_t& Board::GetCols() const
-{
-	return m_cols;
-}
 
 const std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGrid() const
 {
@@ -100,6 +86,11 @@ const std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGrid(
 const size_t& eter::Board::GetDimMax() const
 {
 	return m_dimMax;
+}
+
+const size_t& Board::GetIndexMax() const
+{
+	return m_indexMax;
 }
 
 const size_t& eter::Board::GetIndexLineMin() const
@@ -147,7 +138,7 @@ void eter::Board::SetDimMax(const size_t& dim)
 
 bool Board::isValidPosition(size_t x, size_t y) const
 {
-	if (x < 0 || y < 0 || x >= m_rows || y >= m_cols) {
+	if (x < 0 || y < 0 || x >= m_indexMax || y >= m_indexMax) {
 		return false;
 	}
 
@@ -274,32 +265,14 @@ bool eter::Board::placeCard(size_t x, size_t y, const Card& card)
 
 void Board::updateAfterRemoval()
 {
-	/*size_t newLineMin, newLineMax, newColMin, newColMax;
-	newLineMin = newLineMax = newColMin = newColMax = 10;
-
-	for (size_t i = m_indexLineMin; i <= m_indexLineMax; ++i) {
-		for (size_t j = m_indexColMin; j < m_indexColMax; ++j) {
-			if (m_grid[i][j].has_value() && !m_grid[i][j]->empty()) {
-				newLineMin = std::min(newLineMin, i);
-				newLineMax = std::max(newLineMax, i);
-				newColMin = std::min(newColMin, j);
-				newColMax = std::max(newColMax, j);
-			}
-		}
-	}
-
-	m_indexLineMin = newLineMin;
-	m_indexLineMax = newLineMax;
-	m_indexColMin = newColMin;
-	m_indexColMax = newColMax;*/
-	size_t newLineMin = m_rows; // Setează inițial la valori maxime
+	size_t newLineMin = m_indexMax; // Setează inițial la valori maxime
 	size_t newLineMax = 0;
-	size_t newColMin = m_cols;
+	size_t newColMin = m_indexMax;
 	size_t newColMax = 0;
 	bool hasCards = false;
 
-	for (size_t i = 0; i < m_rows; ++i) {
-		for (size_t j = 0; j < m_cols; ++j) {
+	for (size_t i = 0; i < m_indexMax; ++i) {
+		for (size_t j = 0; j < m_indexMax; ++j) {
 			if (m_grid[i][j].has_value() && !m_grid[i][j]->empty()) {
 				hasCards = true;
 				newLineMin = std::min(newLineMin, i);
@@ -517,8 +490,6 @@ void eter::Board::swap(Board& other) noexcept
 {
 	using std::swap;
 	swap(m_grid, other.m_grid);
-	swap(m_rows, other.m_rows);
-	swap(m_cols, other.m_cols);
 }
 
 bool Board::isValidRow(size_t row) const
@@ -776,9 +747,9 @@ bool Board::isEmptyCell(size_t x, size_t y)
 
 std::ostream& eter::operator<<(std::ostream& os, const Board& board)
 {
-	for (uint8_t line = 0; line < board.GetRows(); ++line)
+	for (uint8_t line = 0; line < board.GetIndexMax(); ++line)
 	{
-		for (uint8_t column = 0; column < board.GetCols(); ++column)
+		for (uint8_t column = 0; column < board.GetIndexMax(); ++column)
 		{
 			if (board.GetGrid()[line][column].has_value())
 				os << board.GetGrid()[line][column].value().top() << " ";

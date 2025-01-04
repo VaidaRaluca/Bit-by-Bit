@@ -74,8 +74,8 @@ const std::unordered_map<Mage::MagicAbility, std::string> abilityDescriptions = 
 
 // Gasirea pozitiei unei carti pe tabla
 std::optional<std::pair<size_t, size_t>> Mage::findCardPosition(const Card& card, Board& board) {
-	for (size_t i = 0; i < board.GetRows(); ++i) {
-		for (size_t j = 0; j < board.GetCols(); ++j) {
+	for (size_t i = 0; i < board.GetIndexMax(); ++i) {
+		for (size_t j = 0; j < board.GetIndexMax(); ++j) {
 			if (auto& cellOpt = board[{i, j}]; cellOpt.has_value() && !cellOpt->empty()) {
 				if (cellOpt->top() == card) {
 					return std::make_pair(i, j);

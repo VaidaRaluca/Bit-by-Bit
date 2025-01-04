@@ -288,8 +288,8 @@ void GameManager::SavePlayer(std::ofstream& outFile, const Player& player, const
 void GameManager::SaveBoard(std::ofstream& outFile, const Board& board) const {
     outFile << "# Board\n";
 
-    for (size_t row = 0; row < board.GetRows(); ++row) {
-        for (size_t col = 0; col < board.GetCols(); ++col) {
+    for (size_t row = 0; row < board.GetIndexMax(); ++row) {
+        for (size_t col = 0; col < board.GetIndexMax(); ++col) {
             SaveCell(outFile, board.GetGrid()[row][col]);
         }
     }

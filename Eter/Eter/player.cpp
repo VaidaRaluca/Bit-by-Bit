@@ -173,8 +173,8 @@ void eter::Player::swap(Player& other) noexcept
 
 std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board) // this function could be moved somewhere else perhaps
 {
-	for (uint8_t rows = 0; rows < board.GetRows(); rows++)
-		for (uint8_t cols = 0; cols < board.GetCols(); cols++)
+	for (uint8_t rows = 0; rows < board.GetIndexMax(); rows++)
+		for (uint8_t cols = 0; cols < board.GetIndexMax(); cols++)
 			if (board.isValidPosition(rows, cols) && board.GetGrid()[rows][cols] == std::nullopt)
 				return { rows,cols };
 }

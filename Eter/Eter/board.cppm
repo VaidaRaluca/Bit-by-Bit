@@ -10,7 +10,6 @@ namespace eter {
 	export class Board {
 	private:
 		std::vector<std::vector<std::optional<std::stack<Card>>>>m_grid;
-		size_t m_rows = { 7 }, m_cols = { 7 };   // ar trebui sterse deoarece le tine locul indexMax
 		size_t m_indexMax;
 		size_t m_dimMax;
 		size_t m_indexLineMin, m_indexColMin, m_indexLineMax, m_indexColMax;
@@ -23,11 +22,10 @@ namespace eter {
 		Board& operator=(Board&& other) noexcept;
 		~Board() = default;
 
-		//Getters
-		const size_t& GetRows() const;
-		const size_t& GetCols() const;
+		
 		const std::vector<std::vector<std::optional<std::stack<Card>>>>& GetGrid() const;
 		const size_t& GetDimMax() const;
+		const size_t& GetIndexMax() const;
 		const size_t& GetIndexLineMin() const;
 		const size_t& GetIndexColMin() const;
 		const size_t& GetIndexLineMax() const;
