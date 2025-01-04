@@ -4,6 +4,7 @@
 #include<cstdint>
 #include<string>
 #include<iostream>
+#include<QDebug>
 
 namespace eter {
 class Card
@@ -30,6 +31,7 @@ public:
     void swap(Card& other) noexcept;
 
     friend std::ostream& operator<<(std::ostream& os, const Card& card);
+    friend QDebug operator<<(QDebug debug, const Card& card);
     friend void swap(Card& first, Card& second) noexcept;
 
 private:

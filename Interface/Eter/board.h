@@ -28,7 +28,9 @@ public:
     const size_t& GetRows() const;
     const size_t& GetCols() const;
     const std::vector<std::vector<std::optional<std::stack<Card>>>>& GetGrid() const;
+    //std::vector<std::vector<std::optional<std::stack<Card>>>>& GetGrid();
     const size_t& GetDimMax() const;
+    const size_t& GetIndexMax() const;
     const size_t& GetIndexLineMin() const;
     const size_t& GetIndexColMin() const;
     const size_t& GetIndexLineMax() const;
@@ -36,44 +38,53 @@ public:
     std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos);
     const std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos) const;
 
+    //Setters
     void SetDimMax(const size_t& dim);
 
-    bool isValidPosition(size_t x, size_t y) const;
-    bool isAdjacentToOccupiedSpace(size_t x, size_t y)const;
-    bool existNonAdjacentCards(size_t x, size_t y);
-    bool canPlaceCard(size_t x, size_t y, const Card& card);
-    bool placeCard(size_t x, size_t y, const Card& card);
-    void updateAfterRemoval();
-    void removeCard(size_t x, size_t y);
 
-    bool isVerticalLine(const std::string& lineColor) const;
-    bool isPrimaryDiagonalLine(const std::string& lineColor) const;
-    bool isSecondaryDiagonalLine(const std::string& lineColor) const;
-    bool isHorizontalLine(const std::string& lineColor) const;
+    bool IsValidPosition(const size_t& x, const size_t& y) const;
+    bool IsAdjacentToOccupiedSpace(const size_t& x, const size_t& y)const;
+    bool ExistNonAdjacentCards(const size_t& x, const size_t& y) const;
+    bool CanPlaceCard(const size_t& x, const size_t& y, const Card& card);
+    bool PlaceCard(const size_t& x, const size_t& y, const Card& card);
+    void UpdateAfterRemoval();
+    void RemoveCard(const size_t& x, const size_t& y);
 
-    bool isEmptyCell(size_t x, size_t y);
-    std::string findWinner();
-    std::string findWinnerByScore();
-    bool isBoardFull();
-    bool isTwoLineComplete();
-    void clear();
+    bool IsVerticalLine(const std::string& lineColor) const;
+    bool IsPrimaryDiagonalLine(const std::string& lineColor) const;
+    bool IsSecondaryDiagonalLine(const std::string& lineColor) const;
+    bool IsHorizontalLine(const std::string& lineColor) const;
+
+
+    std::string FindWinner();
+    std::string FindWinnerByScore();
+
+    bool IsEmptyCell(const size_t& x, const size_t& y);
+
+    bool IsBoardFull();
+    bool IsTwoLineComplete();
+
+
+    bool IsValidRow(const size_t& row) const;
+    bool IsValidColumn(const size_t& column) const;
+    bool IsEdgeRow(const size_t& row) const;
+    bool IsEdgeColumn(const size_t& column) const;
+    void MoveRow(const size_t& fromRow, const size_t& toRow);
+    void MoveColumn(const size_t& fromCol, const size_t& toCol);
+
+
+    size_t CountOccupiedCellsOnRow(const size_t& row);
+    bool ContainsOwnCardOnRow(const size_t& row, const std::string& playerColor);
+    void EliminateCardsOnRow(const size_t& row);
+    size_t CountOccupiedCellsOnColumn(const size_t& col);
+    bool ContainsOwnCardOnColumn(const size_t& col, const std::string& playerColor);
+    void EliminateCardsOnColumn(const size_t& col);
+
+    void CreateHole(const size_t& row, const size_t& col);
+
+    void Clear();
+
     void swap(Board& other) noexcept;
-    bool isValidRow(size_t row) const;
-    bool isValidColumn(size_t column) const;
-    bool isEdgeRow(size_t row) const;
-    bool isEdgeColumn(size_t column) const;
-    void moveRow(size_t fromRow, size_t toRow);
-    void moveColumn(size_t fromCol, size_t toCol);
-
-
-    size_t countOccupiedCellsOnRow(size_t row);
-    bool containsOwnCardOnRow(size_t row, const std::string& playerColor);
-    void eliminateCardsOnRow(size_t row);
-    size_t countOccupiedCellsOnColumn(size_t col);
-    bool containsOwnCardOnColumn(size_t col, const std::string& playerColor);
-    void eliminateCardsOnColumn(size_t col);
-    std::vector<std::vector<std::optional<std::stack<Card>>>>&GetGridForModeA();
-    void createHole(size_t row, size_t col);
     friend std::ostream& operator<<(std::ostream& os, const Board& board);
     friend void swap(Board& first, Board& second) noexcept;
 

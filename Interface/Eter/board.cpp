@@ -11,8 +11,7 @@ eter::Board::Board()
 
 Board::Board(const Board& other)
     : m_grid{ other.m_grid }
-    , m_rows{ other.m_rows }
-    , m_cols{ other.m_cols }
+    , m_indexMax{other.m_indexMax}
     , m_indexLineMin{ other.m_indexLineMin }
     , m_indexLineMax{ other.m_indexLineMax }
     , m_indexColMin{ other.m_indexColMin }
@@ -36,8 +35,7 @@ Board& Board::operator=(const Board& other) {
 
 Board::Board(Board&& other) noexcept
     : m_grid{ std::move(other.m_grid) },
-    m_rows{ other.m_rows },
-    m_cols{ other.m_cols },
+    m_indexMax{ other.m_indexMax },
     m_indexLineMin{ other.m_indexLineMin },
     m_indexLineMax{ other.m_indexLineMax },
     m_indexColMin{ other.m_indexColMin },
@@ -45,8 +43,7 @@ Board::Board(Board&& other) noexcept
     m_dimMax{ other.m_dimMax }
 {
     other.m_dimMax = 3;
-    other.m_rows = 7;
-    other.m_cols = 7;
+    other.m_indexMax = 7;
     other.m_indexLineMin = 10;
     other.m_indexLineMax = 10;
     other.m_indexColMin = 10;
@@ -57,8 +54,7 @@ Board& Board::operator=(Board&& other) noexcept
 {
     if (this == &other) return *this;
     m_grid = std::move(other.m_grid);
-    m_rows = other.m_rows;
-    m_cols = other.m_cols;
+    m_indexMax = other.m_indexMax;
     m_indexLineMin = other.m_indexLineMin;
     m_indexLineMax = other.m_indexLineMax;
     m_indexColMin = other.m_indexColMin;
@@ -67,24 +63,13 @@ Board& Board::operator=(Board&& other) noexcept
 
 
     other.m_dimMax = 3;
-    other.m_rows = 7;
-    other.m_cols = 7;
+    other.m_indexMax = 7;
     other.m_indexLineMin = 10;
     other.m_indexLineMax = 10;
     other.m_indexColMin = 10;
     other.m_indexColMax = 10;
 
     return *this;
-}
-
-const size_t& Board::GetRows() const
-{
-    return m_rows;
-}
-
-const size_t& Board::GetCols() const
-{
-    return m_cols;
 }
 
 const std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGrid() const
@@ -95,6 +80,11 @@ const std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGrid(
 const size_t& eter::Board::GetDimMax() const
 {
     return m_dimMax;
+}
+
+const size_t &Board::GetIndexMax() const
+{
+    return m_indexMax;
 }
 
 const size_t& eter::Board::GetIndexLineMin() const
@@ -120,7 +110,7 @@ const size_t& eter::Board::GetIndexColMax() const
 std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) {
     int x = pos.first;
     int y = pos.second;
-    if (isValidPosition(x, y)) {
+    if (IsValidPosition(x, y)) {
         return m_grid[x][y];
     }
     throw std::out_of_range("Invalid position");
@@ -129,7 +119,7 @@ std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) {
 const std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) const {
     int x = pos.first;
     int y = pos.second;
-    if (isValidPosition(x, y)) {
+    if (IsValidPosition(x, y)) {
         return m_grid[x][y];
     }
     throw std::out_of_range("Invalid position");
@@ -140,7 +130,7 @@ void eter::Board::SetDimMax(const size_t& dim)
     m_dimMax = dim;
 }
 
-bool Board::isValidPosition(size_t x, size_t y) const
+bool Board::IsValidPosition(const size_t& x, const size_t& y) const
 {
     if (x < 0 || y < 0 || x >= m_rows || y >= m_cols) {
         return false;
@@ -160,7 +150,7 @@ bool Board::isValidPosition(size_t x, size_t y) const
 
 }
 
-bool eter::Board::isAdjacentToOccupiedSpace(size_t x, size_t y)const
+bool eter::Board::IsAdjacentToOccupiedSpace(const size_t& x, const size_t& y)const
 {
     static const std::vector<std::pair<int, int>> directions = {
         {-1, -1}, {-1, 0}, {-1, 1},
@@ -171,14 +161,14 @@ bool eter::Board::isAdjacentToOccupiedSpace(size_t x, size_t y)const
     for (const auto& [dx, dy] : directions) {
         int nx = x + dx;
         int ny = y + dy;
-        if ( isValidPosition(nx,ny) && m_grid[nx][ny].has_value() && !m_grid[nx][ny].value().empty()) {
+        if ( IsValidPosition(nx,ny) && m_grid[nx][ny].has_value() && !m_grid[nx][ny].value().empty()) {
             return true; // cel putin  un spadiacent este ocupat
         }
     }
     return false; // niciun sp adiacent nu este ocupat
 }
 
-bool eter::Board::existNonAdjacentCards(size_t x, size_t y)
+bool eter::Board::ExistNonAdjacentCards(const size_t& x, const size_t& y) const
 {
     static const std::vector<std::pair<int, int>> directions = {
         {-1, -1}, {-1, 0}, {-1, 1},
@@ -197,9 +187,9 @@ bool eter::Board::existNonAdjacentCards(size_t x, size_t y)
 }
 
 
-bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
+bool eter::Board::CanPlaceCard(const size_t& x, const size_t& y, const Card& card)
 {
-    if (!isValidPosition(x, y))
+    if (!IsValidPosition(x, y))
     {
         return false;
     }
@@ -210,25 +200,21 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
         if (!stack.empty() && card.GetColor() == stack.top().GetColor() && !stack.top().GetPosition()) { // cannot put card over your own illusion
             return false;
         }
-        //if (stack.top().GetValue() == static_cast<int>('/')) //pentru gropi///create pit in board
-        //{
-        //	return false;
-        //}
         if (!stack.empty() && card.GetValue() > stack.top().GetValue()) {
             return true;
         }
         return false;
     }
-    bool isBoardEmpty = true;
+    bool IsBoardEmpty = true;
     for (const auto& row : m_grid) {
         for (const auto& cell : row) {
             if (cell.has_value()) {
-                isBoardEmpty = false;
+                IsBoardEmpty = false;
                 break;
             }
         }
     }
-    if (isBoardEmpty) {
+    if (IsBoardEmpty) {
         // Daca tabla este goala, initializeaza limitele
         m_indexLineMin = x;
         m_indexLineMax = x;
@@ -236,13 +222,13 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
         m_indexColMax = y;
     }
 
-    return isBoardEmpty || isAdjacentToOccupiedSpace(x, y);
+    return IsBoardEmpty || IsAdjacentToOccupiedSpace(x, y);
 }
 
 
-bool eter::Board::placeCard(size_t x, size_t y, const Card& card)
+bool eter::Board::PlaceCard(const size_t& x, const size_t& y, const Card& card)
 {
-    if (!canPlaceCard(x, y, card))
+    if (!CanPlaceCard(x, y, card))
 
     {
         std::cout << "Placement is not allowed at (" << x << ", " << y << "). It's not a valid position.\n";
@@ -267,34 +253,16 @@ bool eter::Board::placeCard(size_t x, size_t y, const Card& card)
     return true;
 }
 
-void Board::updateAfterRemoval()
+void Board::UpdateAfterRemoval()
 {
-    /*size_t newLineMin, newLineMax, newColMin, newColMax;
-    newLineMin = newLineMax = newColMin = newColMax = 10;
-
-    for (size_t i = m_indexLineMin; i <= m_indexLineMax; ++i) {
-        for (size_t j = m_indexColMin; j < m_indexColMax; ++j) {
-            if (m_grid[i][j].has_value() && !m_grid[i][j]->empty()) {
-                newLineMin = std::min(newLineMin, i);
-                newLineMax = std::max(newLineMax, i);
-                newColMin = std::min(newColMin, j);
-                newColMax = std::max(newColMax, j);
-            }
-        }
-    }
-
-    m_indexLineMin = newLineMin;
-    m_indexLineMax = newLineMax;
-    m_indexColMin = newColMin;
-    m_indexColMax = newColMax;*/
-    size_t newLineMin = m_rows; // Setează inițial la valori maxime
+    size_t newLineMin = m_indexMax; // Setează inițial la valori maxime
     size_t newLineMax = 0;
-    size_t newColMin = m_cols;
+    size_t newColMin = m_indexMax;
     size_t newColMax = 0;
     bool hasCards = false;
 
-    for (size_t i = 0; i < m_rows; ++i) {
-        for (size_t j = 0; j < m_cols; ++j) {
+    for (size_t i = 0; i < m_indexMax; ++i) {
+        for (size_t j = 0; j < m_indexMax; ++j) {
             if (m_grid[i][j].has_value() && !m_grid[i][j]->empty()) {
                 hasCards = true;
                 newLineMin = std::min(newLineMin, i);
@@ -321,7 +289,7 @@ void Board::updateAfterRemoval()
 }
 
 
-void eter::Board::removeCard(size_t x, size_t y)
+void eter::Board::RemoveCard(const size_t& x, const size_t& y)
 {
     if (m_grid[x][y].has_value() && !m_grid[x][y].value().empty())
     {
@@ -334,7 +302,7 @@ void eter::Board::removeCard(size_t x, size_t y)
     }
 }
 
-bool eter::Board::isVerticalLine(const std::string& lineColor) const {
+bool eter::Board::IsVerticalLine(const std::string& lineColor) const {
     for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
         size_t consecutiveCount = 0;
         for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
@@ -352,7 +320,7 @@ bool eter::Board::isVerticalLine(const std::string& lineColor) const {
     return false;
 }
 
-bool eter::Board::isPrimaryDiagonalLine(const std::string& lineColor) const {
+bool eter::Board::IsPrimaryDiagonalLine(const std::string& lineColor) const {
     if ((m_indexLineMax - m_indexLineMin) != (m_indexColMax - m_indexColMin)) {
         return false;
     }
@@ -375,7 +343,7 @@ bool eter::Board::isPrimaryDiagonalLine(const std::string& lineColor) const {
     return false;
 }
 
-bool eter::Board::isSecondaryDiagonalLine(const std::string& lineColor) const {
+bool eter::Board::IsSecondaryDiagonalLine(const std::string& lineColor) const {
     if ((m_indexLineMax - m_indexLineMin) != (m_indexColMax - m_indexColMin)) {
         return false;
     }
@@ -398,7 +366,7 @@ bool eter::Board::isSecondaryDiagonalLine(const std::string& lineColor) const {
     return false;
 }
 
-bool eter::Board::isHorizontalLine(const std::string& lineColor) const {
+bool eter::Board::IsHorizontalLine(const std::string& lineColor) const {
 
     for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
         size_t consecutiveCount = 0;
@@ -418,21 +386,21 @@ bool eter::Board::isHorizontalLine(const std::string& lineColor) const {
 }
 
 
-std::string eter::Board::findWinner()
+std::string eter::Board::FindWinner()
 {
-    if (isHorizontalLine("red") || isVerticalLine("red") || isPrimaryDiagonalLine("red") || isSecondaryDiagonalLine("red"))
+    if (IsHorizontalLine("red") || IsVerticalLine("red") || IsPrimaryDiagonalLine("red") || IsSecondaryDiagonalLine("red"))
         return "red";
-    else if (isHorizontalLine("blue") || isVerticalLine("blue") || isPrimaryDiagonalLine("blue") || isSecondaryDiagonalLine("blue"))
+    else if (IsHorizontalLine("blue") || IsVerticalLine("blue") || IsPrimaryDiagonalLine("blue") || IsSecondaryDiagonalLine("blue"))
         return "blue";
     return std::string{ "No winner yet" };
 }
 
-std::string eter::Board::findWinnerByScore()
+std::string eter::Board::FindWinnerByScore()
 {
     uint16_t score1{ 0 };
     uint16_t score2{ 0 };
-    for (size_t line = 0; line < m_grid.size(); ++line) {
-        for (size_t col = 0; col < m_grid[line].size(); ++col) {
+    for (size_t line = m_indexLineMin; line <= m_indexLineMax; ++line) {
+        for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
             if (m_grid[line][col].has_value()) {
                 if (m_grid[line][col].value().top().GetValue() == '/')
                     continue;
@@ -456,7 +424,7 @@ std::string eter::Board::findWinnerByScore()
     return " ";
 }
 
-bool eter::Board::isBoardFull()
+bool eter::Board::IsBoardFull()
 {
     size_t occupiedSpaces = 0;
     for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
@@ -468,7 +436,7 @@ bool eter::Board::isBoardFull()
     return (occupiedSpaces == m_dimMax * m_dimMax);
 }
 
-bool eter::Board::isTwoLineComplete()
+bool eter::Board::IsTwoLineComplete()
 {
     size_t linesOcupate, columnOcupate;
     linesOcupate = columnOcupate = 0;
@@ -499,7 +467,7 @@ bool eter::Board::isTwoLineComplete()
             ||(linesOcupate == 1 && columnOcupate == 1));
 }
 
-void eter::Board::clear()
+void eter::Board::Clear()
 {
     for (auto& row : m_grid) {
         for (auto& cell : row) {
@@ -512,16 +480,21 @@ void eter::Board::swap(Board& other) noexcept
 {
     using std::swap;
     swap(m_grid, other.m_grid);
-    swap(m_rows, other.m_rows);
-    swap(m_cols, other.m_cols);
+    swap(m_indexColMin,other.m_indexColMin);
+    swap(m_indexColMax,other.m_indexColMax);
+    swap(m_indexLineMax,other.m_indexLineMax);
+    swap(m_indexLineMin,other.m_indexLineMin);
+    swap(m_dimMax,other.m_dimMax);
+    swap(m_indexMax,other.m_indexMax);
+
 }
 
-bool Board::isValidRow(size_t row) const
+bool Board::IsValidRow(const size_t& row) const
 {
     return row >= m_indexLineMin && row <= m_indexLineMax;
 }
 
-void Board::eliminateCardsOnRow(size_t row)
+void Board::EliminateCardsOnRow(const size_t& row)
 {
     for (size_t col = m_indexColMin; col <= m_indexColMax; ++col)
         if (m_grid[row][col].has_value()) {
@@ -534,7 +507,7 @@ void Board::eliminateCardsOnRow(size_t row)
         }
 }
 
-size_t Board::countOccupiedCellsOnRow(size_t row)
+size_t Board::CountOccupiedCellsOnRow(const size_t& row)
 {
     size_t occupiedCount = 0;
     for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
@@ -544,7 +517,7 @@ size_t Board::countOccupiedCellsOnRow(size_t row)
     return occupiedCount;
 }
 
-bool Board::containsOwnCardOnRow(size_t row, const std::string& playerColor)
+bool Board::ContainsOwnCardOnRow(const size_t& row, const std::string& playerColor)
 {
     for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
         if (m_grid[row][col].has_value()) {
@@ -556,7 +529,7 @@ bool Board::containsOwnCardOnRow(size_t row, const std::string& playerColor)
     return false;
 }
 
-void Board::eliminateCardsOnColumn(size_t col)
+void Board::EliminateCardsOnColumn(const size_t& col)
 {
     for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row)
         if (m_grid[row][col].has_value()) {
@@ -570,7 +543,7 @@ void Board::eliminateCardsOnColumn(size_t col)
 }
 
 
-void eter::Board::createHole(size_t row, size_t col)
+void eter::Board::CreateHole(const size_t& row, const size_t& col)
 {
     if (m_grid[row][col].has_value())
     {
@@ -583,13 +556,8 @@ void eter::Board::createHole(size_t row, size_t col)
 
 }
 
-std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGridForModeA()
-{
-    return m_grid;
-}
 
-
-size_t Board::countOccupiedCellsOnColumn(size_t col)
+size_t Board::CountOccupiedCellsOnColumn(const size_t& col)
 {
     size_t occupiedCount = 0;
     for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
@@ -599,7 +567,7 @@ size_t Board::countOccupiedCellsOnColumn(size_t col)
     return occupiedCount;
 }
 
-bool Board::containsOwnCardOnColumn(size_t col, const std::string& playerColor)
+bool Board::ContainsOwnCardOnColumn(const size_t& col, const std::string& playerColor)
 {
     for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
         if (m_grid[row][col].has_value()) {
@@ -612,24 +580,24 @@ bool Board::containsOwnCardOnColumn(size_t col, const std::string& playerColor)
 }
 
 
-bool Board::isValidColumn(size_t column) const
+bool Board::IsValidColumn(const size_t& column) const
 {
     return column >= m_indexColMin && column <= m_indexColMax;
 }
 
-bool eter::Board::isEdgeRow(size_t row) const
+bool eter::Board::IsEdgeRow(const size_t& row) const
 {
     return row == m_indexLineMin || row == m_indexLineMax;
 
 }
 
-bool eter::Board::isEdgeColumn(size_t column) const
+bool eter::Board::IsEdgeColumn(const size_t& column) const
 {
     return column == m_indexColMin || column == m_indexColMax;
 
 }
 
-void eter::Board::moveRow(size_t fromRow, size_t toRow) {
+void eter::Board::MoveRow(const size_t& fromRow, const size_t& toRow) {
 
     std::transform(
         m_grid[fromRow].begin() + m_indexColMin,
@@ -647,7 +615,7 @@ void eter::Board::moveRow(size_t fromRow, size_t toRow) {
 }
 
 
-void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
+void eter::Board::MoveColumn(const size_t& fromCol, const size_t& toCol) {
     std::transform(
         m_grid[fromCol].begin() + m_indexLineMin,
         m_grid[fromCol].begin() + m_indexLineMax + 1,
@@ -663,9 +631,9 @@ void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
                   });
 }
 
-bool Board::isEmptyCell(size_t x, size_t y)
+bool Board::IsEmptyCell(const size_t& x, const size_t& y)
 {
-    if (!isValidPosition(x, y)) {
+    if (!IsValidPosition(x, y)) {
         return false;
     }
     return !m_grid[x][y].has_value();
@@ -674,9 +642,9 @@ bool Board::isEmptyCell(size_t x, size_t y)
 
 std::ostream& eter::operator<<(std::ostream& os, const Board& board)
 {
-    for (uint8_t line = 0; line < board.GetRows(); ++line)
+    for (size_t line = 0; line < board.GetIndexMax(); ++line)
     {
-        for (uint8_t column = 0; column < board.GetCols(); ++column)
+        for (size_t column = 0; column < board.GetIndexMax(); ++column)
         {
             if (board.GetGrid()[line][column].has_value())
                 os << board.GetGrid()[line][column].value().top() << " ";

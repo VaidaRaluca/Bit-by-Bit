@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>background.jpg</file>
+        <file>purpleBG.jpeg</file>
+        <file>card_1_red.png</file>
+        <file>card_2_red.png</file>
+        <file>card_3_red.png</file>
+        <file>card_4_red.png</file>
+        <file>card_5_red.png</file>
+
+    </qresource>
+</RCC>

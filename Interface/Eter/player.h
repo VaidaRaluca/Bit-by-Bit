@@ -5,11 +5,14 @@
 #include"board.h"
 #include<vector>
 #include<utility>
+#include<QString>
+#include<QDebug>
+
 namespace eter {
 class Player
 {
 private:
-    std::string m_name;
+    QString m_name;
     uint32_t m_score;
     std::string m_color;
     bool m_hasUsedIllusion ;
@@ -19,7 +22,7 @@ private:
 public:
     //Rule of 5
     Player() = default;
-    Player(const std::string& name, const std::string& color);
+    Player(const QString& name, const std::string& color);
     ~Player() = default;
     Player(const Player& other);
     Player& operator=(const Player& rhs);
@@ -27,7 +30,7 @@ public:
     Player& operator=(Player&& rhs) noexcept;
 
     //Getteri
-    const std::string& GetName() const;
+    const QString& GetName() const;
     const uint32_t& GetScore() const;
     const std::string& GetColor() const;
     std::vector<Card>& GetCardsInHand();
@@ -37,7 +40,7 @@ public:
     std::vector<std::pair<Card, std::pair<size_t, size_t>>>& GetPlayedCards();
 
     //Setteri
-    void SetName(const std::string& name);
+    void SetName(const QString& name);
     void SetScore(const uint32_t& score);
     void SetColor(const std::string& color);
     void SetCardsInHand(const std::vector<Card>& cards);

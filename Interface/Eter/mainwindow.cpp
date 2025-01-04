@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include"amodewindow.h"
+using namespace eter;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("ETER");
     setFixedSize(1380, 575);
 
-    this->setStyleSheet("QMainWindow { background-image: url(C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/background.jpg); "
+    this->setStyleSheet("QMainWindow { background-image: url(:/background.jpg); "
                         "background-repeat: no-repeat; "
                         "background-position: center; }");
 
@@ -17,13 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->loadGame->setVisible(false);
 
     ShowModeButtons(false);
-
-    // connect(ui->Eter, &QPushButton::clicked, this, &MainWindow::on_Eter_clicked);
-    // connect(ui->startGame, &QPushButton::clicked, this, &MainWindow::on_startGame_clicked);
-    // //connect(ui->AMode, &QPushButton::clicked, this, &MainWindow::on_AMode_clicked);
-    // connect(ui->BMode, &QPushButton::clicked, this, &MainWindow::on_BMode_clicked);
-    // connect(ui->CMode, &QPushButton::clicked, this, &MainWindow::on_CMode_clicked);
-    // connect(ui->BCMode, &QPushButton::clicked, this, &MainWindow::on_BCMode_clicked);
 
 }
 
@@ -39,10 +34,8 @@ void MainWindow::ShowModeButtons(bool ok)
     ui->CMode->setVisible(ok);
     ui->BCMode->setVisible(ok);
 }
-void MainWindow::GetPLayerName()
+std::pair<QString,QString> MainWindow::GetPLayerName()
 {
-    static int counter = 1;
-    qDebug() << "GetPlayerName() apelat:" << counter++;
     bool ok;
     QString text1 = QInputDialog::getText(this,
                                          tr("PLAYER 1 "),
@@ -76,6 +69,10 @@ void MainWindow::GetPLayerName()
     {
         qDebug() << "Niciun text introdus.";
     }
+    std::pair<QString,QString> players;
+    players.first=text1;
+    players.second=text2;
+    return players;
 }
 
 
@@ -97,20 +94,31 @@ void MainWindow::on_startGame_clicked()
 void MainWindow::on_AMode_clicked()
 {
     ShowModeButtons(false);
-    GetPLayerName();
+
+    hide();
+
+    AModeWindow *amodeWindow = new AModeWindow(this);
+    amodeWindow->show();
+
+    // std::pair<QString,QString>players=GetPLayerName();
+    // Player player1(players.first,"red");
+    // Player player2(players.second,"blue");
+    // GameManager game;
+    //game.StartNewGame(player1, player2, "AMode");
 }
 void MainWindow::on_CMode_clicked()
 {
     ShowModeButtons(false);
-    GetPLayerName();
+    //GetPLayerName();
 }
 void MainWindow::on_BMode_clicked()
 {
     ShowModeButtons(false);
-    GetPLayerName();
+    //GetPLayerName();
 }
 void MainWindow::on_BCMode_clicked()
 {
     ShowModeButtons(false);
-    GetPLayerName();
+    //GetPLayerName();
 }
+

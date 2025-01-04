@@ -6,6 +6,13 @@
 #include <QVBoxLayout>
 #include <QSpacerItem>
 #include<QInputDialog>
+#include<QLabel>
+#include<QMouseEvent>
+#include <QGridLayout>
+#include <QHBoxLayout>
+
+#include"player.h"
+#include"gamemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -24,7 +31,8 @@ public:
 private:
     Ui::MainWindow *ui;
     void ShowModeButtons(bool ok);
-    void GetPLayerName();
+    std::pair<QString,QString> GetPLayerName();
+
 private slots:
     void on_Eter_clicked();
     void on_startGame_clicked();

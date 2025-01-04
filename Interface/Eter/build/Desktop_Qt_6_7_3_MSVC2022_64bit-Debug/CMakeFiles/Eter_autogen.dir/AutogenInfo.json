@@ -263,7 +263,8 @@
 		"C:/Qt/6.7.3/msvc2022_64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginTargets-debug.cmake",
 		"C:/Qt/6.7.3/msvc2022_64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginTargets-relwithdebinfo.cmake",
 		"C:/Qt/6.7.3/msvc2022_64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginAdditionalTargetInfo.cmake",
-		"C:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/GNUInstallDirs.cmake"
+		"C:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/GNUInstallDirs.cmake",
+		"C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/images.qrc"
 	],
 	"CMAKE_SOURCE_DIR" : "C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter",
 	"CROSS_CONFIG" : false,
@@ -275,6 +276,12 @@
 			"C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/amode.h",
 			"MU",
 			"EWIEGA46WW/moc_amode.cpp",
+			null
+		],
+		[
+			"C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/amodewindow.h",
+			"MU",
+			"EWIEGA46WW/moc_amodewindow.cpp",
 			null
 		],
 		[
@@ -407,6 +414,11 @@
 	[
 		[
 			"C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/amode.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/40720/OneDrive/Desktop/FACULTATE/AN II/Modern C++/Eter/amodewindow.cpp",
 			"MU",
 			null
 		],

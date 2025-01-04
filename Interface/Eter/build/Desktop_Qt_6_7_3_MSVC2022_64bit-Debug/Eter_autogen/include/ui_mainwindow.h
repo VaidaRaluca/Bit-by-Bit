@@ -31,6 +31,7 @@ public:
     QPushButton *BMode;
     QPushButton *CMode;
     QPushButton *BCMode;
+    QPushButton *pushButton;
     QMenuBar *menubar;
     QStatusBar *statusbar;
     QToolBar *toolBar;
@@ -124,6 +125,16 @@ public:
         palette6.setBrush(QPalette::Inactive, QPalette::ButtonText, brush1);
         palette6.setBrush(QPalette::Disabled, QPalette::Button, brush2);
         BCMode->setPalette(palette6);
+        pushButton = new QPushButton(centralwidget);
+        pushButton->setObjectName("pushButton");
+        pushButton->setGeometry(QRect(630, 490, 93, 29));
+        QPalette palette7;
+        palette7.setBrush(QPalette::Active, QPalette::Button, brush);
+        palette7.setBrush(QPalette::Active, QPalette::ButtonText, brush1);
+        palette7.setBrush(QPalette::Inactive, QPalette::Button, brush);
+        palette7.setBrush(QPalette::Inactive, QPalette::ButtonText, brush1);
+        palette7.setBrush(QPalette::Disabled, QPalette::Button, brush);
+        pushButton->setPalette(palette7);
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
@@ -137,6 +148,7 @@ public:
         MainWindow->addToolBar(Qt::ToolBarArea::TopToolBarArea, toolBar);
 
         retranslateUi(MainWindow);
+        QObject::connect(pushButton, &QPushButton::clicked, MainWindow, qOverload<>(&QMainWindow::close));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -151,6 +163,7 @@ public:
         BMode->setText(QCoreApplication::translate("MainWindow", "Mage Duel", nullptr));
         CMode->setText(QCoreApplication::translate("MainWindow", "Elemental Battle", nullptr));
         BCMode->setText(QCoreApplication::translate("MainWindow", "Mage Duel + Elemental Battle", nullptr));
+        pushButton->setText(QCoreApplication::translate("MainWindow", "quit", nullptr));
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi
 

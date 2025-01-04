@@ -2,7 +2,7 @@
 
 using namespace eter;
 
-Player::Player(const std::string& name, const std::string& color)
+Player::Player(const QString& name, const std::string& color)
     : m_name{ name }
     , m_score{ 0 }
     , m_color{ color }
@@ -48,7 +48,7 @@ Player& eter::Player::operator=(Player&& rhs) noexcept
     return *this;
 }
 
-const std::string& Player::GetName() const
+const QString& Player::GetName() const
 {
     return m_name;
 }
@@ -83,7 +83,7 @@ std::vector<Card>& Player::GetEliminatedCards()
     return m_eliminatedCards;
 }
 
-void Player::SetName(const std::string& name)
+void Player::SetName(const QString& name)
 {
     m_name = name;
 }
@@ -143,10 +143,10 @@ bool Player::PlaceCard(size_t x, size_t y, const Card& card, Board& board)
     auto it = std::find(m_cardsInHand.begin(), m_cardsInHand.end(), card);
 
     if (it == m_cardsInHand.end()) {
-        std::cout << "The card is not in your hand.\n";
+        qDebug() << "The card is not in your hand.\n";
         return false;
     }
-    if (board.placeCard(x, y, card))
+    if (board.PlaceCard(x, y, card))
     {
         m_cardsInHand.erase(it);
         m_playedCards.push_back({card,{x,y}});
@@ -160,21 +160,21 @@ bool Player::PlaceCard(size_t x, size_t y, const Card& card, Board& board)
 
 void Player::UseIllusion(size_t x, size_t y, Board& board, Card& illusion)
 {
-    if (!board.isValidPosition(x, y)) {
-        std::cout << "The position (" << x << ", " << y << ") is not valid on the board.\n";
+    if (!board.IsValidPosition(x, y)) {
+        qDebug() << "The position (" << x << ", " << y << ") is not valid on the board.\n";
         return;
     }
-    if (!board.isEmptyCell(x, y)) {
-        std::cout << "Illusions can only be placed on empty cells. Position (" << x << ", " << y << ") is occupied.\n";
+    if (!board.IsEmptyCell(x, y)) {
+        qDebug() << "Illusions can only be placed on empty cells. Position (" << x << ", " << y << ") is occupied.\n";
         return;
     }
     illusion.SetPosition(false);
     if (PlaceCard(x, y, illusion, board)) {
         m_hasUsedIllusion = true;
-        std::cout << GetName() << " has placed an illusion at (" << x << ", " << y << ").\n";
+        qDebug() << GetName() << " has placed an illusion at (" << x << ", " << y << ").\n";
     }
     else
-        std::cout << "Failed to place the illusion at (" << x << ", " << y << ").\n";
+        qDebug() << "Failed to place the illusion at (" << x << ", " << y << ").\n";
 }
 
 void Player::PrintCardsInHand()
@@ -182,7 +182,7 @@ void Player::PrintCardsInHand()
     int index = 0;
     for (const auto& it : m_cardsInHand)
     {
-        std::cout <<"at "<< index << " is card " << it << "\n";
+        //qDebug() <<"at "<< index << " is card " << it << "\n";
         index++;
     }
 }

@@ -115,6 +115,41 @@ std::ostream& eter::operator<<(std::ostream& os, const Card& card)
     return os;
 }
 
+QDebug operator<<(QDebug debug, const Card& card)
+{
+    // Utilizăm culori pentru afișare doar în text normal
+    QString textColor, backgroundColor;
+
+    if (QString::fromStdString(card.GetColor()) == "red") {
+        textColor = "Red";
+        backgroundColor = "Black";
+    } else if (QString::fromStdString(card.GetColor()) == "blue") {
+        textColor = "Blue";
+        backgroundColor = "Black";
+    } else {
+        textColor = "Default";
+        backgroundColor = "Default";
+    }
+
+    QString cardRepresentation;
+
+    if (!card.GetPosition()) {
+        cardRepresentation = QString("\"");
+    } else if (card.GetValue() == '/') {
+        cardRepresentation = "/";
+    } else if (card.GetValue() == 5) {
+        cardRepresentation = "E";
+    } else {
+        cardRepresentation = QString::number(card.GetValue());
+    }
+
+    debug.nospace() << "Card(Value: " << cardRepresentation
+                    << ", Color: " << textColor
+                    << ", Position: " << (card.GetPosition() ? "True" : "False") << ")";
+
+    return debug;
+}
+
 void eter::swap(Card& first, Card& second) noexcept
 {
     first.swap(second);

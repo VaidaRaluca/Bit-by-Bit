@@ -35,6 +35,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         elementalpowercards.h elementalpowercards.cpp
         explosion.h explosion.cpp
         mage.h mage.cpp
+        images.qrc
+        amodewindow.h amodewindow.cpp amodewindow.ui
+
 
 
 
