@@ -1367,59 +1367,20 @@ void eter::elementalPowerCards::activateMirage(Board& board, Player& player)
 
 void eter::elementalPowerCards::activateBlizzard(Board& board, Player& player, Player& opponent)
 {
-	bool hasFreeSpace = false;
-	for (size_t row = 0; row < board.GetIndexMax(); ++row)
-	{
-		for (size_t col = 0; col < board.GetIndexMax(); ++col)
-		{
-			if (!board[{row, col}].has_value())
-			{
-				hasFreeSpace = true;
-				break;
-			}
-		}
-		if (hasFreeSpace) break;
-	}
-
-	if (!hasFreeSpace) {
-		std::cout << "Opponent does not have any free space to play a card. Blizzard cannot be activated.\n";
-		return;
-	}
-
-	int x, y;
-	std::cout << "Enter the position (row and column) to place the Blizzard card: ";
-	std::cin >> x >> y;
-
-	if (x < 0 || x >= board.GetIndexMax() || y < 0 || y >= board.GetIndexMax())
-	{
-		std::cout << "Invalid position. Blizzard cancelled.\n";
-		return;
-	}
-
-	if (board[{x, y}].has_value()) 
-	{
-		std::cout << "Position is already occupied. Blizzard cancelled.\n";
-		return;
-	}
-	Card blizzardCard('X', player.GetColor(),true); 
-	board[{x, y}].emplace().push(blizzardCard);
-	player.AddPlayedCard(blizzardCard);
-
-	int blockedRow = -1, blockedCol = -1;
 	char choice;
 	std::cout << "Do you want to block a row (R) or a column (C)? ";
 	std::cin >> choice;
-	if (choice == 'R' || choice == 'r') 
-	{
-		blockedRow = x;
-		std::cout << "Row " << blockedRow << " will be blocked.\n";
-	}
-	else if (choice == 'C' || choice == 'c') 
-	{
-		blockedCol = y;
-		std::cout << "Column " << blockedCol << " will be blocked.\n";
-	}
-	//continuare pentru a face oponentul sa nu poata plasa o carte in urmatoarea tura
+	size_t lineNumber;
+	if (choice == 'R')
+		std::cout << "Enter the row you want to block: ";
+	else
+		std::cout << "Enter the column you want to block: ";
+	std::cin >> lineNumber;
+	board.setBlockedLine(lineNumber, choice);
+	if (choice == 'R')
+		std::cout << "You blocked the row with number " << lineNumber;
+	else
+		std::cout << "You blocked the column with number " << lineNumber;
 }
 
 void eter::elementalPowerCards::activateSupport(Board& board, Player& player)

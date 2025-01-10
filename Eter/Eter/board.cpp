@@ -208,6 +208,22 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 	{
 		return false;
 	}
+
+	//Daca linia/coloana este blocata in urma puterii Blizzard
+	if (m_blockedLine.first != 10 || m_blockedLine.second != '\0') {
+		if (m_blockedLine.second == 'R')
+		{
+			if (x == m_blockedLine.first)
+			{
+				return false;
+			}
+		}
+		if (m_blockedLine.second == 'C')
+		{
+			return false;
+		}
+	}
+
 	if (m_grid[x][y].has_value())
 	{
 		const auto& stack = m_grid[x][y].value();
@@ -266,6 +282,13 @@ bool eter::Board::placeCard(size_t x, size_t y, const Card& card)
 	m_indexLineMax = std::max(m_indexLineMax, x);
 	m_indexColMin = std::min(m_indexColMin, y);
 	m_indexColMax = std::max(m_indexColMax, y);
+
+	//Resetam linia blocata in urma puterii Blizzard
+	if (m_blockedLine.first != 10 || m_blockedLine.second != '\0')
+	{
+		m_blockedLine.first = 10;
+		m_blockedLine.second = '\0';
+	}
 
 	std::cout << "The card with value " << static_cast<int>(card.GetValue())
 		<< " has been placed at (" << x << ", " << y << ").\n";
