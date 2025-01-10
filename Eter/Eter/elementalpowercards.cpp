@@ -192,7 +192,7 @@ namespace eter {
 		case eter::elementalPowerCards::powerAbility::border:
 			break;
 		case eter::elementalPowerCards::powerAbility::avalanche:
-			activateAvalanche(board);
+			activateAvalanche(board,player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::rock:
 			activateRock(board, player);
@@ -1502,71 +1502,160 @@ void eter::elementalPowerCards::activateRock(Board& board, Player& player)
 	auto& cell = board[{selectedRow, selectedCol}];
 	cell->push(coverCard); 
 }
-void elementalPowerCards::activateAvalanche(Board& board) //DE VERIFICAT!!
+void elementalPowerCards::activateAvalanche(Board& board, Player& player, Player& opponent)
 {
-	int row1, col1, row2, col2;
-	std::cout << "Enter the coordinates of the first stack (row col): ";
-	std::cin >> row1 >> col1;
-	std::cout << "Enter the coordinates of the second stack (row col): ";
-	std::cin >> row2 >> col2;
+	size_t row1, col1, row2, col2;
+	bool firstStackValid = false;
+	bool secondStackValid = false;
 
-	if ((row1 == row2 && abs(col1 - col2) == 1) || (col1 == col2 && abs(row1 - row2) == 1))
-	{
+	while (true) {
+		if (!firstStackValid) {
+			std::cout << "Enter the coordinates of the first stack (row col): ";
+			std::cin >> row1 >> col1;
 
-		std::vector<std::pair<int, int>> emptyPositions;
-
-		if (row1 == row2)
-		{ 
-			if (col1 > 0 && !board[{row1, col1 - 1}].has_value()) 
-				emptyPositions.push_back({ row1, col1 - 1 });
-			if (col1 + 1 < board.GetIndexMax() && !board[{row1, col1 + 1}].has_value())
-				emptyPositions.push_back({ row1, col1 + 1 });
-			if (col2 > 0 && !board[{row2, col2 - 1}].has_value()) 
-				emptyPositions.push_back({ row2, col2 - 1 });
-			if (col2 + 1 < board.GetIndexMax() && !board[{row2, col2 + 1}].has_value())
-				emptyPositions.push_back({ row2, col2 + 1 });
-		}
-		else if (col1 == col2) 
-		{ 
-			if (row1 > 0 && !board[{row1 - 1, col1}].has_value())
-				emptyPositions.push_back({ row1 - 1, col1 });
-			if (row1 + 1 < board.GetIndexMax() && !board[{row1 + 1, col1}].has_value())
-				emptyPositions.push_back({ row1 + 1, col1 });
-			if (row2 > 0 && !board[{row2 - 1, col1}].has_value()) 
-				emptyPositions.push_back({ row2 - 1, col1 });
-			if (row2 + 1 < board.GetIndexMax() && !board[{row2 + 1, col1}].has_value())
-				emptyPositions.push_back({ row2 + 1, col1 });
-		}
-		if (!emptyPositions.empty()) 
-		{
-			int selectedPosition;
-			std::cout << "Select the position to shift both stacks to:\n";
-			for (size_t i = 0; i < emptyPositions.size(); ++i)
-			{
-				std::cout << i << ": (" << emptyPositions[i].first << ", " << emptyPositions[i].second << ")\n";
+			if (board.isValidPosition(row1, col1) && board[{row1, col1}].has_value()) {
+				firstStackValid = true;
 			}
-			std::cin >> selectedPosition;
-
-			if (selectedPosition < 0 || selectedPosition >= emptyPositions.size())
-			{
-				std::cout << "Invalid selection. Avalanche cancelled.\n";
-				return;
+			else {
+				std::cout << "Invalid position for the first stack. Try again.\n";
+				continue;
 			}
-
-			auto newPos = emptyPositions[selectedPosition];
-
-			board[{newPos.first, newPos.second}] = board[{row1, col1}];
-			board[{row1, col1}].reset();
-			board[{newPos.first, newPos.second + 1}] = board[{row2, col2}];
-			board[{row2, col2}].reset();
 		}
-		else 
-			std::cout << "No valid empty positions to move the stacks. Avalanche cancelled.\n";
+
+		if (!secondStackValid) {
+			std::cout << "Enter the coordinates of the second stack (row col): ";
+			std::cin >> row2 >> col2;
+
+			if (board.isValidPosition(row2, col2) && board[{row2, col2}].has_value()) {
+				secondStackValid = true;
+			}
+			else {
+				std::cout << "Invalid position for the second stack. Try again.\n";
+				continue;
+			}
+		}
+		if (firstStackValid && secondStackValid) {
+			if ((row1 == row2 && std::abs(static_cast<int>(col1) - static_cast<int>(col2)) == 1) ||
+				(col1 == col2 && std::abs(static_cast<int>(row1) - static_cast<int>(row2)) == 1)) {
+				break;
+			}
+			else {
+				std::cout << "Stacks must be on the same row/column or adjacent. Try again.\n";
+				firstStackValid = false;
+				secondStackValid = false;
+			}
+		}
 	}
-	else 
-		std::cout << "The stacks are not adjacent. Avalanche cancelled.\n";
-}
+	while (true) {
+		std::cout << "Choose the direction to an empty space where you want to shift the stacks: L(left), R(right), U(up), D(down):";
+		char direction;
+		std::cin >> direction;
+		size_t toRow, toCol;
+		bool validMove = false;
 
+		if (direction == 'L') {
+			if (row1 != row2) {
+				std::cout << "You can't shift the stacks in the left direction. Try again.\n";
+			}
+			else {
+				toRow = row1;
+				toCol = std::min(col1, col2) - 1;
+				auto& destCell = board[{toRow, toCol}];
+				if (destCell.has_value()) {
+					std::cout << "The space that the first card moves onto must be empty. Try again.\n";
+				}
+				else {
+					auto& firstCell = (col1 < col2) ? board[{row1, col1}] : board[{row2, col2}];
+					auto& secondCell = (col1 < col2) ? board[{row2, col2}] : board[{row1, col1}];
+
+					destCell = std::move(firstCell);
+					firstCell.reset();
+					firstCell = std::move(secondCell);
+					secondCell.reset();
+					std::cout << "The stacks have been shifted to the left.\n";
+					validMove = true;
+				}
+			}
+		}
+		else if (direction == 'R') {
+			if (row1 != row2) {
+				std::cout << "You can't shift the stacks in the right direction. Try again.\n";
+			}
+			else {
+				toRow = row1;
+				toCol = std::max(col1, col2) + 1;
+				auto& destCell = board[{toRow, toCol}];
+				if (destCell.has_value()) {
+					std::cout << "The space that the first card moves onto must be empty. Try again.\n";
+				}
+				else {
+					auto& firstCell = (col2 > col1) ? board[{row2, col2}] : board[{row1, col1}];
+					auto& secondCell = (col2 > col1) ? board[{row1, col1}] : board[{row2, col2}];
+
+					destCell = std::move(firstCell);
+					firstCell.reset();
+					firstCell = std::move(secondCell);
+					secondCell.reset();
+					std::cout << "The stacks have been shifted to the right.\n";
+					validMove = true;
+				}
+			}
+		}
+		else if (direction == 'U') {
+			if (col1 != col2) {
+				std::cout << "You can't shift the stacks in the up direction. Try again.\n";
+			}
+			else {
+				toRow = std::min(row1, row2) - 1;
+				toCol = col1;
+				auto& destCell = board[{toRow, toCol}];
+				if (destCell.has_value()) {
+					std::cout << "The space that the first card moves onto must be empty. Try again.\n";
+				}
+				else {
+					auto& firstCell = (row2 > row1) ? board[{row1, col1}] : board[{row2, col2}];
+					auto& secondCell = (row2 > row1) ? board[{row2, col2}] : board[{row1, col1}];
+
+					destCell = std::move(firstCell);
+					firstCell.reset();
+					firstCell = std::move(secondCell);
+					secondCell.reset();
+					std::cout << "The stacks have been shifted up.\n";
+					validMove = true;
+				}
+			}
+		}
+		else if (direction == 'D') {
+			if (col1 != col2) {
+				std::cout << "You can't shift the stacks down. Try again.\n";
+			}
+			else {
+				toRow = std::max(row1, row2) + 1;
+				toCol = col1;
+				auto& destCell = board[{toRow, toCol}];
+				if (destCell.has_value()) {
+					std::cout << "The space that the first card moves onto must be empty. Try again.\n";
+				}
+				else {
+					auto& firstCell = (row2 > row1) ? board[{row2, col2}] : board[{row1, col1}];
+					auto& secondCell = (row2 > row1) ? board[{row1, col1}] : board[{row2, col2}];
+
+					destCell = std::move(firstCell);
+					firstCell.reset();
+					firstCell = std::move(secondCell);
+					secondCell.reset();
+					std::cout << "The stacks have been shifted down.\n";
+					validMove = true;
+				}
+			}
+		}
+
+		if (validMove) {
+			break;
+		}
+	}
+
+}
  
  
 
