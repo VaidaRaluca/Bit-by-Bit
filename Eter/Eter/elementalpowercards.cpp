@@ -645,30 +645,85 @@ namespace eter {
 		}
 	}
 
-void elementalPowerCards::activateMist(Player& player, Board& board)
-{
-	uint8_t row, col;
-	std::cout << "Enter the coordinates of the position to use an illusion:";
-	std::cin >> row >> col;
-	std::vector<Card>& cardsInHand = player.GetCardsInHand();
-	int selectedCardIndex = -1;
+	void eter::elementalPowerCards::activateMist(Player& player, Board& board)
+	{
+ 		bool hasIllusionOnBoard = false;
+		size_t illusionRow = 0, illusionCol = 0;
 
-	std::cout << "Select a new illusion from your hand:\n";
-	for (size_t i = 0; i < cardsInHand.size(); ++i)
-		std::cout << i << ": " << cardsInHand[i] << "\n";
-	std::cin >> selectedCardIndex;
+		for (size_t i = board.GetIndexLineMin(); i <= board.GetIndexLineMax(); ++i) {
+			for (size_t j = board.GetIndexColMin(); j <= board.GetIndexColMax(); ++j) {
+				auto& cellOpt = board[{i, j}];
+				if (cellOpt.has_value() && !cellOpt->empty()) {
+					Card& topCard = cellOpt->top();
+					if (topCard.GetColor() == player.GetColor() && !topCard.GetPosition()) {
+						hasIllusionOnBoard = true;
+						illusionRow = i;
+						illusionCol = j;
+						break;
+					}
+				}
+			}
+			if (hasIllusionOnBoard) break;
+		}
 
-	if (selectedCardIndex < 0 || selectedCardIndex >= cardsInHand.size()) {
-		std::cout << "Invalid selection. Mirage cancelled.\n";
-		return;
+ 		if (hasIllusionOnBoard) {
+			auto& illusionCell = board[{illusionRow, illusionCol}];
+			if (illusionCell.has_value() && !illusionCell->empty()) {
+				Card& illusionCard = illusionCell->top();
+				illusionCard.SetPosition(true); 
+				std::cout << "Your existing illusion at (" << illusionRow << ", " << illusionCol << ") has been revealed.\n";
+			}
+		}
+
+ 		auto& cardsInHand = player.GetCardsInHand();
+		if (cardsInHand.empty()) {
+			std::cout << "You have no cards in your hand to play as an illusion.\n";
+			return;
+		}
+
+		std::cout << "Choose a card from your hand to play as an illusion:\n";
+		for (size_t i = 0; i < cardsInHand.size(); ++i) {
+			std::cout << i + 1 << ": Card with value " << static_cast<int>(cardsInHand[i].GetValue()) << "\n";
+		}
+
+		size_t chosenCardIndex;
+		while (true) {
+			std::cout << "Enter the index of the card to play: ";
+			std::cin >> chosenCardIndex;
+			if (chosenCardIndex >= 1 && chosenCardIndex <= cardsInHand.size()) {
+				break;
+			}
+			else {
+				std::cout << "Invalid choice. Try again.\n";
+			}
+		}
+
+ 		Card selectedCard = cardsInHand[chosenCardIndex - 1];
+		selectedCard.SetPosition(false);  
+		cardsInHand.erase(cardsInHand.begin() + (chosenCardIndex - 1));
+
+ 		size_t row, col;
+		while (true) {
+			std::cout << "Enter the coordinates to place the new illusion (row, column): ";
+			std::cin >> row >> col;
+			if (board.isValidPosition(row, col) && (!board[{row, col}].has_value() || board[{row, col}]->empty())) {
+				break;
+			}
+			else {
+				std::cout << "Invalid position or position already occupied. Try again.\n";
+			}
+		}
+
+		auto& cell = board[{row, col}];
+		if (!cell.has_value()) {
+			cell.emplace();
+		}
+		cell->push(selectedCard);
+		player.AddPlayedCard(selectedCard);
+
+		std::cout << "Placed illusion card with value " << static_cast<int>(selectedCard.GetValue()) << " at position ("
+			<< row << ", " << col << ").\n";
 	}
-
-	Card newIllusion = cardsInHand[selectedCardIndex];
-	player.useIllusion(row, col, board, newIllusion);
-	player.AddPlayedCard(newIllusion);
-	player.GetCardsInHand().erase(player.GetCardsInHand().begin() + selectedCardIndex);
-
-}
 
 void elementalPowerCards::activateGale(Player& player, Player& opponent, Board& board)
 {
@@ -1340,46 +1395,73 @@ void elementalPowerCards::activateHurricane(Player& player, Player& opponent, Bo
 }
 
 
+void eter::elementalPowerCards::activateMirage(Board& board, Player& player) {
+ 	bool illusionFound = false;
+	size_t illusionRow = 0, illusionCol = 0;
 
-void eter::elementalPowerCards::activateMirage(Board& board, Player& player)
-{
 	for (size_t row = 0; row < board.GetIndexMax(); ++row) {
 		for (size_t col = 0; col < board.GetIndexMax(); ++col) {
 			auto& cell = board[{row, col}];
-
-			if (cell.has_value() && !cell->empty()) 
-			{
+			if (cell.has_value() && !cell->empty()) {
 				Card& topCard = cell->top();
-				if (topCard.GetColor() == player.GetColor() && !topCard.GetPosition()) 
-				{
-					cell->pop();
-					player.AddCardToHand(topCard);
-					
-					std::vector<Card>& cardsInHand = player.GetCardsInHand();
-					int selectedCardIndex = -1;
-
-					std::cout << "Select a new illusion from your hand:\n";
-					for (size_t i = 0; i < cardsInHand.size(); ++i) 
-						std::cout << i << ": " << cardsInHand[i] << "\n";
-					std::cin >> selectedCardIndex;
-
-					if (selectedCardIndex < 0 || selectedCardIndex >= cardsInHand.size()) {
-						std::cout << "Invalid selection. Mirage cancelled.\n";
-						return;
-					}
-
-					Card newIllusion = cardsInHand[selectedCardIndex];
-					player.useIllusion(row, col, board, newIllusion);
-					player.AddPlayedCard(newIllusion);
-					player.GetCardsInHand().erase(player.GetCardsInHand().begin() + selectedCardIndex);
-					return;
+				if (topCard.GetColor() == player.GetColor() && !topCard.GetPosition()) {
+					illusionFound = true;
+					illusionRow = row;
+					illusionCol = col;
+					break;
 				}
 			}
 		}
+		if (illusionFound) break;
 	}
 
-	std::cout << "No illusion found on the board to replace.\n";
+	if (!illusionFound) {
+		std::cout << "No illusion found on the board to replace.\n";
+		return;
+	}
+
+ 	auto& illusionCell = board[{illusionRow, illusionCol}];
+	Card oldIllusion = illusionCell->top();
+	illusionCell->pop();
+	player.AddCardToHand(oldIllusion);
+
+	std::cout << "Your illusion at position (" << illusionRow << ", " << illusionCol << ") has been returned to your hand.\n";
+
+ 	auto& cardsInHand = player.GetCardsInHand();
+	if (cardsInHand.empty()) {
+		std::cout << "You have no cards in hand to play as a new illusion.\n";
+		return;
+	}
+
+	std::cout << "Choose a card from your hand to play as a new illusion:\n";
+	for (size_t i = 0; i < cardsInHand.size(); ++i) {
+		std::cout << i + 1 << ": Card with value " << static_cast<int>(cardsInHand[i].GetValue()) << "\n";
+	}
+
+	size_t selectedCardIndex;
+	while (true) {
+		std::cout << "Enter the index of the card to use: ";
+		std::cin >> selectedCardIndex;
+		if (selectedCardIndex >= 1 && selectedCardIndex <= cardsInHand.size()) {
+			break;
+		}
+		std::cout << "Invalid selection. Try again.\n";
+	}
+
+ 	Card newIllusion = cardsInHand[selectedCardIndex - 1];
+	newIllusion.SetPosition(false); 
+	cardsInHand.erase(cardsInHand.begin() + (selectedCardIndex - 1));
+
+	if (!illusionCell.has_value()) {
+		illusionCell.emplace();
+	}
+	illusionCell->push(newIllusion);
+	player.AddPlayedCard(newIllusion);
+
+	std::cout << "Placed new illusion card with value " << static_cast<int>(newIllusion.GetValue())
+		<< " at position (" << illusionRow << ", " << illusionCol << ").\n";
 }
+
 
 void eter::elementalPowerCards::activateBlizzard(Board& board, Player& player, Player& opponent)
 {
@@ -1455,53 +1537,81 @@ void eter::elementalPowerCards::activateCrumble(Board& board, Player& player)
 
 void eter::elementalPowerCards::activateRock(Board& board, Player& player)
 {
-	std::vector<std::pair<int, int>> illusionPositions;
+ 	std::vector<std::pair<size_t, size_t>> illusionPositions;
 
-	for (size_t row = 0; row < board.GetIndexMax(); ++row)
-	{
-		for (size_t col = 0; col < board.GetIndexMax(); ++col)
-		{
-			auto& cell = board[{row, col}];
-			if (cell.has_value() && !cell->empty()) 
-			{
-				Card& topCard = cell->top();
-				if (topCard.GetPosition()==0) 
-					illusionPositions.push_back({ row, col });
+	for (size_t row = board.GetIndexLineMin(); row <= board.GetIndexLineMax(); ++row) {
+		for (size_t col = board.GetIndexColMin(); col <= board.GetIndexColMax(); ++col) {
+			auto& cellOpt = board[{row, col}];
+			if (cellOpt.has_value() && !cellOpt->empty()) {
+				Card& topCard = cellOpt->top();
+				if (!topCard.GetPosition()) {  
+					illusionPositions.emplace_back(row, col);
+				}
 			}
 		}
 	}
 
-	if (illusionPositions.empty())
-	{
+ 	if (illusionPositions.empty()) {
 		std::cout << "No Illusion cards found on the board. ROCK action cancelled.\n";
 		return;
 	}
 
-	std::cout << "Select an Illusion card to cover from the following positions:\n";
-	for (size_t i = 0; i < illusionPositions.size(); ++i)
-		std::cout << i << ": Row " << illusionPositions[i].first << ", Column " << illusionPositions[i].second << "\n";
+ 	std::cout << "Select an Illusion card to cover from the following positions:\n";
+	for (size_t i = 0; i < illusionPositions.size(); ++i) {
+		std::cout << i + 1 << ": Row " << illusionPositions[i].first
+			<< ", Column " << illusionPositions[i].second << "\n";
+	}
 
-	uint8_t selectedPositionIndex;
-	std::cin >> selectedPositionIndex;
+	size_t selectedPositionIndex;
+	while (true) {
+		std::cout << "Enter the index of the Illusion card to cover: ";
+		std::cin >> selectedPositionIndex;
+		if (selectedPositionIndex >= 1 && selectedPositionIndex <= illusionPositions.size()) {
+			break;
+		}
+		std::cout << "Invalid selection. Try again.\n";
+	}
 
-	uint8_t selectedRow = illusionPositions[selectedPositionIndex].first;
-	uint8_t selectedCol = illusionPositions[selectedPositionIndex].second;
+	auto [selectedRow, selectedCol] = illusionPositions[selectedPositionIndex - 1];
 
-	std::vector<Card>& cardsInHand = player.GetCardsInHand();
-	uint8_t selectedCardIndex ;
+ 	auto& cardsInHand = player.GetCardsInHand();
+	if (cardsInHand.empty()) {
+		std::cout << "You have no cards in your hand to cover the Illusion card.\n";
+		return;
+	}
 
 	std::cout << "Select a card from your hand to cover the Illusion card:\n";
-	for (size_t i = 0; i < cardsInHand.size(); ++i) 
-		std::cout << i << ": " << cardsInHand[i] << "\n";
+	for (size_t i = 0; i < cardsInHand.size(); ++i) {
+		std::cout << i + 1 << ": Card with value " << static_cast<int>(cardsInHand[i].GetValue()) << "\n";
+	}
 
-	std::cin >> selectedCardIndex;
+	size_t chosenCardIndex;
+	while (true) {
+		std::cout << "Enter the index of the card to use: ";
+		std::cin >> chosenCardIndex;
+		if (chosenCardIndex >= 1 && chosenCardIndex <= cardsInHand.size()) {
+			break;
+		}
+		std::cout << "Invalid selection. Try again.\n";
+	}
 
-	Card coverCard = cardsInHand[selectedCardIndex];
-	player.AddPlayedCard(coverCard); 
-	player.GetCardsInHand().erase(player.GetCardsInHand().begin() + selectedCardIndex);
-	auto& cell = board[{selectedRow, selectedCol}];
-	cell->push(coverCard); 
+ 	Card selectedCard = cardsInHand[chosenCardIndex - 1];
+	cardsInHand.erase(cardsInHand.begin() + (chosenCardIndex - 1));
+
+	auto& cellOpt = board[{selectedRow, selectedCol}];
+	if (!cellOpt.has_value()) {
+		cellOpt.emplace();
+	}
+	cellOpt->push(selectedCard);
+
+	player.AddPlayedCard(selectedCard);
+
+	std::cout << "Covered the Illusion card at (" << selectedRow << ", " << selectedCol << ") with a card of value "
+		<< static_cast<int>(selectedCard.GetValue()) << " from your hand.\n";
 }
+
+
+
 void elementalPowerCards::activateAvalanche(Board& board, Player& player, Player& opponent)
 {
 	size_t row1, col1, row2, col2;
