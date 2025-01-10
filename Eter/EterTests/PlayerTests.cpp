@@ -110,5 +110,42 @@ namespace EterTests
             Assert::AreEqual(std::string("Player1"), testPlayer2.GetName(), L"Player 2's name should be swapped to Player1.");
             Assert::AreEqual(std::string("red"), testPlayer2.GetColor(), L"Player 2's color should be swapped to red.");
         }
+
+      
+        TEST_METHOD(TestPlayerCopyAssignment)
+        {
+            Player player1("Player1", "red");
+            player1.SetScore(50);
+            player1.AddCardToHand(Card(1, "red", true));
+            player1.AddCardToHand(Card(2, "blue", true));
+            player1.AddPlayedCard(Card(3, "red", false));
+            player1.AddToEliminatedCards(Card(4, "blue", false));
+
+            Player player2("Player2", "blue");
+            player2.SetScore(100);
+
+            player2 = player1;
+
+            Assert::AreEqual(std::string("Player1"), player2.GetName(), L"Player2 should have the name 'Player1'.");
+            Assert::AreEqual(std::string("red"), player2.GetColor(), L"Player2 should have the color 'red'.");
+            Assert::AreEqual(uint32_t(50), player2.GetScore(), L"Player2 should have the score 50.");
+
+            Assert::AreEqual(size_t(2), player2.GetCardsInHand().size(), L"Player2 should have 2 cards in hand.");
+            Assert::AreEqual(size_t(1), player2.GetPlayedCards().size(), L"Player2 should have 1 played card.");
+            Assert::AreEqual(size_t(1), player2.GetEliminatedCards().size(), L"Player2 should have 1 eliminated card.");
+
+            Assert::AreEqual(uint8_t(1), player2.GetCardsInHand()[0].GetValue(), L"The first card in player2's hand should have value 1.");
+            Assert::AreEqual(uint8_t(2), player2.GetCardsInHand()[1].GetValue(), L"The second card in player2's hand should have value 2.");
+            Assert::AreEqual(uint8_t(3), player2.GetPlayedCards()[0].GetValue(), L"The played card in player2 should have value 3.");
+            Assert::AreEqual(uint8_t(4), player2.GetEliminatedCards()[0].GetValue(), L"The eliminated card in player2 should have value 4.");
+
+            Assert::AreEqual(std::string("Player1"), player1.GetName(), L"Player1's name should remain 'Player1'.");
+            Assert::AreEqual(std::string("red"), player1.GetColor(), L"Player1's color should remain 'red'.");
+            Assert::AreEqual(uint32_t(50), player1.GetScore(), L"Player1's score should remain 50.");
+            Assert::AreEqual(size_t(2), player1.GetCardsInHand().size(), L"Player1 should still have 2 cards in hand.");
+            Assert::AreEqual(size_t(1), player1.GetPlayedCards().size(), L"Player1 should still have 1 played card.");
+            Assert::AreEqual(size_t(1), player1.GetEliminatedCards().size(), L"Player1 should still have 1 eliminated card.");
+        }
+
     };
 }
