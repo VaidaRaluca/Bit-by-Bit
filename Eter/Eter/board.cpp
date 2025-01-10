@@ -636,23 +636,6 @@ bool eter::Board::isEdgeColumn(size_t column) const
 
 }
 
-void eter::Board::moveRow(size_t fromRow, size_t toRow) {
-
-	std::transform(
-		m_grid[fromRow].begin() + m_indexColMin,
-		m_grid[fromRow].begin() + m_indexColMax + 1,
-		m_grid[toRow].begin() + m_indexColMin,
-		[](std::optional<std::stack<Card>>& source) {
-			return std::move(source);
-		}
-	);
-	std::for_each(m_grid[fromRow].begin() + m_indexColMin,
-		m_grid[fromRow].begin() + m_indexColMax + 1,
-		[](std::optional<std::stack<Card>>& cell) {
-			cell.reset(); 
-		});
-}
-
 std::vector<Card> Board::shiftRowForward(size_t row) {
 	std::vector<Card> returnedCards;
 	auto temp = std::move(m_grid[row][m_indexColMax]);
@@ -750,22 +733,21 @@ std::vector<Card> Board::shiftColumnBackward(size_t col) {
 
 
 void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
-	std::transform(
-		m_grid[fromCol].begin() + m_indexLineMin,
-		m_grid[fromCol].begin() + m_indexLineMax + 1,
-		m_grid[toCol].begin() + m_indexLineMin,
-		[](std::optional<std::stack<Card>>& source) {
-			return std::move(source);
-		}
-	);
-	std::for_each(m_grid[fromCol].begin() + m_indexLineMin,
-		m_grid[fromCol].begin() + m_indexLineMax + 1,
-		[](std::optional<std::stack<Card>>& cell) {
-			cell.reset();
-		});
+	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
+		m_grid[row][toCol] = std::move(m_grid[row][fromCol]);
+
+		m_grid[row][fromCol].reset();
+	}
 }
 
- 
+void eter::Board::moveRow(size_t fromRow, size_t toRow) {
+	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
+		m_grid[toRow][col] = std::move(m_grid[fromRow][col]);
+		m_grid[fromRow][col].reset();
+	}
+}
+
+
 
 bool Board::isEmptyCell(size_t x, size_t y)
 {

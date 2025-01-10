@@ -556,7 +556,7 @@ void eter::Mage::shiftColumnToEdge(Board& board) {
 			std::cout << "Column is not on the edge.\n";
 			continue;
 		}
-		if (board.countOccupiedCellsOnRow(col) < 3) {
+		if (board.countOccupiedCellsOnColumn(col) < 3) {
 			std::cout << "The column must have at least 3 occupied positions.\n";
 			continue;
 		}

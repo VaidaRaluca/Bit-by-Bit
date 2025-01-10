@@ -100,5 +100,15 @@ namespace EterTests
                 L"The second card should not be in the player's played cards after the failed placement.");
         }
 
+        TEST_METHOD(TestPlayerSwap)
+        {
+            Player testPlayer1{ "Player1", "red" };
+            Player testPlayer2{ "Player2", "blue" };
+            swap(testPlayer1, testPlayer2);
+            Assert::AreEqual(std::string("Player2"), testPlayer1.GetName(), L"Player 1's name should be swapped to Player2.");
+            Assert::AreEqual(std::string("blue"), testPlayer1.GetColor(), L"Player 1's color should be swapped to blue.");
+            Assert::AreEqual(std::string("Player1"), testPlayer2.GetName(), L"Player 2's name should be swapped to Player1.");
+            Assert::AreEqual(std::string("red"), testPlayer2.GetColor(), L"Player 2's color should be swapped to red.");
+        }
     };
 }
