@@ -1,9 +1,8 @@
-﻿module board;
-using eter::Card;
-using eter::Board;
+﻿#include "Board.h"
+using namespace eter;
 const std::string_view kEmpyBoardCell{ "____" };
-import <iostream>;
-import <algorithm>;
+#include <iostream>
+#include <algorithm>
 
 Board::Board()
 	: m_dimMax{ 3 }, m_indexMax{ 7 },

@@ -1,10 +1,10 @@
-export module explosion;
-import <iostream>;
-import <vector>;
-import <stack>;
-import <random>;
-import card;
-import board;
+#pragma once
+#include <iostream>
+#include  <vector>
+#include  <stack>
+#include  <random>
+#include "Card.h"
+#include "Board.h"
 namespace eter {
 
     enum class Effect {
@@ -13,11 +13,11 @@ namespace eter {
         RETURN_CARD,
         CREATE_HOLE
     };
-    export class Explosion {
+     class Explosion {
     private:
         std::vector<std::vector<Effect>> m_effectMatrix;
         size_t m_size;
-        Board m_board; 
+        Board m_board;
         Board m_originalBoard; // copie a tablei originale pentru a putea testa pe ea daca efectele sunt acceptate
         std::vector<Card> m_returnedCards;
     public:

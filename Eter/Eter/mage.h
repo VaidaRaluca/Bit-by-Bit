@@ -1,13 +1,10 @@
-//mage.cppm
-#include "Board.h";
-#include "Player.h";
-export module mage;
-import <optional>;
-import <stack>;
-import <unordered_map>;
-
+#include <optional>
+#include <stack>
+#include <unordered_map>
+import board;
+import player;
 namespace eter {
-	export class Mage {
+	class Mage {
 	public:
 		//abilitati magice pentru vrajitori
 		enum class MagicAbility {
@@ -81,3 +78,4 @@ namespace eter {
 
 	};
 }
+#pragma once

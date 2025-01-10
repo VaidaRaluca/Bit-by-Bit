@@ -1,11 +1,11 @@
-﻿module explosion;
+﻿#include "Explosion.h"
 using namespace eter;
-import <iostream>;
-import <vector>;
-import <stack>;
-import <random>;
-import<numeric>;     // pt std::iota 
-import<algorithm>;  // pt std::shuffle
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <random>
+#include<numeric>   // pt std::iota 
+#include<algorithm>  // pt std::shuffle
 
 Explosion::Explosion(const size_t& size, Board board)
 {

@@ -1,13 +1,14 @@
+#pragma once
 #include <cstdint>
-export module board;
-export import card; 
-import <vector>;
-import <optional>;
-import <stack>;
-import <utility>;
-import <string>;
+#include <vector>
+#include <optional>
+#include <stack>
+#include <utility>
+#include <string>
+#include "Card.h"
+
 namespace eter {
-	export class Board {
+	 class Board {
 	private:
 		std::vector<std::vector<std::optional<std::stack<Card>>>>m_grid;
 		size_t m_indexMax;
@@ -23,7 +24,7 @@ namespace eter {
 		Board& operator=(Board&& other) noexcept;
 		~Board() = default;
 
-		
+
 		const std::vector<std::vector<std::optional<std::stack<Card>>>>& GetGrid() const;
 		const size_t& GetDimMax() const;
 		const size_t& GetIndexMax() const;
@@ -68,7 +69,7 @@ namespace eter {
 		std::vector<Card> shiftRowBackward(size_t row);
 		std::vector<Card> shiftColumnForward(size_t col);
 		std::vector<Card> shiftColumnBackward(size_t col);
- 
+
 
 		size_t countOccupiedCellsOnRow(size_t row);
 		bool containsOwnCardOnRow(size_t row, const std::string& playerColor);
@@ -76,10 +77,10 @@ namespace eter {
 		size_t countOccupiedCellsOnColumn(size_t col);
 		bool containsOwnCardOnColumn(size_t col, const std::string& playerColor);
 		void eliminateCardsOnColumn(size_t col);
-		std::vector<std::vector<std::optional<std::stack<Card>>>>&GetGridForModeA();
+		std::vector<std::vector<std::optional<std::stack<Card>>>>& GetGridForModeA();
 		void createHole(size_t row, size_t col);
+		friend std::ostream& operator<<(std::ostream& os, const Board& board);
+		friend void swap(Board& first, Board& second) noexcept;
+	};
 
-  	};
-	export std::ostream& operator<<(std::ostream& os, const Board& board);
-	export void swap(Board& first, Board& second) noexcept;
 }

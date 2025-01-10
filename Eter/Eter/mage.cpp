@@ -1,7 +1,7 @@
 //mage.cpp
+#include "Board.h"
+#include "Player.h"
 module mage;
-import board;
-import player;
 import <iostream>;
 import <stdexcept>;
 import <unordered_map>;

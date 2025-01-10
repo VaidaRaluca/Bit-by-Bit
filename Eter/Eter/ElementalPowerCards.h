@@ -1,14 +1,13 @@
-﻿export module elementalpowercards;
-import board;
-import player;
-import game;
-import explosion;
-import std;
-import <ostream>;
+#pragma once
+#include <ostream>
+#include "Board.h"
+#include "Player.h"
+#include "Game.h"
+#include "Explosion.h"
 
 namespace eter {
 
-	export class elementalPowerCards {
+	 class elementalPowerCards {
 	public:
 		enum class powerAbility {
 			controlledExplosion,
@@ -42,46 +41,46 @@ namespace eter {
 		bool m_used = false;
 
 	public:
- 		elementalPowerCards() = default;
+		elementalPowerCards() = default;
 
- 		elementalPowerCards(powerAbility power) : m_power(power), m_used(false) {}
+		elementalPowerCards(powerAbility power) ;
 
- 		elementalPowerCards(const elementalPowerCards& other)
+		elementalPowerCards(const elementalPowerCards& other)
 			: m_power(other.m_power), m_used(other.m_used) {
 		}
 
- 		elementalPowerCards& operator=(const elementalPowerCards& other) {
-			if (this != &other) { 
+		elementalPowerCards& operator=(const elementalPowerCards& other) {
+			if (this != &other) {
 				m_power = other.m_power;
 				m_used = other.m_used;
 			}
 			return *this;
 		}
 
- 		elementalPowerCards(elementalPowerCards&& other) noexcept
+		elementalPowerCards(elementalPowerCards&& other) noexcept
 			: m_power(std::move(other.m_power)), m_used(std::move(other.m_used)) {
-			 
+
 		}
 
- 		elementalPowerCards& operator=(elementalPowerCards&& other) noexcept {
-			if (this != &other) { 
+		elementalPowerCards& operator=(elementalPowerCards&& other) noexcept {
+			if (this != &other) {
 				m_power = std::move(other.m_power);
 				m_used = std::move(other.m_used);
 			}
 			return *this;
 		}
 
- 		~elementalPowerCards() = default;
+		~elementalPowerCards() = default;
 
- 		void setUsed(bool used) { m_used = used; }
-		bool getUsed() const { return m_used; }
-		void setAbility(powerAbility power) { m_power = power; }
-		powerAbility getAbility() const { return m_power; }
-		void activate(Game* game,Player& player, Player& opponent, Board& board);
+		void setUsed(bool used);
+		bool getUsed() const;
+		void setAbility(powerAbility power);
+		powerAbility getAbility() const;
+		void activate(Game* game, Player& player, Player& opponent, Board& board);
 
 	private:
 		void activateExplosion(Game* game);
- 		void activateDestruction(Player& player, Player& opponent, Board& board);
+		void activateDestruction(Player& player, Player& opponent, Board& board);
 		void activateSquall(Player& opponent, Player& player, Board& board);
 		void activateFire(Player& player, Player& opponent, Board& board);
 		void activateASH(Player& player, Board& board);
@@ -103,8 +102,8 @@ namespace eter {
 		void activateCrumble(Board& board, Player& player);
 		void activateRock(Board& board, Player& player);
 		void activateAvalanche(Board& board);
-		friend void swap(elementalPowerCards& first, elementalPowerCards& second) noexcept;
+	    friend void swap(elementalPowerCards& first, elementalPowerCards& second) noexcept;
+		friend std::ostream& operator<<(std::ostream& os, elementalPowerCards::powerAbility ability);
 	};
 
- 	export std::ostream& operator<<(std::ostream& os, elementalPowerCards::powerAbility ability);
 }

@@ -1,19 +1,18 @@
-export module gamemanager;
-
-import <memory>;
-import<filesystem>;
-import<thread>;
-import<chrono>;
-import game;
-import board;
-import bmode;
-import amode;
-import cmode;
-import bcmode;
+#pragma once
+#include <memory>
+#include<filesystem>
+#include<thread>
+#include<chrono>
+#include "Game.h"
+#include "Board.h"
+#include "AMode.h"
+#include "BMode.h"
+#include "CMode.h"
+#include "BCMode.h"
 
 namespace eter
 {
-	export class GameManager
+	 class GameManager
 	{
 	private:
 		Game m_game;

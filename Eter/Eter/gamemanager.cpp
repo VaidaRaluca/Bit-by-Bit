@@ -1,12 +1,12 @@
-﻿module gamemanager;
+﻿#include "GameManager.h"
 
-import <fstream>;
-import <string>;
-import <stdexcept>;
-import <iostream>;
-import <sstream>;
-import player;
-import game;
+#include <fstream>
+#include <string>
+#include <stdexcept>
+#include <iostream>
+#include <sstream>
+//import player;
+//import game;
 using namespace eter;
 
 GameManager::GameManager(const Game& game) :

@@ -1,13 +1,13 @@
-﻿module game;
+﻿#include "Game.h"
 using namespace eter;
-import card;
-import player;
-import <string>;
-import <iostream>;
-import amode;
-import bmode;
-import cmode;
-import board;
+//import card;
+//import player;
+#include <string>
+#include <iostream>
+//import amode;
+//import bmode;
+//import cmode;
+//import board;
 
 Game::Game(Player player1, Player player2,std::string gameMode) :
 	m_player1{ player1 }, m_player2{ player2 }, m_gameMode{ gameMode }, 

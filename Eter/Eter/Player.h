@@ -1,26 +1,27 @@
+#pragma once
 #include<cstdint>
-export module player;
-import card;
-import board;
-import <vector>;
-import <optional>;
-import <string>;
-import <random>;
-import <utility>;
+#include <vector>
+#include <optional>
+#include <string>
+#include <random>
+#include <utility>
+#include "Board.h"
+#include "Card.h"
+
 namespace eter {
-	export class Player
+	 class Player
 	{
 	private:
 		std::string m_name;
 		uint32_t m_score;
 		std::string m_color;
 		std::vector<Card> m_cardsInHand;
-		bool m_hasUsedIllusion ;
+		bool m_hasUsedIllusion;
 		std::vector<Card> m_playedCards;
 		std::vector<Card> m_eliminatedCards;
 		std::vector<std::pair<Card, std::pair<size_t, size_t>>> m_playedCardsP;//pentru puteri ca aveam nevoie sa stiu si pozitia
 		//la care a pus ultima carte
- 	public:
+	public:
 		//Rule of 5
 		Player() = default;
 		Player(const std::string& name, const std::string& color);
@@ -58,13 +59,13 @@ namespace eter {
 		void RemovePlayedCard(const Card& card);
 		void RemovePlayedCardForPower(const Card& card, size_t row, size_t col);
 		void addPlayedCardForPower(const Card& card, size_t x, size_t y);
-     	std::vector<std::pair<Card, std::pair<size_t, size_t>>>& GetPlayedCardsForPower();//geterul pentru puteri care imi da vectorul cu ultima carte si cu pozitia sa
-		
+		std::vector<std::pair<Card, std::pair<size_t, size_t>>>& GetPlayedCardsForPower();//geterul pentru puteri care imi da vectorul cu ultima carte si cu pozitia sa
+
 
 		void swap(Player& other) noexcept;
+		friend void swap(Player& first, Player& second) noexcept;
 
 	};
 
-	export void swap(Player& first, Player& second) noexcept;
 
 }

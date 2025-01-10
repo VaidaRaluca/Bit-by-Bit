@@ -1,13 +1,14 @@
-export module cmode;
-import <string>;
-import elementalpowercards;
-import player;
-import game;
-import card;
-import amode;
-import <vector>;
+#pragma once
+#include <string>
+#include <vector>
+#include "ElementalPowerCards.h"
+#include "Player.h"
+#include "Card.h"
+#include "AMode.h"
+#include "Game.h"
+
 namespace eter {
-	export class CMode : virtual public AMode {
+	 class CMode : virtual public AMode {
 	private:
 		std::vector<elementalPowerCards>m_power{ elementalPowerCards{elementalPowerCards::powerAbility::controlledExplosion},
 		elementalPowerCards{elementalPowerCards::powerAbility::destruction},

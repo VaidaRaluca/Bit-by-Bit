@@ -1,8 +1,8 @@
-module card;
-import <string>;
-using eter::Card;
-import <format>;
-import <iostream>;
+#include "Card.h"
+#include <string>
+using namespace eter;
+#include <format>
+#include <iostream>
 Card::Card(uint8_t value, const std::string& color, bool position) :
 	m_value{ value }, m_color{ color }, m_position{ position }
 {

@@ -1,6 +1,6 @@
-module bmode;
+#include "BMode.h"
 using namespace eter;
-import <random>;
+#include <random>
 
 uint8_t eter::BMode::getRoundsForWin() const
 {

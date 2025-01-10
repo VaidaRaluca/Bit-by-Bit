@@ -18,29 +18,8 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game.cppm">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cppm">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="card.cppm">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="board.cppm">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="amode.cppm">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="board.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cmode.cppm">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="elementalpowercards.cppm">
-      <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="elementalpowercards.cpp">
       <Filter>Source Files</Filter>
@@ -53,9 +32,6 @@
     </ClCompile>
     <ClCompile Include="bmode.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bmode.cppm">
-      <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="player.cpp">
       <Filter>Source Files</Filter>
@@ -72,23 +48,49 @@
     <ClCompile Include="amode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gamemanager.cppm">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="gamemanager.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="explosion.cppm">
-      <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="explosion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bcmode.cppm">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="bcmode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BCMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Board.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Card.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Explosion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementalPowerCards.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

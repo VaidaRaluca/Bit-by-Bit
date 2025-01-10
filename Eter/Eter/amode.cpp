@@ -1,8 +1,6 @@
-﻿module amode;
+﻿#include "AMode.h"
 using namespace eter;
-import explosion;
-import <vector>;
-import card;
+#include <vector>
 
 uint8_t eter::AMode::getRoundsForWin() const
 {

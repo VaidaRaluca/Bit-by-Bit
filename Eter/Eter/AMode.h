@@ -1,15 +1,13 @@
-#include<cstdint>
-export module amode;
-import game;
-import <memory>;
+#pragma once
+#include <cstdint>
+#include <memory>
+#include "Game.h"
+
 
 namespace eter {
-	export class AMode {
+	class AMode {
 	protected:
-
 		Game* m_game;
-	
- 
 	public:
 		AMode() = default;
 		virtual uint8_t getRoundsForWin() const;
@@ -21,8 +19,8 @@ namespace eter {
 		virtual void startRound();  //porneste runda
 		virtual void applyModeRules(); // aplica toate regulile jocului
 
- 		virtual ~AMode() = default;
-		
+		virtual ~AMode() = default;
+
 	};
-	
-} 
+
+}

@@ -1,11 +1,11 @@
-import gamemanager;
-import game;
-import board;
-import player;
-import<vector>;
-import <stack>;
-import <optional>;
-import <iostream>;
+#include "GameManager.h"
+#include "Game.h"
+#include "Board.h"
+#include "Player.h"
+#include<vector>
+#include <stack>
+#include <optional>
+#include <iostream>
 int main()
 {
 	using namespace eter;

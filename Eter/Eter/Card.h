@@ -1,27 +1,29 @@
-#include<cstdint>;
-export module card;
-import <variant>;
-import <vector>;
-import <string>;
-import <format>;
-import <iostream>;
+#pragma once
+#include <cstdint>
+#include <variant>
+#include <vector>
+#include <string>
+#include <format>
+#include <iostream>
+
+
 namespace eter {
-	export class Card {
+	 class Card {
 	private:
 		uint8_t m_value;
-		std::string m_color; 
+		std::string m_color;
 		bool m_position; //true = fata in sus
 	public:
 		//Rule of 5
 		Card() = default;
-		Card(uint8_t value , const std::string& color, bool position);
+		Card(uint8_t value, const std::string& color, bool position);
 		Card(const Card& other);
 		Card& operator=(const Card& other);
 		Card(Card&& other) noexcept;
 		Card& operator=(Card&& other) noexcept;
 		~Card() = default;
 
-		uint8_t GetValue() const;  
+		uint8_t GetValue() const;
 		const std::string& GetColor() const;
 		bool GetPosition() const;
 
@@ -31,7 +33,8 @@ namespace eter {
 
 		bool operator==(const Card& other) const;
 		void swap(Card& other) noexcept;
+		friend std::ostream& operator<<(std::ostream& os, const Card& card);
+		friend void swap(Card& first, Card& second) noexcept;
 	};
-	export std::ostream& operator<<(std::ostream& os, const Card& card);
-	export void swap(Card& first, Card& second) noexcept;
+
 };

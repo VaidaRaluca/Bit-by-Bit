@@ -1,7 +1,7 @@
-module bcmode;
+#include "BCMode.h"
 using namespace eter;
-import <random>;
-
+#include <random>
+#include "AMode.h"
 uint8_t eter::BCMode::getRoundsForWin() const
 {
     return 3;

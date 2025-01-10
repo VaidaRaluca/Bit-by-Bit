@@ -1,11 +1,12 @@
+#pragma once
 #include<cstdint>
-export module game;
-import player;
-import board;
-import explosion;
+#include "Player.h"
+#include "Board.h"
+#include "Explosion.h"
+
 namespace eter
 {
-	export class Game
+	 class Game
 	{
 	private:
 		Player m_player1;
@@ -13,13 +14,13 @@ namespace eter
 		Board m_board;
 		std::string m_gameMode;
 		bool m_isPlayerTurn;  // true pentru p1,false pentru p2
-		bool m_isUsedExplosion; 
+		bool m_isUsedExplosion;
 		uint8_t m_player1Wins;
 		uint8_t m_player2Wins;
 		uint8_t m_nrRound;   // numarul rundei in care ne aflam
 
 		std::vector<Card> m_returnedCards; //vectorul de carti returnate
-		uint8_t m_countTurnForReturnedCards=0; 
+		uint8_t m_countTurnForReturnedCards = 0;
 
 		//Functii ajutatoare
 		void handlePlayerTurn(Player& player);
@@ -33,7 +34,7 @@ namespace eter
 
 		Player GetPlayer1() const;
 		Player GetPlayer2() const;
-		Board GetBoard()  ;
+		Board GetBoard();
 
 		//Getter ce returneaza &
 		Player& GetPlayer1Ref();

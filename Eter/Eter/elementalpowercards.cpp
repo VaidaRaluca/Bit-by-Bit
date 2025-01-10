@@ -1,10 +1,11 @@
-﻿module elementalpowercards;
-import board;
-import player;
-import card;
-import <stdexcept>;
-import <unordered_map>;
-import <iostream>;
+﻿#include "ElementalPowerCards.h"
+using namespace eter;
+//import board;
+//import player;
+//import card;
+#include <stdexcept>
+#include <unordered_map>
+#include <iostream>
 
 namespace eter {
 	void swap(elementalPowerCards& first, elementalPowerCards& second) noexcept

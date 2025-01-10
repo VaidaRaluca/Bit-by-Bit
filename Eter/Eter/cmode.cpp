@@ -1,13 +1,13 @@
-﻿module cmode;
+﻿#include "CMode.h"
 using namespace eter;
-import card;
-import player;
-import game;
-import gamemanager;
-import <random>;
-import <iostream>;
-import <string>;
-import<ostream>;
+//import card;
+//import player;
+//import game;
+//import gamemanager;
+#include <random>
+#include <iostream>
+#include <string>
+#include<ostream>
 
 CMode::CMode(Game* game) : AMode{ game }
 {

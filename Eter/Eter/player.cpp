@@ -1,4 +1,4 @@
-module player;
+#include "Player.h"
 using namespace eter;
 constexpr std::pair<uint8_t, uint8_t> kInvalidPosition = { 255, 255 };
 Player::Player(const std::string& name, const std::string& color)
@@ -197,7 +197,6 @@ void Player::useIllusion(size_t x, size_t y, Board& board, Card& illusion)
 	else 
 		std::cout << "Failed to place the illusion at (" << x << ", " << y << ").\n";
 }
-
 
 void eter::swap(Player& first, Player& second) noexcept
 {

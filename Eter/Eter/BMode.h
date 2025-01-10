@@ -1,29 +1,28 @@
+#pragma once
 #include<cstdint>
-export module bmode;
-
-import game;
+#include <vector>;
+#include "Game.h"
+#include "AMode.h"
 import mage;
-import amode;
-import<vector>;
 
 namespace eter {
-	export class BMode : virtual public AMode {
+	 class BMode : virtual public AMode {
 	private:
-		std::vector<Mage> m_mages{Mage{Mage::MagicAbility::removeOpponentCard},
+		std::vector<Mage> m_mages{ Mage{Mage::MagicAbility::removeOpponentCard},
 		Mage{Mage::MagicAbility::removeEntireLine},
-	    Mage{Mage::MagicAbility::coverOpponentCard},
+		Mage{Mage::MagicAbility::coverOpponentCard},
 		Mage{Mage::MagicAbility::createPit},
 		Mage{Mage::MagicAbility::moveOwnStack},
 		Mage{Mage::MagicAbility::extraEterCard},
 		Mage{Mage::MagicAbility::moveOpponentStack},
 		Mage{Mage::MagicAbility::shiftEdge} };
-	
+
 		//Game* m_game;
 		Mage m_magePlayer1;
 		Mage m_magePlayer2;
 
 	public:
-		BMode()=default;
+		BMode() = default;
 		explicit BMode(Game* game);
 		uint8_t getRoundsForWin() const override;
 		uint8_t getRounds() const override;

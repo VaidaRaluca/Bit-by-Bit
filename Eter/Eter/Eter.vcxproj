@@ -131,30 +131,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="amode.cpp" />
-    <ClCompile Include="amode.cppm" />
     <ClCompile Include="bcmode.cpp" />
-    <ClCompile Include="bcmode.cppm" />
     <ClCompile Include="bmode.cpp" />
-    <ClCompile Include="bmode.cppm" />
     <ClCompile Include="board.cpp" />
-    <ClCompile Include="board.cppm" />
     <ClCompile Include="card.cpp" />
-    <ClCompile Include="card.cppm" />
     <ClCompile Include="cmode.cpp" />
-    <ClCompile Include="cmode.cppm" />
     <ClCompile Include="elementalpowercards.cpp" />
-    <ClCompile Include="elementalpowercards.cppm" />
     <ClCompile Include="explosion.cpp" />
-    <ClCompile Include="explosion.cppm" />
-    <ClCompile Include="game.cppm" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamemanager.cpp" />
-    <ClCompile Include="gamemanager.cppm" />
     <ClCompile Include="mage.cpp" />
     <ClCompile Include="mage.cppm" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="player.cppm" />
     <ClCompile Include="Source.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AMode.h" />
+    <ClInclude Include="BCMode.h" />
+    <ClInclude Include="BMode.h" />
+    <ClInclude Include="Board.h" />
+    <ClInclude Include="Card.h" />
+    <ClInclude Include="CMode.h" />
+    <ClInclude Include="ElementalPowerCards.h" />
+    <ClInclude Include="Explosion.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
