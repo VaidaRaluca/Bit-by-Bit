@@ -90,7 +90,7 @@ namespace eter {
 		void activateGale(Player& player, Player& opponent, Board& board);
 		void activateGust(Board& board, Player& player, Player& opponent);
 		void activateTide(Player& player, Player& opponent, Board& board);
-		void activateWave(Board& board, Player& player);
+		void activateWave(Board& board, Player& player,Player& opponent);
 		void activateStorm(Board& board, Player& player, Player& opponent);
 		void activateWaterfall(Board& board);
 		void activateWhirlpool(Board& board, Player& player);

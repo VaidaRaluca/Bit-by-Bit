@@ -169,7 +169,7 @@ namespace eter {
 			activateMist(player, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::wave:
-			activateWave(board, player);
+			activateWave(board, player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::whirlpool:
 			activateWhirlpool(board, player);
@@ -865,57 +865,72 @@ void elementalPowerCards::activateTide(Player& player, Player& opponent, Board& 
 	std::cout << "Tide power activated successfully!" << std::endl;
 }
 
-void elementalPowerCards::activateWave(Board& board, Player& player)
-{
-	int row, col;
-	std::cout << "Enter the coordinates of the stack to move (row, column): ";
-	std::cin >> row >> col;
-	if (row < 0 || row >= board.GetIndexMax() || col < 0 || col >= board.GetIndexMax())
-	{
+void elementalPowerCards::activateWave(Board& board, Player& player, Player& opponent) {
+	size_t row, col;
+
+	while (true) {
+		std::cout << "Enter the coordinates of the stack to move (row, column): ";
+		std::cin >> row >> col;
+
+		if (board.isValidPosition(row, col) && board[{row, col}].has_value()) {
+			break;
+		}
 		std::cout << "Invalid position. Try again.\n";
-		return;
 	}
+
 	auto& stack = board[{row, col}];
-	if (!stack.has_value() || stack->size() <= 1)
-	{
-		std::cout << "Selected stack must contain more than one card.\n";
-		return;
-	}
-	int newRow, newCol;
-	bool foundEmptyAdjacent = false;
-	do {
-		std::cout << "Enter the coordinates for an empty adjacent position (row, column): ";
-		std::cin >> newRow >> newCol;
-		if (board.isValidPosition(newRow, newCol) && !board[{newRow, newCol}].has_value())
-			foundEmptyAdjacent = true;
-		else
-			std::cout << "The chosen position is not empty or is invalid. Try again.\n";
-	} while (!foundEmptyAdjacent);
 
-	board[{newRow, newCol}] = stack;
+	size_t toRow, toCol;
+	bool isToValid = false;
+
+	while (!isToValid) {
+		std::cout << "Enter the destination position (row, column): ";
+		std::cin >> toRow >> toCol;
+
+		if (!board.isValidPosition(toRow, toCol)) {
+			std::cout << "Invalid position. Try again.\n";
+			continue;
+		}
+		if (!board.isAdjacentToOccupiedSpace(toRow, toCol)) {
+			std::cout << "The position is not adjacent to any occupied space. Try again.\n";
+			continue;
+		}
+		if (board[{toRow, toCol}].has_value()) {
+			std::cout << "Destination position is not empty. Try again.\n";
+			continue;
+		}
+		isToValid = true;
+	}
+
+	auto& destCell = board[{toRow, toCol}];
+	destCell = std::move(stack);
+
+	while (!stack->empty()) {
+		Card topCard = stack->top();
+		stack->pop();
+
+		if (topCard.GetColor() == player.GetColor()) {
+			player.RemovePlayedCardForPower(topCard, row, col);
+			player.addPlayedCardForPower(topCard, toRow, toCol);
+		}
+		else {
+			opponent.RemovePlayedCardForPower(topCard, row, col);
+			opponent.addPlayedCardForPower(topCard, toRow, toCol);
+		}
+	}
 	stack.reset();
-	if (player.GetCardsInHand().empty())
-	{
-		std::cout << "No cards available in hand to play.\n";
-		return;
-	}
+	std::cout << "Stack moved from (" << row << ", " << col << ") to (" << toRow << ", " << toCol << ").\n";
 
-	std::cout << "Choose a card to play from your hand:\n";
-	for (size_t i = 0; i < player.GetCardsInHand().size(); ++i) 
-	{
-		std::cout << i + 1 << ": " << player.GetCardsInHand()[i].GetValue() << "\n";
-	}
-	int cardIndex;
+	std::cout << "Choose a card from your hand:\n";
+	player.PrintCardsInHand();
+	size_t cardIndex = 0;
 	std::cin >> cardIndex;
-	if (cardIndex < 1 || static_cast<size_t>(cardIndex) > player.GetCardsInHand().size())
-	{
-		std::cout << "Invalid choice.\n";
-		return;
-	}
-	Card chosenCard = player.GetCardsInHand()[cardIndex - 1];
-	board.placeCard(newRow, newCol, chosenCard);
-	player.AddPlayedCard(chosenCard);
-	player.GetCardsInHand().erase(player.GetCardsInHand().begin() + cardIndex - 1);
+
+	const Card& selectedCard = player.GetCardsInHand().at(cardIndex - 1);
+	board[{row, col}] = std::stack<Card>{};
+	board[{row, col}]->push(selectedCard);
+	player.addPlayedCardForPower(selectedCard, row, col);
+	player.GetCardsInHand().erase(player.GetCardsInHand().begin() + (cardIndex - 1));
 }
 
 void elementalPowerCards::activateStorm(Board& board, Player& player, Player& opponent)
