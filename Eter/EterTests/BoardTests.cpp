@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "Board.h"
-#include "Card.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace eter;
 namespace EterTests
