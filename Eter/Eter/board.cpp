@@ -113,6 +113,10 @@ const size_t& eter::Board::GetIndexColMax() const
 	return m_indexColMax;
 }
 
+const std::pair<size_t, char>& eter::Board::getBlockedLine() const {
+	return m_blockedLine;
+}
+
 std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos) {
 	int x = pos.first;
 	int y = pos.second;
@@ -134,6 +138,11 @@ const std::optional<std::stack<Card>>& Board::operator[](std::pair<int, int> pos
 void eter::Board::SetDimMax(const size_t& dim)
 {
 	m_dimMax = dim;
+}
+
+void eter::Board::setBlockedLine(size_t number, char character) {
+	m_blockedLine.first = number;
+	m_blockedLine.second = character;
 }
 
 bool Board::isValidPosition(size_t x, size_t y) const

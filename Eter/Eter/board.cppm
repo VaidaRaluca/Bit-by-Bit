@@ -13,6 +13,7 @@ namespace eter {
 		size_t m_indexMax;
 		size_t m_dimMax;
 		size_t m_indexLineMin, m_indexColMin, m_indexLineMax, m_indexColMax;
+		std::pair<size_t, char>m_blockedLine = { 10, '\0' };
 	public:
 		//Rule of 5 
 		Board();
@@ -30,10 +31,12 @@ namespace eter {
 		const size_t& GetIndexColMin() const;
 		const size_t& GetIndexLineMax() const;
 		const size_t& GetIndexColMax() const;
+		const std::pair<size_t, char>& getBlockedLine() const;
 		std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos);
 		const std::optional<std::stack<Card>>& operator[](std::pair<int, int> pos) const;
 
 		void SetDimMax(const size_t& dim);
+		void setBlockedLine(size_t number, char character);
 
 		bool isValidPosition(size_t x, size_t y) const;
 		bool isAdjacentToOccupiedSpace(size_t x, size_t y)const;

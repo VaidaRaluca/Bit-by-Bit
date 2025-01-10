@@ -751,12 +751,6 @@ void elementalPowerCards::activateGust(Board& board, Player& player, Player& opp
 			continue;
 		}
 
-		if (selectedStack->size() > 1)
-		{
-			std::cout << "The position has a stack of cards. Choose a position that has only 1 card.\n";
-			continue;
-		}
-
 		validCardSelected = true;
 	}
 
@@ -925,30 +919,42 @@ void elementalPowerCards::activateWave(Board& board, Player& player)
 
 void elementalPowerCards::activateStorm(Board& board, Player& player, Player& opponent)
 {
-	for (size_t row = 0; row < board.GetIndexMax(); ++row)
-	{
-		for (size_t col = 0; col < board.GetIndexMax(); ++col)
+	size_t row, col;
+	while (true) {
+		std::cout << "Enter the coordinates of the stack you want to remove (x, y): ";
+		std::cin >> row >> col;
+		auto& stackOpt = board[{row, col}];
+		if (stackOpt.has_value() && stackOpt->size() >= 2) 
 		{
-			auto& stack = board[{static_cast<int>(row), static_cast<int>(col)}];
-			if (stack.has_value() && stack.value().size() >= 2)
+			while (!stackOpt->empty())
 			{
-				while (!stack.value().empty())
+				Card topCard = stackOpt->top();
+				stackOpt->pop();
+
+				if (topCard.GetColor() == player.GetColor())
 				{
-					Card topCard = stack.value().top();
-					stack.value().pop();
-					if (topCard.GetColor() == player.GetColor())
-					{
-						player.AddToEliminatedCards(topCard);
-					}
-					else if (topCard.GetColor() == opponent.GetColor())
-					{
-						opponent.AddToEliminatedCards(topCard);
-					}
+					player.AddToEliminatedCards(topCard);
+					player.RemovePlayedCardForPower(topCard, row, col);
 				}
+				else if (topCard.GetColor() == opponent.GetColor())
+				{
+					opponent.AddToEliminatedCards(topCard);
+					opponent.RemovePlayedCardForPower(topCard, row, col);
+				}
+
+				std::cout << "Card with value " << topCard.GetValue()+1-1
+					<< " on position " << row << " " << col
+					<< " has been removed.\n";
 			}
+			stackOpt.reset();
+			break; 
+		}
+		else {
+			std::cout << "Invalid stack! The stack must exist and have a size >= 2. Try again.\n";
 		}
 	}
 }
+
 
 void elementalPowerCards::activateWaterfall(Board& board)
 {
