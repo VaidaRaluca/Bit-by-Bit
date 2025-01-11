@@ -167,6 +167,14 @@ void Game::playIllusion() {
 
 //Functii ajutatoare
 
+uint8_t Game::GetPlayer1Wins() const {
+	return m_player1Wins;
+}
+
+uint8_t Game::GetPlayer2Wins() const {
+	return m_player2Wins;
+}
+
 //Gestionarea turei unui jucător
 void Game::handlePlayerTurn(Player& player) {
 	std::cout << player.GetName()

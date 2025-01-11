@@ -47,6 +47,14 @@ Player& eter::Player::operator=(Player&& rhs) noexcept
 	return *this;
 }
 
+const std::vector<Card>& Player::GetPlayedCards() const {
+	return m_playedCards;
+}
+
+const std::vector<Card>& Player::GetEliminatedCards() const {
+	return m_eliminatedCards;
+}
+
 const std::string& Player::GetName() const
 {
 	return m_name;

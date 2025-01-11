@@ -50,6 +50,9 @@ namespace eter
 		const std::vector<Card>& GetReturnedCards() const;
 		uint8_t GetCountTurnForReturnedCards();
 
+		//Metode ajutatoare
+		uint8_t GetPlayer1Wins() const;
+		uint8_t GetPlayer2Wins() const;
 
 		void SetBoard(Board board);
 		void SetGameMods(std::string gameMode);

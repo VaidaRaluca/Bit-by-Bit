@@ -36,8 +36,8 @@ namespace eter
 		void DisplaySaveFileSize(const std::string& filePath) const;
 		void DeleteSave(const std::string& saveFileName);
 		void DeleteSaveInteractive();
-
 		void ResetGame();
+		void DisplayPlayerStats() const;
 
 	private:
 		void StartAutoSaveTimer();

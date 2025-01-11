@@ -247,6 +247,54 @@ void GameManager::ResetGame() {
     std::cout << "Game has been reset. You can start a new game.\n";
 }
 
+void GameManager::DisplayPlayerStats() const {
+    const Player& player1 = m_game.GetPlayer1();
+    const Player& player2 = m_game.GetPlayer2();
+
+    // Calculare statistici suplimentare
+    size_t player1TotalCardsPlayed = player1.GetPlayedCards().size();
+    size_t player2TotalCardsPlayed = player2.GetPlayedCards().size();
+
+    size_t player1TotalCardsEliminated = player1.GetEliminatedCards().size();
+    size_t player2TotalCardsEliminated = player2.GetEliminatedCards().size();
+
+    uint8_t player1RoundsWon = m_game.GetPlayer1Wins();
+    uint8_t player2RoundsWon = m_game.GetPlayer2Wins();
+
+    size_t totalRounds = player1RoundsWon + player2RoundsWon;
+    float player1WinPercentage = totalRounds > 0 ? (player1RoundsWon * 100.0f / totalRounds) : 0.0f;
+    float player2WinPercentage = totalRounds > 0 ? (player2RoundsWon * 100.0f / totalRounds) : 0.0f;
+
+    // Determinare cel mai bun jucator
+    const std::string& bestPlayer = (player1RoundsWon > player2RoundsWon) ? player1.GetName() : player2.GetName();
+
+    // Afisare statistici
+    std::cout << "\n===== Player Statistics =====\n";
+
+    // Player 1
+    std::cout << "Player 1: " << player1.GetName() << "\n";
+    std::cout << std::setw(20) << "Cards Played: " << player1TotalCardsPlayed << "\n";
+    std::cout << std::setw(20) << "Cards Eliminated: " << player1TotalCardsEliminated << "\n";
+    std::cout << std::setw(20) << "Rounds Won: " << static_cast<int>(player1RoundsWon)
+        << " (" << player1WinPercentage << "%)\n";
+    std::cout << "-----------------------------\n";
+
+    // Player 2
+    std::cout << "Player 2: " << player2.GetName() << "\n";
+    std::cout << std::setw(20) << "Cards Played: " << player2TotalCardsPlayed << "\n";
+    std::cout << std::setw(20) << "Cards Eliminated: " << player2TotalCardsEliminated << "\n";
+    std::cout << std::setw(20) << "Rounds Won: " << static_cast<int>(player2RoundsWon)
+        << " (" << player2WinPercentage << "%)\n";
+    std::cout << "=============================\n";
+
+    // Evidentierea castigator
+    if (player1RoundsWon != player2RoundsWon) {
+        std::cout << "Best Player: " << bestPlayer << "\n";
+    }
+    else {
+        std::cout << "It's a tie! Both players performed equally well!\n";
+    }
+}
 
 //Functii auxiliare
 
