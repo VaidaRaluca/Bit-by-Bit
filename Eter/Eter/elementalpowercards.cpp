@@ -172,7 +172,7 @@ namespace eter {
 			activateWave(board, player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::whirlpool:
-			activateWhirlpool(board, player);
+			activateWhirlpool(board, player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::blizzard:
 			activateBlizzard(board, player, opponent);
@@ -1032,203 +1032,219 @@ void elementalPowerCards::activateWaterfall(Board& board)
 	char choice;
 	std::cout << "Choose 'R' for row or 'C' for column: ";
 	std::cin >> choice;
-	if (choice == 'R') {
-		int row;
-		char direction;
-		std::cout << "Enter the row number with at least 3 occupied positions: ";
-		std::cin >> row;
-		if (row < 0 || row >= board.GetIndexMax())
-		{
-			std::cout << "Invalid row. Try again.\n";
-			return;
+	size_t number;
+	while (true)
+	{
+		bool validChoice = false;
+		std::cout << "Choose the line/column number you want to move:";
+		std::cin >> number;
+		if (choice == 'R' && board.countOccupiedCellsOnRow(number) < 3) {
+			std::cout << "The chosen line must have at least 3 occupied positions.Try again.\n";
+			continue;
 		}
-
-		int occupiedCount = 0;
-		for (size_t col = 0; col < board.GetIndexMax(); ++col)
-			if (board[{row, static_cast<int>(col)}].has_value())
-				++occupiedCount;
-
-		if (occupiedCount < 3)
-		{
-			std::cout << "Selected row must have at least 3 occupied positions.\n";
-			return;
+		if (choice == 'C' && board.countOccupiedCellsOnColumn(number) < 3) {
+			std::cout << "The chosen line must have at least 3 occupied positions.Try again.\n";
+			continue;
 		}
-
-		std::cout << "Enter the direction of the cascade (D for down, U for up): ";
-		std::cin >> direction;
-
-		if (direction != 'D' && direction != 'U') {
-			std::cout << "Invalid direction. Try again.\n";
-			return;
-		}
-
-		std::stack<Card> finalStack;
-		if (direction == 'D')
-		{
-			for (size_t col = 0; col < board.GetIndexMax(); ++col)
-			{
-				if (board[{row, static_cast<int>(col)}].has_value())
-				{
-					auto& currentStack = board[{row, static_cast<int>(col)}].value();
-					while (!currentStack.empty())
-					{
-						finalStack.push(currentStack.top());
-						currentStack.pop();
-					}
-					board[{row, static_cast<int>(col)}].reset();
-				}
-			}
-			board[{row, 0}] = finalStack;
-		}
-		else if (direction == 'U')
-		{
-			for (int col = static_cast<int>(board.GetIndexMax() - 1); col >= 0; --col)
-			{
-				if (board[{row, col}].has_value())
-				{
-					auto& currentStack = board[{row, col}].value();
-					while (!currentStack.empty())
-					{
-						finalStack.push(currentStack.top());
-						currentStack.pop();
-					}
-					board[{row, col}].reset();
-				}
-			}
-			board[{row, static_cast<int>(board.GetIndexMax() - 1)}] = finalStack;
+		if (validChoice == false) {
+			break;
 		}
 	}
-	else if (choice == 'C') {
-		int col;
-		char direction;
-		std::cout << "Enter the column number with at least 3 occupied positions: ";
-		std::cin >> col;
-		if (col < 0 || col >= board.GetIndexMax()) {
-			std::cout << "Invalid column. Try again.\n";
-			return;
-		}
-
-		int occupiedCount = 0;
-		for (size_t row = 0; row < board.GetIndexMax(); ++row) {
-			if (board[{static_cast<int>(row), col}].has_value()) {
-				++occupiedCount;
-			}
-		}
-
-		if (occupiedCount < 3) {
-			std::cout << "Selected column must have at least 3 occupied positions.\n";
-			return;
-		}
-
-		std::cout << "Enter the direction of the cascade (U for up, D for down): ";
+	size_t toRow, toCol;
+	char direction;
+	std::vector<Card>movedCards;
+	if (choice == 'C')
+	{
+		std::cout << "Choose the direction you want to move the column: U(up),D(down): ";
 		std::cin >> direction;
-
-		if (direction != 'U' && direction != 'D') {
-			std::cout << "Invalid direction. Try again.\n";
-			return;
-		}
-
-		std::stack<Card> finalStack;
-		if (direction == 'U') {
-			for (size_t row = 0; row < board.GetIndexMax(); ++row) {
-				if (board[{static_cast<int>(row), col}].has_value()) {
-					auto& currentStack = board[{static_cast<int>(row), col}].value();
-					while (!currentStack.empty()) {
-						finalStack.push(currentStack.top());
-						currentStack.pop();
-					}
-					board[{static_cast<int>(row), col}].reset();
+		if (direction == 'U')
+		{
+			toRow = board.GetIndexLineMin();
+			toCol = number;
+			if (!board[{toRow, toCol}].has_value())
+				toRow++;
+			for (size_t i = toRow + 1; i <= board.GetIndexLineMax(); ++i)
+			{
+				auto& cell = board[{i, number}];
+				while (!cell->empty())
+				{
+					board[{toRow, toCol}]->push(cell->top());
+					cell->pop();
 				}
+				cell.reset();
 			}
-			board[{0, col}] = finalStack;
 		}
-		else if (direction == 'D') {
-			for (int row = static_cast<int>(board.GetIndexMax() - 1); row >= 0; --row) {
-				if (board[{row, col}].has_value()) {
-					auto& currentStack = board[{row, col}].value();
-					while (!currentStack.empty()) {
-						finalStack.push(currentStack.top());
-						currentStack.pop();
-					}
-					board[{row, col}].reset();
+		else if (direction == 'D')
+		{
+			toRow = board.GetIndexLineMax();
+			toCol = number;
+			if (!board[{toRow, toCol}].has_value())
+				toRow--;
+			for (size_t i = toRow - 1; i >= board.GetIndexLineMin(); --i)
+			{
+				auto& cell = board[{i, number}];
+				while (!cell->empty())
+				{
+					board[{toRow, toCol}]->push(cell->top());
+					cell->pop();
 				}
+				cell.reset();
 			}
-			board[{static_cast<int>(board.GetIndexMax() - 1), col}] = finalStack;
 		}
 	}
-	else {
-		std::cout << "Invalid choice. Choose 'R' for row or 'C' for column.\n";
+	else if (choice == 'R')
+	{
+		std::cout << "Choose the direction you want to move the row: L(left),R(right): ";
+		std::cin >> direction;
+		if (direction == 'L')
+		{
+			toCol = board.GetIndexColMin();
+			toRow = number;
+			if (!board[{toRow, toCol}].has_value())
+				toCol++;
+			for (size_t i = toCol + 1; i <= board.GetIndexColMax(); ++i)
+			{
+				auto& cell = board[{number, i}];
+				while (!cell->empty())
+				{
+					board[{toRow, toCol}]->push(cell->top());
+					cell->pop();
+				}
+				cell.reset();
+			}
+		}
+		else if (direction == 'R')
+		{
+			toCol = board.GetIndexColMax();
+			toRow = number;
+			if (!board[{toRow, toCol}].has_value())
+				toCol--;
+			for (size_t i = toCol - 1; i >= board.GetIndexColMin(); --i)
+			{
+				auto& cell = board[{ number, i}];
+				while (!cell->empty())
+				{
+					board[{toRow, toCol}]->push(cell->top());
+					cell->pop();
+				}
+				cell.reset();
+			}
+		}
 	}
 }
 
-void elementalPowerCards::activateWhirlpool(Board& board, Player& player)
+void elementalPowerCards::activateWhirlpool(Board& board, Player& player, Player& opponent)
 {
-	int row1, col1, row2, col2;
-	std::cout << "Enter the coordinates for the first card (row, column): ";
-	std::cin >> row1 >> col1;
+	std::cout << "Move onto empty space two cards from different adjacent spaces in a straight line.\n ";
+	size_t row1, col1, row2, col2;
+	bool firstStackValid = false;
+	bool secondStackValid = false;
 
-	std::cout << "Enter the coordinates for the second card (row, column): ";
-	std::cin >> row2 >> col2;
+	while (true) {
+		if (!firstStackValid) {
+			std::cout << "Enter the coordinates of the first card (row col): ";
+			std::cin >> row1 >> col1;
 
-	if ((abs(row1 - row2) == 1 && col1 == col2) || (abs(col1 - col2) == 1 && row1 == row2))
-	{
-		if (board[{row1, col1}].has_value() && board[{row2, col2}].has_value())
-		{
-			auto& stack1 = board[{row1, col1}].value();
-			auto& stack2 = board[{row2, col2}].value();
-			if (stack1.size() == 1 && stack2.size() == 1)
-			{
-				Card card1 = stack1.top();
-				Card card2 = stack2.top();
-
-				stack1.pop();
-				stack2.pop();
-				if (card1.GetValue() < card2.GetValue())
-				{
-					board[{row1, col1}].value().push(card1);
-					board[{row2, col2}].value().push(card2);
-				}
-				else if (card1.GetValue() > card2.GetValue())
-				{
-					board[{row1, col1}].value().push(card2);
-					board[{row2, col2}].value().push(card1);
-				}
-				else
-				{
-					char choice;
-					std::cout << "The cards have equal values. Do you want card1 or card2 on top? (1/2): ";
-					std::cin >> choice;
-					if (choice == '1')
-					{
-						board[{row1, col1}].value().push(card1);
-						board[{row2, col2}].value().push(card2);
-					}
-					else if (choice == '2')
-					{
-						board[{row1, col1}].value().push(card2);
-						board[{row2, col2}].value().push(card1);
-					}
-					else
-					{
-						std::cout << "Invalid choice. No change made.\n";
-						return;
-					}
-				}
+			if (board.isValidPosition(row1, col1) && board[{row1, col1}].has_value()) {
+				firstStackValid = true;
 			}
-			else 
-			{
-				std::cout << "Both positions must contain exactly one card!\n";
-				return;
+			else {
+				std::cout << "Invalid position for the first card. Try again.\n";
+				continue;
 			}
 		}
-		else
-		{
-			std::cout << "One or both positions do not contain any cards!\n";
-			return;
+
+		if (!secondStackValid) {
+			std::cout << "Enter the coordinates of the second card (row col): ";
+			std::cin >> row2 >> col2;
+
+			if (board.isValidPosition(row2, col2) && board[{row2, col2}].has_value()) {
+				secondStackValid = true;
+			}
+			else {
+				std::cout << "Invalid position for the second card. Try again.\n";
+				continue;
+			}
+		}
+
+		if (firstStackValid && secondStackValid) {
+			if (((row1 == row2 && std::abs(static_cast<int>(col1) - static_cast<int>(col2)) == 2) ||
+				(col1 == col2 && std::abs(static_cast<int>(row1) - static_cast<int>(row2)) == 2)) &&
+				board[{row1, col1}]->size() == 1 && board[{row2, col2}]->size() == 1) {
+				break;
+			}
+			else {
+				std::cout << "Cards must be individual on the same line/column and have an empty space between them. Try again.\n";
+				firstStackValid = false;
+				secondStackValid = false;
+			}
 		}
 	}
-	else
-		std::cout << "The positions are not adjacent. Please select adjacent positions.\n";
+
+	size_t toRow, toCol;
+	if (row1 == row2) {
+		toRow = row1;
+		toCol = std::min(col1, col2) + 1;
+	}
+	else {
+		toCol = col1;
+		toRow = std::min(row1, row2) + 1;
+	}
+
+	Card firstCard = board[{row1, col1}]->top();
+	Card secondCard = board[{row2, col2}]->top();
+
+	if (firstCard.GetColor() == player.GetColor()) {
+		player.addPlayedCardForPower(firstCard, toRow, toCol);
+		player.RemovePlayedCardForPower(firstCard, row1, col1);
+	}
+	else {
+		opponent.addPlayedCardForPower(firstCard, toRow, toCol);
+		opponent.RemovePlayedCardForPower(firstCard, row2, col2);
+	}
+
+	if (secondCard.GetColor() == player.GetColor()) {
+		player.addPlayedCardForPower(secondCard, toRow, toCol);
+		player.RemovePlayedCardForPower(secondCard, row1, col1);
+	}
+	else {
+		opponent.addPlayedCardForPower(secondCard, toRow, toCol);
+		opponent.RemovePlayedCardForPower(secondCard, row2, col2);
+	}
+
+	if (firstCard.GetValue() > secondCard.GetValue()) {
+		board[{toRow, toCol}] = std::move(board[{row2, col2}]);
+		board[{toRow, toCol}]->push(firstCard);
+		board[{row2, col2}].reset();
+		board.removeCard(row1, col1);
+	}
+	else if (firstCard.GetValue() < secondCard.GetValue()) {
+		board[{toRow, toCol}] = std::move(board[{row1, col1}]);
+		board[{toRow, toCol}]->push(secondCard);
+		board[{row1, col1}].reset();
+		board.removeCard(row2, col2);
+
+	}
+	else {
+		std::cout << "Which card do you want to place first?" << std::endl
+			<< "1. " << firstCard.GetColor() << " " << firstCard.GetValue() << std::endl
+			<< "2. " << secondCard.GetColor() << " " << secondCard.GetValue() << std::endl;
+
+		int choice;
+		std::cin >> choice;
+		if (choice == 1) {
+			board[{toRow, toCol}] = std::move(board[{row1, col1}]);
+			board[{toRow, toCol}]->push(secondCard);
+			board[{row1, col1}].reset();
+			board.removeCard(row2, col2);
+		}
+		else {
+			board[{toRow, toCol}] = std::move(board[{row2, col2}]);
+			board[{toRow, toCol}]->push(firstCard);
+			board[{row2, col2}].reset();
+			board.removeCard(row1, col1);
+		}
+	}
 }
 
 void elementalPowerCards::activateFlame(Player& player, Player& opponent, Board& board) {
