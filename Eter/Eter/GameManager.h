@@ -20,6 +20,15 @@ namespace eter
 		std::unique_ptr<BMode> m_bmode;
 		std::unique_ptr<CMode> m_cmode;
 		std::unique_ptr<BCMode> m_bcmode;
+
+		std::vector<std::pair<std::string, int>> m_leaderboard; 
+
+		int m_player1TotalWins = 0;
+		int m_player2TotalWins = 0;
+		int m_player1TotalRounds = 0;
+		int m_player2TotalRounds = 0;
+		int m_player1TotalScore = 0;
+		int m_player2TotalScore = 0;
 	public:
 		GameManager() = default;
 		GameManager(const Game& game);
@@ -40,6 +49,12 @@ namespace eter
 		void DisplayPlayerStats() const;
 
 	private:
+		//Leader board
+		void UpdateLeaderboard();  
+		void DisplayLeaderboard() const;                        
+		void SaveLeaderboard(const std::string& filename) const; 
+		void LoadLeaderboard(const std::string& filename);       
+
 		void StartAutoSaveTimer();
 
 		std::string GetFileName() const;

@@ -296,6 +296,82 @@ void GameManager::DisplayPlayerStats() const {
     }
 }
 
+void GameManager::UpdateLeaderboard() {
+    const Player& player1 = m_game.GetPlayer1();
+    const Player& player2 = m_game.GetPlayer2();
+
+    uint8_t player1RoundsWon = m_game.GetPlayer1Wins();
+    uint8_t player2RoundsWon = m_game.GetPlayer2Wins();
+
+    // Actualizează runde castigate
+    m_player1TotalRounds += player1RoundsWon;
+    m_player2TotalRounds += player2RoundsWon;
+
+    // Actualizeaza scorurile totale
+    m_player1TotalScore += player1.GetScore();
+    m_player2TotalScore += player2.GetScore();
+
+    // Determina castigatorul si victoriile totale
+    if (player1RoundsWon > player2RoundsWon) {
+        ++m_player1TotalWins;
+    }
+    else if (player2RoundsWon > player1RoundsWon) {
+        ++m_player2TotalWins;
+    }
+}
+
+void GameManager::DisplayLeaderboard() const {
+    std::cout << "\n===== Leaderboard =====\n";
+    std::cout << "Player 1: " << m_game.GetPlayer1().GetName() << "\n";
+    std::cout << "  Total Wins: " << m_player1TotalWins << "\n";
+    std::cout << "  Total Rounds Won: " << m_player1TotalRounds << "\n";
+    std::cout << "  Total Score: " << m_player1TotalScore << "\n";
+
+    std::cout << "\nPlayer 2: " << m_game.GetPlayer2().GetName() << "\n";
+    std::cout << "  Total Wins: " << m_player2TotalWins << "\n";
+    std::cout << "  Total Rounds Won: " << m_player2TotalRounds << "\n";
+    std::cout << "  Total Score: " << m_player2TotalScore << "\n";
+
+    if (m_player1TotalWins > m_player2TotalWins) {
+        std::cout << "\nBest Player: " << m_game.GetPlayer1().GetName() << "\n";
+    }
+    else if (m_player2TotalWins > m_player1TotalWins) {
+        std::cout << "\nBest Player: " << m_game.GetPlayer2().GetName() << "\n";
+    }
+    else {
+        std::cout << "\nIt's a tie between the two players!\n";
+    }
+    std::cout << "=======================\n";
+}
+
+void GameManager::SaveLeaderboard(const std::string& filename) const {
+    std::ofstream outFile(filename);
+    if (!outFile.is_open()) {
+        std::cerr << "Error: Could not open file for saving leaderboard.\n";
+        return;
+    }
+
+    outFile << m_player1TotalWins << " " << m_player1TotalRounds << " " << m_player1TotalScore << "\n";
+    outFile << m_player2TotalWins << " " << m_player2TotalRounds << " " << m_player2TotalScore << "\n";
+
+    outFile.close();
+    std::cout << "Leaderboard saved to " << filename << ".\n";
+}
+
+void GameManager::LoadLeaderboard(const std::string& filename) {
+    std::ifstream inFile(filename);
+    if (!inFile.is_open()) {
+        std::cerr << "Error: Could not open file for loading leaderboard.\n";
+        return;
+    }
+
+    inFile >> m_player1TotalWins >> m_player1TotalRounds >> m_player1TotalScore;
+    inFile >> m_player2TotalWins >> m_player2TotalRounds >> m_player2TotalScore;
+
+    inFile.close();
+    std::cout << "Leaderboard loaded from " << filename << ".\n";
+}
+
 //Functii auxiliare
 
 void GameManager::StartAutoSaveTimer() {
