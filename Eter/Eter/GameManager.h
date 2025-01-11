@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <iomanip>
 #include<filesystem>
 #include<thread>
 #include<chrono>
@@ -29,6 +30,7 @@ namespace eter
 		int m_player2TotalRounds = 0;
 		int m_player1TotalScore = 0;
 		int m_player2TotalScore = 0;
+		int m_draws = 0;            
 	public:
 		GameManager() = default;
 		GameManager(const Game& game);
@@ -49,11 +51,19 @@ namespace eter
 		void DisplayPlayerStats() const;
 
 	private:
+		//Analiza post joc
+		void AnalyzeGameResults();                           
+		void DisplayGlobalStats() const;                     
+		void SaveGlobalStats(const std::string& filename) const; 
+		void LoadGlobalStats(const std::string& filename);   
+
 		//Leader board
 		void UpdateLeaderboard();  
 		void DisplayLeaderboard() const;                        
 		void SaveLeaderboard(const std::string& filename) const; 
 		void LoadLeaderboard(const std::string& filename);       
+
+		void AnalyzeGameResults() const;
 
 		void StartAutoSaveTimer();
 

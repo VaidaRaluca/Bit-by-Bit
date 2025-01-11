@@ -372,6 +372,133 @@ void GameManager::LoadLeaderboard(const std::string& filename) {
     std::cout << "Leaderboard loaded from " << filename << ".\n";
 }
 
+void GameManager::AnalyzeGameResults() {
+    namespace fs = std::filesystem;
+
+    // Analiza jocului curent
+    const Player& player1 = m_game.GetPlayer1();
+    const Player& player2 = m_game.GetPlayer2();
+
+    uint8_t player1RoundsWon = m_game.GetPlayer1Wins();
+    uint8_t player2RoundsWon = m_game.GetPlayer2Wins();
+
+    if (player1RoundsWon > player2RoundsWon) {
+        ++m_player1TotalWins;
+        std::cout << "Game Winner: " << player1.GetName() << "\n";
+    }
+    else if (player2RoundsWon > player1RoundsWon) {
+        ++m_player2TotalWins;
+        std::cout << "Game Winner: " << player2.GetName() << "\n";
+    }
+    else {
+        ++m_draws;
+        std::cout << "The game ended in a tie!\n";
+    }
+
+    std::cout << "\n===== Current Game Analysis =====\n";
+    std::cout << "Player 1: " << player1.GetName() << "\n";
+    std::cout << std::setw(25) << "Rounds Won: " << static_cast<int>(player1RoundsWon) << "\n";
+    std::cout << std::setw(25) << "Total Score: " << player1.GetScore() << "\n";
+    std::cout << std::setw(25) << "Cards Played: " << player1.GetPlayedCards().size() << "\n";
+    std::cout << std::setw(25) << "Cards Eliminated: " << player1.GetEliminatedCards().size() << "\n";
+
+    std::cout << "-----------------------------\n";
+
+    std::cout << "Player 2: " << player2.GetName() << "\n";
+    std::cout << std::setw(25) << "Rounds Won: " << static_cast<int>(player2RoundsWon) << "\n";
+    std::cout << std::setw(25) << "Total Score: " << player2.GetScore() << "\n";
+    std::cout << std::setw(25) << "Cards Played: " << player2.GetPlayedCards().size() << "\n";
+    std::cout << std::setw(25) << "Cards Eliminated: " << player2.GetEliminatedCards().size() << "\n";
+
+    std::cout << "=============================\n";
+
+    // Analiza salvarilor
+    std::string saveDirectory = "saves/";
+    int totalPlayer1Wins = 0;
+    int totalPlayer2Wins = 0;
+    int totalDraws = 0;
+
+    for (const auto& entry : fs::directory_iterator(saveDirectory)) {
+        std::ifstream inFile(entry.path());
+        if (!inFile.is_open()) {
+            std::cerr << "Error: Could not open file " << entry.path() << "\n";
+            continue;
+        }
+
+        int savedPlayer1RoundsWon = 0, savedPlayer2RoundsWon = 0;
+        inFile >> savedPlayer1RoundsWon >> savedPlayer2RoundsWon;
+
+        if (savedPlayer1RoundsWon > savedPlayer2RoundsWon) {
+            ++totalPlayer1Wins;
+        }
+        else if (savedPlayer2RoundsWon > savedPlayer1RoundsWon) {
+            ++totalPlayer2Wins;
+        }
+        else {
+            ++totalDraws;
+        }
+
+        inFile.close();
+    }
+
+    std::cout << "\n===== Analysis of All Saves =====\n";
+    std::cout << "Total Games Won by Player 1: " << totalPlayer1Wins << "\n";
+    std::cout << "Total Games Won by Player 2: " << totalPlayer2Wins << "\n";
+    std::cout << "Total Draws: " << totalDraws << "\n";
+
+    if (totalPlayer1Wins > totalPlayer2Wins) {
+        std::cout << "Overall Winner: Player 1\n";
+    }
+    else if (totalPlayer2Wins > totalPlayer1Wins) {
+        std::cout << "Overall Winner: Player 2\n";
+    }
+    else {
+        std::cout << "It's a tie in overall games!\n";
+    }
+    std::cout << "=============================\n";
+}
+
+void GameManager::DisplayGlobalStats() const {
+    std::cout << "\n===== Global Statistics =====\n";
+    std::cout << "Total Games Won by " << m_game.GetPlayer1().GetName() << ": " << m_player1TotalWins << "\n";
+    std::cout << "Total Games Won by " << m_game.GetPlayer2().GetName() << ": " << m_player2TotalWins << "\n";
+    std::cout << "Total Draws: " << m_draws << "\n";
+
+    // Determina cine este castigatorul general
+    if (m_player1TotalWins > m_player2TotalWins) {
+        std::cout << "Overall Winner: " << m_game.GetPlayer1().GetName() << "\n";
+    }
+    else if (m_player2TotalWins > m_player1TotalWins) {
+        std::cout << "Overall Winner: " << m_game.GetPlayer2().GetName() << "\n";
+    }
+    else {
+        std::cout << "It's a tie in overall games!\n";
+    }
+    std::cout << "=============================\n";
+}
+
+void GameManager::SaveGlobalStats(const std::string& filename) const {
+    std::ofstream outFile(filename);
+    if (!outFile.is_open()) {
+        std::cerr << "Error: Could not save global statistics.\n";
+        return;
+    }
+    outFile << m_player1TotalWins << " " << m_player2TotalWins << " " << m_draws << "\n";
+    outFile.close();
+    std::cout << "Global statistics saved to " << filename << ".\n";
+}
+
+void GameManager::LoadGlobalStats(const std::string& filename) {
+    std::ifstream inFile(filename);
+    if (!inFile.is_open()) {
+        std::cerr << "Error: Could not load global statistics.\n";
+        return;
+    }
+    inFile >> m_player1TotalWins >> m_player2TotalWins >> m_draws;
+    inFile.close();
+    std::cout << "Global statistics loaded from " << filename << ".\n";
+}
+
 //Functii auxiliare
 
 void GameManager::StartAutoSaveTimer() {
