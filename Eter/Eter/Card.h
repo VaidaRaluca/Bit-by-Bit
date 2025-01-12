@@ -13,7 +13,7 @@ namespace eter {
 		uint8_t m_value;
 		std::string m_color;
 		bool m_position; //true = fata in sus
-	public:
+ 	public:
 		//Rule of 5
 		Card() = default;
 		Card(uint8_t value, const std::string& color, bool position);
@@ -30,6 +30,8 @@ namespace eter {
 		void SetValue(uint8_t value);
 		void SetColor(const std::string& color); //for later color could be an enum : red/blue => reduces memory overhead and increases efficiency
 		void SetPosition(bool positon);
+
+		 
 
 		bool operator==(const Card& other) const;
 		void swap(Card& other) noexcept;

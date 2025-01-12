@@ -102,6 +102,7 @@ namespace eter {
 		void activateCrumble(Board& board, Player& player);
 		void activateRock(Board& board, Player& player);
 		void activateAvalanche(Board& board, Player& player, Player& opponent);
+		void activateBorder(Board& board, Player& player);
 	    friend void swap(elementalPowerCards& first, elementalPowerCards& second) noexcept;
 		friend std::ostream& operator<<(std::ostream& os, elementalPowerCards::powerAbility ability);
 	};

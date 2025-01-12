@@ -72,6 +72,8 @@ void Card::SetPosition(bool position)
 	m_position = position;
 }
 
+ 
+
 
 bool eter::Card::operator==(const Card& other) const
 {

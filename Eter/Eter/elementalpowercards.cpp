@@ -190,6 +190,7 @@ namespace eter {
 			activateCrumble(board, player);
 			break;
 		case eter::elementalPowerCards::powerAbility::border:
+			activateBorder(board,  player);
 			break;
 		case eter::elementalPowerCards::powerAbility::avalanche:
 			activateAvalanche(board,player,opponent);
@@ -313,7 +314,7 @@ namespace eter {
 			std::cout << "Card removed from opponent's played cards.\n";
 		}
 
-
+		
 		opponent.AddCardToHand(cardToReturn);
 
 		std::cout << "Opponent's card with value " << cardToReturn.GetValue() - 1 + 1
@@ -1782,8 +1783,101 @@ void elementalPowerCards::activateAvalanche(Board& board, Player& player, Player
 	}
 
 }
- 
- 
+void eter::elementalPowerCards::activateBorder(Board& board, Player& player) {
+	size_t row, col;
+
+	while (true) {
+		std::cout << "Enter the row and column to place the Border card: ";
+		std::cin >> row >> col;
+
+		if (!board.isValidPosition(row, col)) {
+			std::cout << "Invalid position. Position is outside the board. Try again.\n";
+			continue;
+		}
+
+		if (!(row == board.GetIndexLineMin() || row == board.GetIndexLineMax() ||
+			col == board.GetIndexColMin() || col == board.GetIndexColMax())) {
+			std::cout << "The position must define a border of the playing area. "
+				<< " Try again.\n";
+			continue;
+		}
+
+		auto& cell = board[{row, col}];
+		if (cell.has_value() && !cell->empty()) {
+			std::cout << "The selected position is not empty. Try again.\n";
+			continue;
+		}
+
+		Card borderCard;
+		borderCard.SetValue(0);
+		borderCard.SetColor("Neutral");
+		borderCard.SetPosition(true);
+
+		if (!cell.has_value()) {
+			cell.emplace();
+		}
+		cell->push(borderCard);
+		std::cout << "Border card  placed at (" << row << ", " << col << ").\n";
+		break;
+	}
+
+	std::cout << "Now play your normal card.\n";
+	size_t normalRow, normalCol;
+	while (true) {
+		std::cout << "Enter the row and column to place your normal card: ";
+		std::cin >> normalRow >> normalCol;
+
+		if (!board.isValidPosition(normalRow, normalCol)) {
+			std::cout << "Invalid position. Position is outside the board. \n";
+			continue;
+		}
+
+		auto& normalCell = board[{normalRow, normalCol}];
+		if (normalCell.has_value() && !normalCell->empty()) {
+			std::cout << "The selected position is not empty.\n";
+			continue;
+		}
+
+		auto& cardsInHand = player.GetCardsInHand();
+		if (cardsInHand.empty()) {
+			std::cout << "You have no cards in your hand to play.\n";
+			return;
+		}
+
+		std::cout << "Choose a card from your hand to play: \n";
+		for (size_t i = 0; i < cardsInHand.size(); ++i) {
+			const Card& card = cardsInHand[i];
+			std::cout << i + 1 << ": Card with value " << static_cast<int>(card.GetValue()) << ", Color: " << card.GetColor() << "\n";
+		}
+
+		size_t chosenIndex;
+		while (true) {
+			std::cin >> chosenIndex;
+			if (std::cin.fail() || chosenIndex < 1 || chosenIndex > cardsInHand.size()) {
+				std::cout << "Invalid choice. Please select a valid card index. \n";
+				std::cin.clear();
+				continue;
+			}
+			break;
+		}
+
+		Card selectedCard = cardsInHand[chosenIndex - 1];
+		cardsInHand.erase(cardsInHand.begin() + (chosenIndex - 1));
+
+		if (!normalCell.has_value())
+		{
+			normalCell.emplace();
+		}
+		normalCell->push(selectedCard);
+		std::cout << "Normal card with value " << static_cast<int>(selectedCard.GetValue()) << " placed at (" << normalRow << ", " << normalCol << ").\n";
+		break;
+	}
+
+}
+
+
+
+
 
 };
 
