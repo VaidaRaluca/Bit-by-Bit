@@ -111,7 +111,7 @@ void Player::SetCardsInHand(const std::vector<Card>& cards)
 	m_cardsInHand = cards;
 }
 
-void Player::PrintCardsInHand()
+void Player::printCardsInHand()
 {
 	int index = 0;
 	for (const auto& it : m_cardsInHand)
@@ -121,17 +121,17 @@ void Player::PrintCardsInHand()
 	}
 }
 
-void Player::AddToEliminatedCards(const Card& card)
+void Player::addToEliminatedCards(const Card& card)
 {
 	m_eliminatedCards.push_back(card);
 }
 
-void Player::AddPlayedCard(const Card& card)
+void Player::addPlayedCard(const Card& card)
 {
 	m_playedCards.push_back(card);
 }
 
-void eter::Player::AddCardToHand(const Card& card)
+void eter::Player::addCardToHand(const Card& card)
 {
 	m_cardsInHand.push_back(card);
 }
@@ -216,7 +216,7 @@ const std::vector<Card>& Player::GetCardsInHand() const {
 	return m_cardsInHand;
 }
 
-void Player::RemovePlayedCard(const Card& card)
+void Player::removePlayedCard(const Card& card)
 {
 	auto it = std::find(m_playedCards.begin(),m_playedCards.end(), card);
 	if (it != m_playedCards.end())
@@ -226,7 +226,7 @@ void Player::RemovePlayedCard(const Card& card)
 	}
 }
 
-void Player::RemovePlayedCardForPower(const Card& card, size_t row, size_t col)
+void Player::removePlayedCardForPower(const Card& card, size_t row, size_t col)
 {
 	auto it = std::find_if(m_playedCardsP.begin(), m_playedCardsP.end(),
 		[&card, row, col](const auto& playedCardInfo) {

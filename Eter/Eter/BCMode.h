@@ -26,8 +26,8 @@ namespace eter {
 	public:
 		BCMode() = default;
 		explicit BCMode(Game* game);
-		uint8_t getRoundsForWin() const override;
-		uint8_t getRounds() const override;
+		uint8_t GetRoundsForWin() const override;
+		uint8_t GetRounds() const override;
 		void assignCardsInHand() override; //artibuie cate un set de carti pentru fiecare player
 		void generateMageAndPower();  // genereaza cate un vrajitor pentru fiecare player
 		void startMatch() override;   // porneste meciul

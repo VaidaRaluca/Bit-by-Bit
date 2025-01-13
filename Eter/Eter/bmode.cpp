@@ -2,12 +2,12 @@
 using namespace eter;
 #include <random>
 
-uint8_t eter::BMode::getRoundsForWin() const
+uint8_t eter::BMode::GetRoundsForWin() const
 {
     return 3;
 }
 
-uint8_t eter::BMode::getRounds() const
+uint8_t eter::BMode::GetRounds() const
 {
     return 5;
 }

@@ -58,9 +58,9 @@ namespace eter
 		void SetGameMods(std::string gameMode);
 		void SetIsPlayerTurn();
 		void SetIsUsedExplosion(bool ok);
-		void IncrementPlayer1Wins();
-		void IncrementPlayer2Wins();
-		void IncrementNrRound();
+		void incrementPlayer1Wins();
+		void incrementPlayer2Wins();
+		void incrementNrRound();
 		void SetReturnedCards(const std::vector<Card>& cards);
 		void SetCountTurnForReturnedCards(uint8_t count);
 
@@ -68,7 +68,7 @@ namespace eter
 		void playTurn();
 		void playIllusion();
 
-		char VerifyGameOver();
+		char verifyGameOver();
 		void resetBoard();
 		void handleCardCover(Player& currentPlayer, Player& opponent, size_t x, size_t y, size_t cardIndex);
 

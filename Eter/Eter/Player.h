@@ -51,16 +51,16 @@ namespace eter {
 		void SetColor(const std::string& color);
 		void SetCardsInHand(const std::vector<Card>& cards);
 
-		void PrintCardsInHand();
-		void AddToEliminatedCards(const Card& card);//Adauga o carte in m_eliminatedCards
-		void AddPlayedCard(const Card& card);
-		void AddCardToHand(const Card& card);//Adauga o carte in m_cardsInHand
+		void printCardsInHand();
+		void addToEliminatedCards(const Card& card);//Adauga o carte in m_eliminatedCards
+		void addPlayedCard(const Card& card);
+		void addCardToHand(const Card& card);//Adauga o carte in m_cardsInHand
 		void useIllusion(size_t x, size_t y, Board& board, Card& illusion);
 		std::pair<uint8_t, uint8_t> findEmptyCell(Board& board);
 		bool placeCard(size_t x, size_t y, const Card& card, Board& board);
 
-		void RemovePlayedCard(const Card& card);
-		void RemovePlayedCardForPower(const Card& card, size_t row, size_t col);
+		void removePlayedCard(const Card& card);
+		void removePlayedCardForPower(const Card& card, size_t row, size_t col);
 		void addPlayedCardForPower(const Card& card, size_t x, size_t y);
 		std::vector<std::pair<Card, std::pair<size_t, size_t>>>& GetPlayedCardsForPower();//geterul pentru puteri care imi da vectorul cu ultima carte si cu pozitia sa
 		static std::string validateName();

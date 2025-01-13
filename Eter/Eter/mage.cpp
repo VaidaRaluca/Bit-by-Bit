@@ -163,7 +163,7 @@ void Mage::removeOpponentCard(Player& player, Player& opponent, Board& board) {
 		const Card& belowTop{ selectedCell.value().top() };
 		if (belowTop.GetColor() == player.GetColor())
 		{
-			opponent.AddToEliminatedCards(selectedCell.value().top());
+			opponent.addToEliminatedCards(selectedCell.value().top());
 			std::cout << "Opponent's card removed from (" << row << ", " << col << ").\n";
 		}
 		else
@@ -294,7 +294,7 @@ void Mage::coverOpponentCard(Player& player, Player& opponent, Board& board) {
 	auto& selectedCell{ board[{row, col}] };
 	const Card& opponentCard { selectedCell->top()};
 	// Afiseaza cartile din mana jucatorului
-	player.PrintCardsInHand();
+	player.printCardsInHand();
 	size_t cardIndex;
 	bool validCardIndex{ false };
 	while (!validCardIndex) {
@@ -315,7 +315,7 @@ void Mage::coverOpponentCard(Player& player, Player& opponent, Board& board) {
 	selectedCell->push(selectedCard); // Pune cartea in stiva
 	// Elimina cartea din mana jucatorului
 	player.GetCardsInHand().erase(player.GetCardsInHand().begin() + cardIndex);
-	player.AddPlayedCard(selectedCard); // Adauga cartea la cele jucate
+	player.addPlayedCard(selectedCard); // Adauga cartea la cele jucate
 	std::cout << "Card placed successfully at (" << row << ", " << col << ").\n";
 }
 

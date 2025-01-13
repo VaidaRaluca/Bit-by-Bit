@@ -2,12 +2,12 @@
 using namespace eter;
 #include <vector>
 
-uint8_t eter::AMode::getRoundsForWin() const
+uint8_t eter::AMode::GetRoundsForWin() const
 {
 	return 2;
 }
 
-uint8_t eter::AMode::getRounds() const
+uint8_t eter::AMode::GetRounds() const
 {
 	return 3;
 }
@@ -47,9 +47,9 @@ void AMode::startMatch()
 {
 	size_t countRound = 1;
 	std::cout << "The game has started \n";
-	while (m_game->GetPlayer2Wins() < getRoundsForWin() && m_game->GetPlayer1Wins() < getRoundsForWin())
+	while (m_game->GetPlayer2Wins() < GetRoundsForWin() && m_game->GetPlayer1Wins() < GetRoundsForWin())
 	{
-		std::cout << "Round " << countRound << " of " << static_cast<int>(getRounds());
+		std::cout << "Round " << countRound << " of " << static_cast<int>(GetRounds());
 		startRound();
 		countRound++;
 		std::cout << "The round has ended. \n";
@@ -113,7 +113,7 @@ void AMode::startRound()
 	while (gameStatus == '0')
 	{
 		handleOption();
-		gameStatus = m_game->VerifyGameOver();
+		gameStatus = m_game->verifyGameOver();
 		std::cout << "Game status: " << gameStatus << "\n";
 	}
 	std::cout << gameStatus << "\n";
@@ -128,13 +128,13 @@ void AMode::startRound()
 		if (m_game->GetPlayer1().GetColor() == m_game->GetBoard().findWinnerByScore())
 		{
 			std::cout << "Player " << m_game->GetPlayer1().GetName() << " wins this round!" << std::endl;
-			m_game->IncrementPlayer1Wins();
+			m_game->incrementPlayer1Wins();
 		}
 		else
 			if (m_game->GetPlayer2().GetColor() == m_game->GetBoard().findWinnerByScore())
 			{
 				std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this round!" << std::endl;
-				m_game->IncrementPlayer2Wins();
+				m_game->incrementPlayer2Wins();
 			}
 			else
 				std::cout << "DRAW \n";

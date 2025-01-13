@@ -72,10 +72,10 @@ namespace eter {
 
 		~elementalPowerCards() = default;
 
-		void setUsed(bool used);
-		bool getUsed() const;
-		void setAbility(powerAbility power);
-		powerAbility getAbility() const;
+		void SetUsed(bool used);
+		bool GetUsed() const;
+		void SetAbility(powerAbility power);
+		powerAbility GetAbility() const;
 		void activate(Game* game, Player& player, Player& opponent, Board& board);
 
 	private:

@@ -106,17 +106,17 @@ void eter::Game::SetIsUsedExplosion( bool ok)
 	m_isUsedExplosion = ok;
 }
 
-void Game::IncrementPlayer1Wins()
+void Game::incrementPlayer1Wins()
 {
 	++m_player1Wins;
 }
 
-void Game::IncrementPlayer2Wins()
+void Game::incrementPlayer2Wins()
 {
 	++m_player2Wins;
 }
 
-void Game::IncrementNrRound()
+void Game::incrementNrRound()
 {
 	++m_nrRound;
 }
@@ -141,11 +141,11 @@ void Game::playTurn() {
 		m_countTurnForReturnedCards ++;
 
 	if (m_isPlayerTurn) {
-		m_player1.PrintCardsInHand();
+		m_player1.printCardsInHand();
 		handlePlayerTurn(GetPlayer1Ref());
 	}
 	else {
-		m_player2.PrintCardsInHand();
+		m_player2.printCardsInHand();
 		handlePlayerTurn(GetPlayer2Ref());
 	}
 
@@ -155,11 +155,11 @@ void Game::playTurn() {
 
 void Game::playIllusion() {
 	if (m_isPlayerTurn) {
-		m_player1.PrintCardsInHand();
+		m_player1.printCardsInHand();
 		handlePlayerTurnWithIllusion(GetPlayer1Ref());
 	}
 	else {
-		m_player2.PrintCardsInHand();
+		m_player2.printCardsInHand();
 		handlePlayerTurnWithIllusion(GetPlayer2Ref());
 	}
 	SetIsPlayerTurn();
@@ -266,31 +266,31 @@ void eter::Game::distributeReturnedCards()
 	{
 		if (it->GetColor() == m_player1.GetColor())
 		{
-			m_player1.AddCardToHand(*it);
+			m_player1.addCardToHand(*it);
 			it = m_returnedCards.erase(it); 
 		}
 		else if (it->GetColor() == m_player2.GetColor())
 		{
-			m_player2.AddCardToHand(*it);
+			m_player2.addCardToHand(*it);
 			it = m_returnedCards.erase(it); 
 		}
 	}
 }
 
-char Game::VerifyGameOver()
+char Game::verifyGameOver()
 {
 	std::string winnerColor = m_board.findWinner();
 	std::cout << winnerColor << '\n';
 
 	if (winnerColor == m_player1.GetColor())
 	{
-		IncrementPlayer1Wins();
+		incrementPlayer1Wins();
 		std::cout << "Player " << m_player1.GetName() << " wins this round!" << std::endl;
 		return '1';
 	}
 	if (winnerColor == m_player2.GetColor())
 	{
-		IncrementPlayer2Wins();
+		incrementPlayer2Wins();
 		std::cout << "Player " << m_player2.GetName() << " wins this round!" << std::endl;
 		return '1';
 	}
@@ -345,7 +345,7 @@ void Game::handleCardCover(Player& currentPlayer, Player& opponent, size_t x, si
 		else {
 			std::cout << "The opponent's card is not stronger. It is removed from the game.\n";
 			currentPlayer.GetCardsInHand().erase(currentPlayer.GetCardsInHand().begin() + cardIndex);
-			currentPlayer.AddToEliminatedCards(newCard);
+			currentPlayer.addToEliminatedCards(newCard);
 			std::cout << currentPlayer.GetName() << " loses their turn.\n";
 			return;
 		}

@@ -13,12 +13,12 @@ CMode::CMode(Game* game) : AMode{ game }
 {
 }
 
-uint8_t eter::CMode::getRoundsForWin() const
+uint8_t eter::CMode::GetRoundsForWin() const
 {
     return 3;
 }
 
-uint8_t eter::CMode::getRounds() const
+uint8_t eter::CMode::GetRounds() const
 {
     return 5;
 }
@@ -190,7 +190,7 @@ void eter::CMode::handleOption()
         eter::elementalPowerCards elementalPower(selectedAbility);
 
         // Verificăm dacă puterea a fost utilizată
-        if (elementalPower.getUsed()) {
+        if (elementalPower.GetUsed()) {
             std::cout << "This power has already been used.\n";
         }
         else {
@@ -200,7 +200,7 @@ void eter::CMode::handleOption()
             else {
                 elementalPower.activate(m_game,m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
             }
-            elementalPower.setUsed(true);
+            elementalPower.SetUsed(true);
             m_game->SetIsPlayerTurn();
         }
         break;

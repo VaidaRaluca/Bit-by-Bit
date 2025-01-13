@@ -25,7 +25,7 @@ void GameManager::SetGame(Game game)
     m_game = Game(game);
 }
 
-void GameManager::StartNewGame(Player player1, Player player2, const std::string& gameMode)
+void GameManager::startNewGame(Player player1, Player player2, const std::string& gameMode)
 {
     m_game = Game(player1, player2, gameMode);
     m_game.printPlayers();
@@ -55,60 +55,60 @@ void GameManager::StartNewGame(Player player1, Player player2, const std::string
     }
 }
 
-void GameManager::LoadGame() {
+void GameManager::loadGame() {
     const std::string saveDirectory = "saves/";
 
     while (true) {
-        std::string fileName = PromptFileName();
+        std::string fileName = promptFileName();
 
         if (fileName.empty()) {
             std::cout << "No file name provided. Please try again.\n";
             continue;
         }
 
-        if (HandleSpecialCommands(fileName, saveDirectory)) {
+        if (handleSpecialCommands(fileName, saveDirectory)) {
             continue;
         }
 
-        if (!ConfirmAction("Player, do you want to load the save file '" + fileName + "'")) {
+        if (!confirmAction("Player, do you want to load the save file '" + fileName + "'")) {
             std::cout << "File load canceled. You can choose another file or quit.\n";
             continue;
         }
 
         const std::string filePath = saveDirectory + fileName;
-        if (!LoadGameFromFile(filePath)) {
+        if (!loadGameFromFile(filePath)) {
             continue;
         }
         return;
     }
 }
 
-void GameManager::SaveGame() {
+void GameManager::saveGame() {
     const std::string saveDirectory = "saves/";
 
     while (true) {
-        std::string fileName = PromptFileNameForSave();
+        std::string fileName = promptFileNameForSave();
 
         if (fileName.empty()) {
             std::cout << "No file name provided. Please try again.\n";
             continue;
         }
 
-        if (!ConfirmationForSave(fileName)) {
+        if (!confirmationForSave(fileName)) {
             std::cout << "Save operation canceled. You can choose another file or quit.\n";
             continue;
         }
 
         const std::string filePath = saveDirectory + fileName;
-        if (SaveGameToFile(filePath)) {
-            DisplaySaveFileSize(filePath);
+        if (saveGameToFile(filePath)) {
+            displaySaveFileSize(filePath);
             return;
         }
     }
 }
 
-void GameManager::AutoSave(const std::string& autosaveFile) {
-    BackupAutosave();
+void GameManager::autoSave(const std::string& autosaveFile) {
+    backupAutosave();
 
     try {
         const std::string saveDirectory = autosaveFile.substr(0, autosaveFile.find_last_of("/\\"));
@@ -123,9 +123,9 @@ void GameManager::AutoSave(const std::string& autosaveFile) {
             return;
         }
 
-        SavePlayer(outFile, m_game.GetPlayer1(), "# Player 1");
-        SavePlayer(outFile, m_game.GetPlayer2(), "# Player 2");
-        SaveBoard(outFile, m_game.GetBoard());
+        savePlayer(outFile, m_game.GetPlayer1(), "# Player 1");
+        savePlayer(outFile, m_game.GetPlayer2(), "# Player 2");
+        saveBoard(outFile, m_game.GetBoard());
 
         outFile.close();
         if (outFile.fail()) {
@@ -139,7 +139,7 @@ void GameManager::AutoSave(const std::string& autosaveFile) {
     }
 }
 
-void GameManager::LoadAutoSave() {
+void GameManager::loadAutoSave() {
     const std::string autosaveFile = "saves/autosave.dat";
 
     std::ifstream inFile(autosaveFile, std::ios::binary);
@@ -149,13 +149,13 @@ void GameManager::LoadAutoSave() {
     }
 
     try {
-        Player player1 = LoadPlayer(inFile);
-        Player player2 = LoadPlayer(inFile);
-        Board board = LoadBoard(inFile);
+        Player player1 = loadPlayer(inFile);
+        Player player2 = loadPlayer(inFile);
+        Board board = loadBoard(inFile);
 
         inFile.close();
 
-        StartNewGame(player1, player2, "LoadedMode");
+        startNewGame(player1, player2, "LoadedMode");
         std::cout << "Game successfully loaded from autosave.\n";
     }
     catch (const std::exception& e) {
@@ -164,7 +164,7 @@ void GameManager::LoadAutoSave() {
     }
 }
 
-void GameManager::BackupAutosave() {
+void GameManager::backupAutosave() {
     const std::string autosaveFile = "saves/autosave.dat";
     const std::string backupFile = "saves/autosave_backup.dat";
 
@@ -183,7 +183,7 @@ void GameManager::BackupAutosave() {
     std::cout << "Backup of autosave created successfully.\n";
 }
 
-void GameManager::DisplaySaveFileSize(const std::string& filePath) const {
+void GameManager::displaySaveFileSize(const std::string& filePath) const {
     try {
         std::uintmax_t fileSize = std::filesystem::file_size(filePath);
         std::cout << "The save file '" << filePath << "' occupies "
@@ -194,7 +194,7 @@ void GameManager::DisplaySaveFileSize(const std::string& filePath) const {
     }
 }
 
-void GameManager::DeleteSaveInteractive() {
+void GameManager::deleteSaveInteractive() {
     std::cout << "Enter the name of the save file to delete, or press 'Q' to quit: ";
     std::string saveFileName;
     std::getline(std::cin, saveFileName);
@@ -204,10 +204,10 @@ void GameManager::DeleteSaveInteractive() {
         return;
     }
 
-    DeleteSave(saveFileName);
+    deleteSave(saveFileName);
 }
 
-void GameManager::DeleteSave(const std::string& saveFileName) {
+void GameManager::deleteSave(const std::string& saveFileName) {
     const std::string saveDirectory = "saves/";
     const std::string filePath = saveDirectory + saveFileName;
 
@@ -225,7 +225,7 @@ void GameManager::DeleteSave(const std::string& saveFileName) {
     }
 }
 
-void GameManager::ResetGame() {
+void GameManager::resetGame() {
     std::cout << "Resetting the game to its initial state...\n";
 
     // Resetăm tabla de joc
@@ -249,7 +249,7 @@ void GameManager::ResetGame() {
     std::cout << "Game has been reset. You can start a new game.\n";
 }
 
-void GameManager::DisplayPlayerStats() const {
+void GameManager::displayPlayerStats() const {
     const Player& player1 = m_game.GetPlayer1();
     const Player& player2 = m_game.GetPlayer2();
 
@@ -298,7 +298,7 @@ void GameManager::DisplayPlayerStats() const {
     }
 }
 
-void GameManager::UpdateLeaderboard() {
+void GameManager::updateLeaderboard() {
     const Player& player1 = m_game.GetPlayer1();
     const Player& player2 = m_game.GetPlayer2();
 
@@ -322,7 +322,7 @@ void GameManager::UpdateLeaderboard() {
     }
 }
 
-void GameManager::DisplayLeaderboard() const {
+void GameManager::displayLeaderboard() const {
     std::cout << "\n===== Leaderboard =====\n";
     std::cout << "Player 1: " << m_game.GetPlayer1().GetName() << "\n";
     std::cout << "  Total Wins: " << m_player1TotalWins << "\n";
@@ -346,7 +346,7 @@ void GameManager::DisplayLeaderboard() const {
     std::cout << "=======================\n";
 }
 
-void GameManager::SaveLeaderboard(const std::string& filename) const {
+void GameManager::saveLeaderboard(const std::string& filename) const {
     std::ofstream outFile(filename);
     if (!outFile.is_open()) {
         std::cerr << "Error: Could not open file for saving leaderboard.\n";
@@ -360,7 +360,7 @@ void GameManager::SaveLeaderboard(const std::string& filename) const {
     std::cout << "Leaderboard saved to " << filename << ".\n";
 }
 
-void GameManager::LoadLeaderboard(const std::string& filename) {
+void GameManager::loadLeaderboard(const std::string& filename) {
     std::ifstream inFile(filename);
     if (!inFile.is_open()) {
         std::cerr << "Error: Could not open file for loading leaderboard.\n";
@@ -374,7 +374,7 @@ void GameManager::LoadLeaderboard(const std::string& filename) {
     std::cout << "Leaderboard loaded from " << filename << ".\n";
 }
 
-void GameManager::AnalyzeGameResults() {
+void GameManager::analyzeGameResults() {
     namespace fs = std::filesystem;
 
     // Analiza jocului curent
@@ -460,7 +460,7 @@ void GameManager::AnalyzeGameResults() {
     std::cout << "=============================\n";
 }
 
-void GameManager::DisplayGlobalStats() const {
+void GameManager::displayGlobalStats() const {
     std::cout << "\n===== Global Statistics =====\n";
     std::cout << "Total Games Won by " << m_game.GetPlayer1().GetName() << ": " << m_player1TotalWins << "\n";
     std::cout << "Total Games Won by " << m_game.GetPlayer2().GetName() << ": " << m_player2TotalWins << "\n";
@@ -479,7 +479,7 @@ void GameManager::DisplayGlobalStats() const {
     std::cout << "=============================\n";
 }
 
-void GameManager::SaveGlobalStats(const std::string& filename) const {
+void GameManager::saveGlobalStats(const std::string& filename) const {
     std::ofstream outFile(filename);
     if (!outFile.is_open()) {
         std::cerr << "Error: Could not save global statistics.\n";
@@ -490,7 +490,7 @@ void GameManager::SaveGlobalStats(const std::string& filename) const {
     std::cout << "Global statistics saved to " << filename << ".\n";
 }
 
-void GameManager::LoadGlobalStats(const std::string& filename) {
+void GameManager::loadGlobalStats(const std::string& filename) {
     std::ifstream inFile(filename);
     if (!inFile.is_open()) {
         std::cerr << "Error: Could not load global statistics.\n";
@@ -503,11 +503,11 @@ void GameManager::LoadGlobalStats(const std::string& filename) {
 
 //Functii auxiliare
 
-void GameManager::StartAutoSaveTimer() {
+void GameManager::startAutoSaveTimer() {
     std::thread([this]() {
         while (true) {
             std::this_thread::sleep_for(std::chrono::minutes(1));
-            AutoSave();
+            autoSave();
         }
         }).detach();
 }
@@ -524,7 +524,7 @@ std::string GameManager::GetFileName() const {
     return fileName;
 }
 
-void GameManager::SavePlayer(std::ofstream& outFile, const Player& player, const std::string& header) const {
+void GameManager::savePlayer(std::ofstream& outFile, const Player& player, const std::string& header) const {
     outFile << header << "\n";
     outFile << player.GetName() << "\n";
     outFile << player.GetColor() << "\n";
@@ -538,17 +538,17 @@ void GameManager::SavePlayer(std::ofstream& outFile, const Player& player, const
     outFile << "---\n";
 }
 
-void GameManager::SaveBoard(std::ofstream& outFile, const Board& board) const {
+void GameManager::saveBoard(std::ofstream& outFile, const Board& board) const {
     outFile << "# Board\n";
 
     for (size_t row = 0; row < board.GetIndexMax(); ++row) {
         for (size_t col = 0; col < board.GetIndexMax(); ++col) {
-            SaveCell(outFile, board.GetGrid()[row][col]);
+            saveCell(outFile, board.GetGrid()[row][col]);
         }
     }
 }
 
-void GameManager::SaveCell(std::ofstream& outFile, const std::optional<std::stack<Card>>& cell) const {
+void GameManager::saveCell(std::ofstream& outFile, const std::optional<std::stack<Card>>& cell) const {
     if (cell.has_value()) {
         auto tempStack = cell.value();
         while (!tempStack.empty()) {
@@ -577,7 +577,7 @@ std::string GameManager::GetFileNameToLoad() const {
     return fileName;
 }
 
-Player GameManager::LoadPlayer(std::ifstream& inFile) const {
+Player GameManager::loadPlayer(std::ifstream& inFile) const {
     std::string line;
     std::getline(inFile, line);
     std::string playerName = line;
@@ -600,7 +600,7 @@ Player GameManager::LoadPlayer(std::ifstream& inFile) const {
     return player;
 }
 
-Board GameManager::LoadBoard(std::ifstream& inFile) const {
+Board GameManager::loadBoard(std::ifstream& inFile) const {
     std::string line;
     std::getline(inFile, line);
 
@@ -631,7 +631,7 @@ Board GameManager::LoadBoard(std::ifstream& inFile) const {
     return board;
 }
 
-std::string GameManager::HandleFileNameOverwrite() const {
+std::string GameManager::handleFileNameOverwrite() const {
     std::string fileName = GetFileName();
 
     std::ifstream checkFile(fileName);
@@ -652,7 +652,7 @@ std::string GameManager::HandleFileNameOverwrite() const {
     return fileName;
 }
 
-bool GameManager::ConfirmOverwrite(const std::string& fileName) const {
+bool GameManager::confirmOverwrite(const std::string& fileName) const {
     std::ifstream checkFile(fileName);
     if (checkFile.is_open()) {
         checkFile.close();
@@ -664,8 +664,8 @@ bool GameManager::ConfirmOverwrite(const std::string& fileName) const {
     return true;
 }
 
-void GameManager::DisplaySaveFiles() const {
-    if (!ConfirmAction("Do you want to view the list of save files")) {
+void GameManager::displaySaveFiles() const {
+    if (!confirmAction("Do you want to view the list of save files")) {
         std::cout << "Action canceled.\n";
         return;
     }
@@ -695,7 +695,7 @@ void GameManager::DisplaySaveFiles() const {
     }
 }
 
-bool GameManager::ConfirmAction(const std::string& actionDescription) const {
+bool GameManager::confirmAction(const std::string& actionDescription) const {
     std::cout << actionDescription << " (Y/N): ";
     char choice;
     std::cin >> choice;
@@ -703,7 +703,7 @@ bool GameManager::ConfirmAction(const std::string& actionDescription) const {
     return (toupper(choice) == 'Y');
 }
 
-bool GameManager::ConfirmationForSave(const std::string& fileName) const {
+bool GameManager::confirmationForSave(const std::string& fileName) const {
     std::cout << "Do you want to save the game to '" << fileName << "'? (Y/N): ";
     char choice;
     std::cin >> choice;
@@ -713,29 +713,29 @@ bool GameManager::ConfirmationForSave(const std::string& fileName) const {
 
 //LoadGame
 
-std::string GameManager::PromptFileName() {
+std::string GameManager::promptFileName() {
     std::cout << "Enter the name of the save file to load, or press 'L' to list all save files, or 'Q' to quit: ";
     std::string fileName;
     std::getline(std::cin, fileName);
     return fileName;
 }
 
-bool GameManager::HandleSpecialCommands(const std::string& fileName, const std::string& saveDirectory) {
+bool GameManager::handleSpecialCommands(const std::string& fileName, const std::string& saveDirectory) {
     if (fileName == "D" || fileName == "d") {
         std::cout << "Enter the name of the save file to delete: ";
         std::string deleteFileName;
         std::getline(std::cin, deleteFileName);
-        DeleteSave(deleteFileName);
+        deleteSave(deleteFileName);
         return true;
     }
 
     if (fileName == "AUTO" || fileName == "auto") {
-        LoadAutoSave();
+        loadAutoSave();
         return true;
     }
 
     if (fileName == "L" || fileName == "l") {
-        DisplaySaveFiles();
+        displaySaveFiles();
         return true;
     }
 
@@ -747,8 +747,8 @@ bool GameManager::HandleSpecialCommands(const std::string& fileName, const std::
     return false;
 }
 
-bool GameManager::LoadGameFromFile(const std::string& filePath) {
-    DisplaySaveFileSize(filePath);
+bool GameManager::loadGameFromFile(const std::string& filePath) {
+    displaySaveFileSize(filePath);
 
     std::ifstream inFile(filePath, std::ios::binary);
     if (!inFile.is_open()) {
@@ -757,13 +757,13 @@ bool GameManager::LoadGameFromFile(const std::string& filePath) {
     }
 
     try {
-        Player player1 = LoadPlayer(inFile);
-        Player player2 = LoadPlayer(inFile);
-        Board board = LoadBoard(inFile);
+        Player player1 = loadPlayer(inFile);
+        Player player2 = loadPlayer(inFile);
+        Board board = loadBoard(inFile);
 
         inFile.close();
 
-        StartNewGame(player1, player2, "LoadedMode");
+        startNewGame(player1, player2, "LoadedMode");
         std::cout << "Game successfully loaded from '" << filePath << "'!\n";
         return true;
     }
@@ -777,7 +777,7 @@ bool GameManager::LoadGameFromFile(const std::string& filePath) {
 
 //SaveGame
 
-std::string GameManager::PromptFileNameForSave() {
+std::string GameManager::promptFileNameForSave() {
     std::cout << "Enter the name of the save file, or press 'Q' to quit: ";
     std::string fileName;
     std::getline(std::cin, fileName);
@@ -790,7 +790,7 @@ std::string GameManager::PromptFileNameForSave() {
     return fileName;
 }
 
-bool GameManager::SaveGameToFile(const std::string& filePath) {
+bool GameManager::saveGameToFile(const std::string& filePath) {
     std::ofstream outFile(filePath, std::ios::binary);
     if (!outFile.is_open()) {
         std::cerr << "Error: Could not open file '" << filePath << "' for saving. Please try again.\n";
@@ -798,9 +798,9 @@ bool GameManager::SaveGameToFile(const std::string& filePath) {
     }
 
     try {
-        SavePlayer(outFile, m_game.GetPlayer1(), "# Player 1");
-        SavePlayer(outFile, m_game.GetPlayer2(), "# Player 2");
-        SaveBoard(outFile, m_game.GetBoard());
+        savePlayer(outFile, m_game.GetPlayer1(), "# Player 1");
+        savePlayer(outFile, m_game.GetPlayer2(), "# Player 2");
+        saveBoard(outFile, m_game.GetBoard());
 
         outFile.close();
         if (outFile.fail()) {

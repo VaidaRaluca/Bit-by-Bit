@@ -37,59 +37,59 @@ namespace eter
 
 		const Game& GetGame()const;
 		void SetGame(Game game);
-		void StartNewGame(Player player1, Player player2, const std::string& gameMode);
-		void SaveGame();   // Metoda pentru salvarea unui joc
-		void LoadGame();   // Metoda pentru incarcarea unui joc
+		void startNewGame(Player player1, Player player2, const std::string& gameMode);
+		void saveGame();   // Metoda pentru salvarea unui joc
+		void loadGame();   // Metoda pentru incarcarea unui joc
 
-		void AutoSave(const std::string& autosaveFile = "saves/autosave.dat");
-		void LoadAutoSave();
-		void BackupAutosave();
-		void DisplaySaveFileSize(const std::string& filePath) const;
-		void DeleteSave(const std::string& saveFileName);
-		void DeleteSaveInteractive();
-		void ResetGame();
-		void DisplayPlayerStats() const;
+		void autoSave(const std::string& autosaveFile = "saves/autosave.dat");
+		void loadAutoSave();
+		void backupAutosave();
+		void displaySaveFileSize(const std::string& filePath) const;
+		void deleteSave(const std::string& saveFileName);
+		void deleteSaveInteractive();
+		void resetGame();
+		void displayPlayerStats() const;
 		//ChooseGame
 		static const std::string& chooseGameMode();
 	private:
 		//Analiza post joc
-		void AnalyzeGameResults();                           
-		void DisplayGlobalStats() const;                     
-		void SaveGlobalStats(const std::string& filename) const; 
-		void LoadGlobalStats(const std::string& filename);   
+		void analyzeGameResults();                           
+		void displayGlobalStats() const;                     
+		void saveGlobalStats(const std::string& filename) const; 
+		void loadGlobalStats(const std::string& filename);   
 
 		//Leader board
-		void UpdateLeaderboard();  
-		void DisplayLeaderboard() const;                        
-		void SaveLeaderboard(const std::string& filename) const; 
-		void LoadLeaderboard(const std::string& filename);       
+		void updateLeaderboard();  
+		void displayLeaderboard() const;                        
+		void saveLeaderboard(const std::string& filename) const; 
+		void loadLeaderboard(const std::string& filename);       
 
-		void AnalyzeGameResults() const;
+		void analyzeGameResults() const;
 
-		void StartAutoSaveTimer();
+		void startAutoSaveTimer();
 
 		std::string GetFileName() const;
-		void SavePlayer(std::ofstream& outFile, const Player& player, const std::string& header) const;
-		void SaveBoard(std::ofstream& outFile, const Board& board) const;
-		void SaveCell(std::ofstream& outFile, const std::optional<std::stack<Card>>& cell) const;
+		void savePlayer(std::ofstream& outFile, const Player& player, const std::string& header) const;
+		void saveBoard(std::ofstream& outFile, const Board& board) const;
+		void saveCell(std::ofstream& outFile, const std::optional<std::stack<Card>>& cell) const;
 
 		std::string GetFileNameToLoad() const;
-		Player LoadPlayer(std::ifstream& inFile) const;
-		Board LoadBoard(std::ifstream& inFile) const;
+		Player loadPlayer(std::ifstream& inFile) const;
+		Board loadBoard(std::ifstream& inFile) const;
 
-		std::string HandleFileNameOverwrite() const;
-		bool ConfirmOverwrite(const std::string& fileName) const;
-		void DisplaySaveFiles() const;
-		bool ConfirmAction(const std::string& actionDescription) const;
-		bool ConfirmationForSave(const std::string& fileName) const;
+		std::string handleFileNameOverwrite() const;
+		bool confirmOverwrite(const std::string& fileName) const;
+		void displaySaveFiles() const;
+		bool confirmAction(const std::string& actionDescription) const;
+		bool confirmationForSave(const std::string& fileName) const;
 
 		//LoadGame
-		std::string PromptFileName();
-		bool HandleSpecialCommands(const std::string& fileName, const std::string& saveDirectory);
-		bool LoadGameFromFile(const std::string& filePath);
+		std::string promptFileName();
+		bool handleSpecialCommands(const std::string& fileName, const std::string& saveDirectory);
+		bool loadGameFromFile(const std::string& filePath);
 
 		//SaveGame
-		std::string PromptFileNameForSave();
-		bool SaveGameToFile(const std::string& filePath);
+		std::string promptFileNameForSave();
+		bool saveGameToFile(const std::string& filePath);
 	};
 }

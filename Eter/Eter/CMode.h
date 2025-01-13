@@ -41,8 +41,8 @@ namespace eter {
 	public:
 		CMode() = default;
 		explicit CMode(Game* game);
-		uint8_t getRoundsForWin() const override;
-		uint8_t getRounds() const override;
+		uint8_t GetRoundsForWin() const override;
+		uint8_t GetRounds() const override;
 		void applyModeRules() override;
 		void generatePower();
 		void assignCardsInHand() override;

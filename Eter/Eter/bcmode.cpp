@@ -2,12 +2,12 @@
 using namespace eter;
 #include <random>
 #include "AMode.h"
-uint8_t eter::BCMode::getRoundsForWin() const
+uint8_t eter::BCMode::GetRoundsForWin() const
 {
     return 3;
 }
 
-uint8_t eter::BCMode::getRounds() const
+uint8_t eter::BCMode::GetRounds() const
 {
     return 5;
 }
@@ -101,7 +101,7 @@ void eter::BCMode::handleOption()
         eter::elementalPowerCards elementalPower(selectedAbility);
 
         // Verific?m dac? puterea a fost utilizat?
-        if (elementalPower.getUsed()) {
+        if (elementalPower.GetUsed()) {
             std::cout << "This power has already been used.\n";
         }
         else {
@@ -111,7 +111,7 @@ void eter::BCMode::handleOption()
             else {
                 elementalPower.activate(m_game,m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
             }
-            elementalPower.setUsed(true);
+            elementalPower.SetUsed(true);
             std::cout << "Power activated successfully!\n";
         }
         break;

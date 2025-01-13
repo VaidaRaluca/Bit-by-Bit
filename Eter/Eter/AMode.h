@@ -10,8 +10,8 @@ namespace eter {
 		Game* m_game;
 	public:
 		AMode() = default;
-		virtual uint8_t getRoundsForWin() const;
-		virtual uint8_t getRounds() const;
+		virtual uint8_t GetRoundsForWin() const;
+		virtual uint8_t GetRounds() const;
 		AMode(Game* game);
 		virtual void assignCardsInHand();
 		virtual void startMatch();

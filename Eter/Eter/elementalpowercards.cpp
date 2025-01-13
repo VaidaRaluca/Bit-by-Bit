@@ -101,22 +101,22 @@ namespace eter {
 	{
 	}
 
-	void elementalPowerCards::setUsed(bool used)
+	void elementalPowerCards::SetUsed(bool used)
 	{
 		m_used = used;
 	}
 
-	bool elementalPowerCards::getUsed() const
+	bool elementalPowerCards::GetUsed() const
 	{
 		return m_used;
 	}
 
-	void elementalPowerCards::setAbility(powerAbility power)
+	void elementalPowerCards::SetAbility(powerAbility power)
 	{
 		m_power = power;
 	}
 
-	elementalPowerCards::powerAbility elementalPowerCards::getAbility() const
+	elementalPowerCards::powerAbility elementalPowerCards::GetAbility() const
 	{
 		return powerAbility();
 	}
@@ -244,7 +244,7 @@ namespace eter {
 			board.removeCard(x, y);
 			opponentPlayedCards.pop_back();
 
-			opponent.AddToEliminatedCards(lastCardPlayed);
+			opponent.addToEliminatedCards(lastCardPlayed);
 
 			std::cout << "Removed opponent's card with value " << lastCardPlayed.GetValue() + 1 - 1 << " and color " << lastCardPlayed.GetColor()
 				<< " from position (" << (int)x << ", " << (int)y << ").\n";
@@ -315,7 +315,7 @@ namespace eter {
 		}
 
 		
-		opponent.AddCardToHand(cardToReturn);
+		opponent.addCardToHand(cardToReturn);
 
 		std::cout << "Opponent's card with value " << cardToReturn.GetValue() - 1 + 1
 			<< " and color " << cardToReturn.GetColor()
@@ -388,7 +388,7 @@ namespace eter {
 						player.GetPlayedCards().erase(std::remove(player.GetPlayedCards().begin(),
 							player.GetPlayedCards().end(), card),
 							player.GetPlayedCards().end());
-						player.AddCardToHand(card);
+						player.addCardToHand(card);
 						std::cout << "Returned card to player's hand.\n";
 						cardReturned = true;
 						break;
@@ -401,7 +401,7 @@ namespace eter {
 							opponent.GetPlayedCards().erase(std::remove(opponent.GetPlayedCards().begin(),
 								opponent.GetPlayedCards().end(), card),
 								opponent.GetPlayedCards().end());
-							opponent.AddCardToHand(card);
+							opponent.addCardToHand(card);
 							std::cout << "Returned card to opponent's hand.\n";
 							cardReturned = true;
 							break;
@@ -465,7 +465,7 @@ namespace eter {
 
 			if (board.placeCard(row, col, chosenCard))
 			{
-				player.AddPlayedCard(chosenCard);
+				player.addPlayedCard(chosenCard);
 				player.addPlayedCardForPower(chosenCard, row, col);
 				std::cout << "Card with value " << chosenCard.GetValue()
 					<< " and color " << chosenCard.GetColor()
@@ -588,7 +588,7 @@ namespace eter {
 				cellOpt->push(tempStack.top());
 				tempStack.pop();
 			}
-			player.RemovePlayedCardForPower(selectedCard, chosenRow, chosenCol);
+			player.removePlayedCardForPower(selectedCard, chosenRow, chosenCol);
 			std::cout << "Card with value " << chosenValue << " removed from the original stack.\n";
 		}
 
@@ -635,7 +635,7 @@ namespace eter {
 
 						if (owner)
 						{
-							owner->AddToEliminatedCards(topCard);
+							owner->addToEliminatedCards(topCard);
 							std::cout << "The card with value " << static_cast<int>(topCard.GetValue())
 								<< " has been eliminated.\n";
 						}
@@ -720,7 +720,7 @@ namespace eter {
 			cell.emplace();
 		}
 		cell->push(selectedCard);
-		player.AddPlayedCard(selectedCard);
+		player.addPlayedCard(selectedCard);
 
 		std::cout << "Placed illusion card with value " << static_cast<int>(selectedCard.GetValue()) << " at position ("
 			<< row << ", " << col << ").\n";
@@ -750,7 +750,7 @@ void elementalPowerCards::activateGale(Player& player, Player& opponent, Board& 
 
 						if (currentCard.GetColor() == player.GetColor())
 						{
-							player.AddCardToHand(currentCard);
+							player.addCardToHand(currentCard);
 							auto& playedCards = player.GetPlayedCards();
 							playedCards.erase(
 								std::remove(playedCards.begin(), playedCards.end(), currentCard),
@@ -760,7 +760,7 @@ void elementalPowerCards::activateGale(Player& player, Player& opponent, Board& 
 						}
 						else
 						{
-							opponent.AddCardToHand(currentCard);
+							opponent.addCardToHand(currentCard);
 							auto& playedCards = opponent.GetPlayedCards();
 							playedCards.erase(
 								std::remove(playedCards.begin(), playedCards.end(), currentCard),
@@ -848,12 +848,12 @@ void elementalPowerCards::activateGust(Board& board, Player& player, Player& opp
 	board.placeCard(finalRow, finalCol, selectedStack->top());
 	if (selectedStack->top().GetColor() == player.GetColor())
 	{
-		player.RemovePlayedCardForPower(selectedStack->top(), selectedRow, selectedCol);
+		player.removePlayedCardForPower(selectedStack->top(), selectedRow, selectedCol);
 		player.addPlayedCardForPower(selectedStack->top(), finalRow, finalCol);
 	}
 	else
 	{
-		opponent.RemovePlayedCardForPower(selectedStack->top(), selectedRow, selectedCol);
+		opponent.removePlayedCardForPower(selectedStack->top(), selectedRow, selectedCol);
 		opponent.addPlayedCardForPower(selectedStack->top(), finalRow, finalCol);
 	}
 	board.removeCard(selectedRow, selectedCol);
@@ -966,11 +966,11 @@ void elementalPowerCards::activateWave(Board& board, Player& player, Player& opp
 		stack->pop();
 
 		if (topCard.GetColor() == player.GetColor()) {
-			player.RemovePlayedCardForPower(topCard, row, col);
+			player.removePlayedCardForPower(topCard, row, col);
 			player.addPlayedCardForPower(topCard, toRow, toCol);
 		}
 		else {
-			opponent.RemovePlayedCardForPower(topCard, row, col);
+			opponent.removePlayedCardForPower(topCard, row, col);
 			opponent.addPlayedCardForPower(topCard, toRow, toCol);
 		}
 	}
@@ -978,7 +978,7 @@ void elementalPowerCards::activateWave(Board& board, Player& player, Player& opp
 	std::cout << "Stack moved from (" << row << ", " << col << ") to (" << toRow << ", " << toCol << ").\n";
 
 	std::cout << "Choose a card from your hand:\n";
-	player.PrintCardsInHand();
+	player.printCardsInHand();
 	size_t cardIndex = 0;
 	std::cin >> cardIndex;
 
@@ -1005,13 +1005,13 @@ void elementalPowerCards::activateStorm(Board& board, Player& player, Player& op
 
 				if (topCard.GetColor() == player.GetColor())
 				{
-					player.AddToEliminatedCards(topCard);
-					player.RemovePlayedCardForPower(topCard, row, col);
+					player.addToEliminatedCards(topCard);
+					player.removePlayedCardForPower(topCard, row, col);
 				}
 				else if (topCard.GetColor() == opponent.GetColor())
 				{
-					opponent.AddToEliminatedCards(topCard);
-					opponent.RemovePlayedCardForPower(topCard, row, col);
+					opponent.addToEliminatedCards(topCard);
+					opponent.removePlayedCardForPower(topCard, row, col);
 				}
 
 				std::cout << "Card with value " << topCard.GetValue()+1-1
@@ -1197,20 +1197,20 @@ void elementalPowerCards::activateWhirlpool(Board& board, Player& player, Player
 
 	if (firstCard.GetColor() == player.GetColor()) {
 		player.addPlayedCardForPower(firstCard, toRow, toCol);
-		player.RemovePlayedCardForPower(firstCard, row1, col1);
+		player.removePlayedCardForPower(firstCard, row1, col1);
 	}
 	else {
 		opponent.addPlayedCardForPower(firstCard, toRow, toCol);
-		opponent.RemovePlayedCardForPower(firstCard, row2, col2);
+		opponent.removePlayedCardForPower(firstCard, row2, col2);
 	}
 
 	if (secondCard.GetColor() == player.GetColor()) {
 		player.addPlayedCardForPower(secondCard, toRow, toCol);
-		player.RemovePlayedCardForPower(secondCard, row1, col1);
+		player.removePlayedCardForPower(secondCard, row1, col1);
 	}
 	else {
 		opponent.addPlayedCardForPower(secondCard, toRow, toCol);
-		opponent.RemovePlayedCardForPower(secondCard, row2, col2);
+		opponent.removePlayedCardForPower(secondCard, row2, col2);
 	}
 
 	if (firstCard.GetValue() > secondCard.GetValue()) {
@@ -1401,10 +1401,10 @@ void elementalPowerCards::activateHurricane(Player& player, Player& opponent, Bo
 
  	for (const auto& card : returnedCards) {
 		if (card.GetColor() == player.GetColor()) {
-			player.AddCardToHand(card);
+			player.addCardToHand(card);
 		}
 		else {
-			opponent.AddCardToHand(card);
+			opponent.addCardToHand(card);
 		}
 	}
 
@@ -1440,7 +1440,7 @@ void eter::elementalPowerCards::activateMirage(Board& board, Player& player) {
  	auto& illusionCell = board[{illusionRow, illusionCol}];
 	Card oldIllusion = illusionCell->top();
 	illusionCell->pop();
-	player.AddCardToHand(oldIllusion);
+	player.addCardToHand(oldIllusion);
 
 	std::cout << "Your illusion at position (" << illusionRow << ", " << illusionCol << ") has been returned to your hand.\n";
 
@@ -1473,7 +1473,7 @@ void eter::elementalPowerCards::activateMirage(Board& board, Player& player) {
 		illusionCell.emplace();
 	}
 	illusionCell->push(newIllusion);
-	player.AddPlayedCard(newIllusion);
+	player.addPlayedCard(newIllusion);
 
 	std::cout << "Placed new illusion card with value " << static_cast<int>(newIllusion.GetValue())
 		<< " at position (" << illusionRow << ", " << illusionCol << ").\n";
@@ -1621,7 +1621,7 @@ void eter::elementalPowerCards::activateRock(Board& board, Player& player)
 	}
 	cellOpt->push(selectedCard);
 
-	player.AddPlayedCard(selectedCard);
+	player.addPlayedCard(selectedCard);
 
 	std::cout << "Covered the Illusion card at (" << selectedRow << ", " << selectedCol << ") with a card of value "
 		<< static_cast<int>(selectedCard.GetValue()) << " from your hand.\n";

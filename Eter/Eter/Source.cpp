@@ -25,7 +25,7 @@ int main()
 	//Test CMode
 	const std::string& gameMode = GameManager::chooseGameMode();
 
-	game.StartNewGame(player1, player2, gameMode);
+	game.startNewGame(player1, player2, gameMode);
 
 	// game.StartNewGame(player1, player2, "BCMode");
 
