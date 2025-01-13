@@ -63,7 +63,7 @@ namespace eter {
 		void RemovePlayedCardForPower(const Card& card, size_t row, size_t col);
 		void addPlayedCardForPower(const Card& card, size_t x, size_t y);
 		std::vector<std::pair<Card, std::pair<size_t, size_t>>>& GetPlayedCardsForPower();//geterul pentru puteri care imi da vectorul cu ultima carte si cu pozitia sa
-
+		static std::string validateName();
 
 		void swap(Player& other) noexcept;
 		friend void swap(Player& first, Player& second) noexcept;

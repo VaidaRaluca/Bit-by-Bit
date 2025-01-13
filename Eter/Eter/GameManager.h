@@ -49,7 +49,8 @@ namespace eter
 		void DeleteSaveInteractive();
 		void ResetGame();
 		void DisplayPlayerStats() const;
-
+		//ChooseGame
+		static const std::string& chooseGameMode();
 	private:
 		//Analiza post joc
 		void AnalyzeGameResults();                           

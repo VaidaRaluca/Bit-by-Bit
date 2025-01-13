@@ -352,5 +352,16 @@ void Game::handleCardCover(Player& currentPlayer, Player& opponent, size_t x, si
 	}
 }
 
+void eter::Game::printPlayers()
+{
+	std::string textColor, backgroundColor;
+	std::string resetColor = "\033[0m";
+	textColor = "\033[38;5;9m";  // Red text
+	backgroundColor = "\033[48;5;0m";  // Black background
+	std::cout << backgroundColor << textColor << m_player1.GetName() << resetColor;
+	std::cout << " VS ";
+	textColor = "\033[38;5;12m"; // Blue text
+	std::cout << backgroundColor << textColor << m_player2.GetName() << resetColor << '\n';
+}
 
 

@@ -72,6 +72,7 @@ namespace eter
 		void resetBoard();
 		void handleCardCover(Player& currentPlayer, Player& opponent, size_t x, size_t y, size_t cardIndex);
 
+		void printPlayers();
 	};
 
 }

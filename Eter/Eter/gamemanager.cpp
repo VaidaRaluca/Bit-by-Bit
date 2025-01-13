@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
+#include <regex>
 //import player;
 //import game;
 using namespace eter;
@@ -27,6 +28,7 @@ void GameManager::SetGame(Game game)
 void GameManager::StartNewGame(Player player1, Player player2, const std::string& gameMode)
 {
     m_game = Game(player1, player2, gameMode);
+    m_game.printPlayers();
     if (gameMode == "AMode")
     {
         m_amode = std::make_unique<AMode>(&m_game);
@@ -814,4 +816,25 @@ bool GameManager::SaveGameToFile(const std::string& filePath) {
         std::cout << "Save operation failed. You can choose another file or quit.\n";
         return false;
     }
+}
+
+
+
+const std::string& eter::GameManager::chooseGameMode()
+{
+    static std::string gameMode;
+    const std::regex modeRegex("^A|B|C|(BC)$");
+    std::cout << "Please choose the mode you want to play :\nA for AMode\nB for BMode \nC for CMode \nBC for BCMode\n";
+    std::cin >> gameMode;
+    if (std::regex_match(gameMode, modeRegex) == false)
+    {
+        while (std::regex_match(gameMode, modeRegex) == false)
+        {
+            std::cout << "Introduce a valid mode : ";
+            std::cin >> gameMode;
+        }
+    }
+    gameMode += "Mode";
+    std::cout << gameMode << " was chosen successfully!\n";
+    return gameMode;
 }

@@ -1,4 +1,5 @@
 #include "Player.h"
+#include <regex>
 using namespace eter;
 constexpr std::pair<uint8_t, uint8_t> kInvalidPosition = { 255, 255 };
 Player::Player(const std::string& name, const std::string& color)
@@ -239,4 +240,23 @@ void Player::RemovePlayedCardForPower(const Card& card, size_t row, size_t col)
 	{
 		m_playedCardsP.erase(it);
 	}
+}
+
+
+std::string eter::Player::validateName()
+{
+	std::string name;
+	const std::regex nameRegex("^[A-Z]+[a-z]*$");
+	std::cout << "Player introduce your name (only letters): ";
+	std::cin >> name;
+	if (std::regex_match(name, nameRegex) == false)
+	{
+		while (std::regex_match(name, nameRegex) == false)
+		{
+			std::cout << "Player introduce a valid name: ";
+			std::cin >> name;
+		}
+	}
+	std::cout << "Name processed successfully!\n";
+	return name;
 }

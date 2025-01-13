@@ -9,24 +9,25 @@
 int main()
 {
 	using namespace eter;
-
-	Player player1("Mihai","red");
-	Player player2("Alina", "blue");
+	std::string name1, name2;
+	name1 = Player::validateName();
+	name2 = Player::validateName();
+	Player player1{ name1, "red" };
+	Player player2{ name2, "blue" };
 
 	// Test AMode
 	GameManager game;
-    //game.StartNewGame(player1, player2, "AMode");
-
-
+	//game.StartNewGame(player1, player2, "AMode");
 	// Test BMode
 
 	//game.StartNewGame(player1, player2, "BMode");
 
 	//Test CMode
+	const std::string& gameMode = GameManager::chooseGameMode();
 
-	game.StartNewGame(player1, player2, "CMode");
+	game.StartNewGame(player1, player2, gameMode);
 
-    // game.StartNewGame(player1, player2, "BCMode");
+	// game.StartNewGame(player1, player2, "BCMode");
 
 	//try {
 	//	game.SaveGame();
