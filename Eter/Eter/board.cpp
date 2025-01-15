@@ -3,7 +3,7 @@ using namespace eter;
 const std::string_view kEmpyBoardCell{ "____" };
 #include <iostream>
 #include <algorithm>
-
+#include <ranges>
 Board::Board()
 	: m_dimMax{ 3 }, m_indexMax{ 7 },
 	m_indexLineMin{ 10 }, m_indexLineMax{ 10 },
@@ -172,14 +172,19 @@ bool eter::Board::isAdjacentToOccupiedSpace(size_t x, size_t y)const
 		{1, -1}, {1, 0}, {1, 1}
 	};
 
-	for (const auto& [dx, dy] : directions) {
-		int nx = x + dx;
-		int ny = y + dy;
-		if ( isValidPosition(nx,ny) && m_grid[nx][ny].has_value() && !m_grid[nx][ny].value().empty()) {
-			return true; // cel putin  un spadiacent este ocupat
-		}
-	}
-	return false; // niciun sp adiacent nu este ocupat
+	//for (const auto& [dx, dy] : directions) {
+	//	int nx = x + dx;
+	//	int ny = y + dy;
+	//	if ( isValidPosition(nx,ny) && m_grid[nx][ny].has_value() && !m_grid[nx][ny].value().empty()) {
+	//		return true; // cel putin  un spadiacent este ocupat
+	//	}
+	//}
+	//return false; // niciun sp adiacent nu este ocupat
+
+	return std::ranges::any_of(directions, [&](const auto& dir) {
+		int nx = x + dir.first, ny = y + dir.second;
+		return isValidPosition(nx, ny) && m_grid[nx][ny].has_value() && !m_grid[nx][ny]->empty();
+		});
 }
 
 bool eter::Board::existNonAdjacentCards(size_t x, size_t y)
@@ -543,24 +548,33 @@ void Board::eliminateCardsOnRow(size_t row)
 
 size_t Board::countOccupiedCellsOnRow(size_t row)
 {
-	size_t occupiedCount = 0;
+	/*size_t occupiedCount = 0;
 	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
 		if (m_grid[row][col].has_value())
 			++occupiedCount;
 	}
-	return occupiedCount;
+	return occupiedCount;*/
+	return std::ranges::count_if(m_grid[row] | std::views::drop(m_indexColMin) | std::views::take(m_indexColMax - m_indexColMin + 1),
+		[](const auto& cell) { return cell.has_value(); });
 }
 
 bool Board::containsOwnCardOnRow(size_t row, const std::string& playerColor)
 {
-	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
+	/*for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
 		if (m_grid[row][col].has_value()) {
 			const Card& topCard = m_grid[row][col].value().top();
 			if (topCard.GetColor() == playerColor)
 				return true;
 		}
 	}
-	return false;
+	return false;*/
+
+	return std::ranges::any_of(
+		m_grid[row] | std::views::drop(m_indexColMin) | std::views::take(m_indexColMax - m_indexColMin + 1),
+		[&](const auto& cell) {
+			return cell.has_value() && cell->top().GetColor() == playerColor;
+		}
+	);
 }
 
 void Board::eliminateCardsOnColumn(size_t col)
@@ -598,24 +612,32 @@ std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGridForMode
 
 size_t Board::countOccupiedCellsOnColumn(size_t col)
 {
-	size_t occupiedCount = 0;
+	/*size_t occupiedCount = 0;
 	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
 		if (m_grid[row][col].has_value())
 			++occupiedCount;
 	}
-	return occupiedCount;
+	return occupiedCount;*/
+	return std::ranges::count_if(m_grid[col] | std::views::drop(m_indexLineMin) | std::views::take(m_indexLineMax - m_indexLineMin + 1),
+		[](const auto& cell) { return cell.has_value(); });
 }
 
 bool Board::containsOwnCardOnColumn(size_t col, const std::string& playerColor)
 {
-	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
+	/*for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
 		if (m_grid[row][col].has_value()) {
 			const Card& topCard = m_grid[row][col].value().top();
 			if (topCard.GetColor() == playerColor)
 				return true;
 		}
 	}
-	return false;
+	return false;*/
+	return std::ranges::any_of(
+		m_grid[col] | std::views::drop(m_indexLineMin) | std::views::take(m_indexLineMax - m_indexLineMin + 1),
+		[&](const auto& cell) {
+			return cell.has_value() && cell->top().GetColor() == playerColor;
+		}
+	);
 }
 
 
@@ -733,18 +755,34 @@ std::vector<Card> Board::shiftColumnBackward(size_t col) {
 
 
 void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
-	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
+	/*for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
 		m_grid[row][toCol] = std::move(m_grid[row][fromCol]);
-
 		m_grid[row][fromCol].reset();
-	}
+	}*/
+
+	std::ranges::for_each(
+		std::views::iota(m_indexLineMin, m_indexLineMax + 1), 
+		[&](size_t row) {
+			m_grid[row][toCol] = std::move(m_grid[row][fromCol]);
+			m_grid[row][fromCol].reset();
+		}
+	);
 }
 
 void eter::Board::moveRow(size_t fromRow, size_t toRow) {
-	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
-		m_grid[toRow][col] = std::move(m_grid[fromRow][col]);
-		m_grid[fromRow][col].reset();
-	}
+	//for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
+	//	m_grid[toRow][col] = std::move(m_grid[fromRow][col]);
+	//	m_grid[fromRow][col].reset();
+	//}
+
+
+	std::ranges::for_each(
+		std::views::iota(m_indexColMin, m_indexColMax + 1),
+		[&](size_t col) {
+			m_grid[col][toRow] = std::move(m_grid[col][fromRow]);
+			m_grid[col][fromRow].reset();
+		}
+	);
 }
 
 

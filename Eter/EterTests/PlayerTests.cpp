@@ -28,7 +28,7 @@ namespace EterTests
             Player player{ "TestPlayer", "red" };
             Card testCard{ 3, "red", true }; 
             size_t x = 2, y = 2;
-            player.AddCardToHand(testCard);
+            player.addCardToHand(testCard);
             Assert::IsTrue(std::find(player.GetCardsInHand().begin(), player.GetCardsInHand().end(), testCard) != player.GetCardsInHand().end(),
                 L"The card should be in the player's hand before placing it.");
             bool result = player.placeCard(x, y, testCard, board);
@@ -46,7 +46,7 @@ namespace EterTests
             Player player{ "TestPlayer", "blue" };
             Card illusion{ 3, "blue", true };
             size_t x = 1, y = 1;
-            player.AddCardToHand(illusion);
+            player.addCardToHand(illusion);
             player.useIllusion(x, y, board, illusion);
             Assert::IsFalse(board.isEmptyCell(x, y), L"The cell (1, 1) should not be empty after placing the illusion.");
             Assert::AreEqual(std::string("blue"), board.GetGrid()[x][y]->top().GetColor(), L"The color of the card on the board should be blue.");
@@ -59,10 +59,10 @@ namespace EterTests
         {
             Player player{ "TestPlayer", "red" };
             Card testCard{ 2,"red", true };
-            player.AddPlayedCard(testCard);
+            player.addPlayedCard(testCard);
             Assert::IsTrue(std::find(player.GetPlayedCards().begin(), player.GetPlayedCards().end(), testCard) != player.GetPlayedCards().end(),
                 L"The card should be in the player's played cards.");
-            player.RemovePlayedCard(testCard);
+            player.removePlayedCard(testCard);
             Assert::IsTrue(std::find(player.GetPlayedCards().begin(), player.GetPlayedCards().end(), testCard) == player.GetPlayedCards().end(),
                 L"The card should no longer be in the player's played cards.");
         }
@@ -75,7 +75,7 @@ namespace EterTests
             Card testCard2{ 3, "red", true }; 
             size_t x = 2, y = 2;
 
-            player.AddCardToHand(testCard);
+            player.addCardToHand(testCard);
             Assert::IsTrue(std::find(player.GetCardsInHand().begin(), player.GetCardsInHand().end(), testCard) != player.GetCardsInHand().end(),
                 L"The ETER card should be in the player's hand before placing it.");
 
@@ -87,7 +87,7 @@ namespace EterTests
             Assert::IsTrue(std::find(player.GetPlayedCards().begin(), player.GetPlayedCards().end(), testCard) != player.GetPlayedCards().end(),
                 L"The ETER card should now be in the player's played cards.");
 
-            player.AddCardToHand(testCard2);
+            player.addCardToHand(testCard2);
             Assert::IsTrue(std::find(player.GetCardsInHand().begin(), player.GetCardsInHand().end(), testCard2) != player.GetCardsInHand().end(),
                 L"The second card should be in the player's hand before attempting to place it.");
 
@@ -116,10 +116,10 @@ namespace EterTests
         {
             Player player1("Player1", "red");
             player1.SetScore(50);
-            player1.AddCardToHand(Card(1, "red", true));
-            player1.AddCardToHand(Card(2, "blue", true));
-            player1.AddPlayedCard(Card(3, "red", false));
-            player1.AddToEliminatedCards(Card(4, "blue", false));
+            player1.addCardToHand(Card(1, "red", true));
+            player1.addCardToHand(Card(2, "blue", true));
+            player1.addPlayedCard(Card(3, "red", false));
+            player1.addToEliminatedCards(Card(4, "blue", false));
 
             Player player2("Player2", "blue");
             player2.SetScore(100);

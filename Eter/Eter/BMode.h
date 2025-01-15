@@ -8,12 +8,12 @@ import mage;
 namespace eter {
 	 class BMode : virtual public AMode {
 	private:
-		std::vector<Mage> m_mages{ /*Mage{Mage::MagicAbility::removeOpponentCard},
+		std::vector<Mage> m_mages{ Mage{Mage::MagicAbility::removeOpponentCard},
 		Mage{Mage::MagicAbility::removeEntireLine},
 		Mage{Mage::MagicAbility::coverOpponentCard},
 		Mage{Mage::MagicAbility::createPit},
 		Mage{Mage::MagicAbility::moveOwnStack},
-		Mage{Mage::MagicAbility::extraEterCard},*/
+		Mage{Mage::MagicAbility::extraEterCard},
 		Mage{Mage::MagicAbility::moveOpponentStack},
 		Mage{Mage::MagicAbility::shiftEdge} };
 
@@ -33,7 +33,6 @@ namespace eter {
 		void handleOption() override;  // afiseaza optiunile utilizatorului
 		void applyModeRules() override; // aplica toate regulile jocului
 
-		//Made them public just for testing, i will make getters for them later
 
 		virtual ~BMode() = default;
 
