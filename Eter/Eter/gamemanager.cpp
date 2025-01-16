@@ -818,22 +818,35 @@ bool GameManager::saveGameToFile(const std::string& filePath) {
     }
 }
 
+//const std::string& eter::GameManager::chooseGameMode()
+//{
+//    static std::string gameMode;
+//    const std::regex modeRegex("^A|B|C|(BC)$");
+//    std::cout << "Please choose the mode you want to play :\nA for AMode\nB for BMode \nC for CMode \nBC for BCMode\n";
+//    std::cin >> gameMode;
+//    if (std::regex_match(gameMode, modeRegex) == false)
+//    {
+//        while (std::regex_match(gameMode, modeRegex) == false)
+//        {
+//            std::cout << "Introduce a valid mode : ";
+//            std::cin >> gameMode;
+//        }
+//    }
+//    gameMode += "Mode";
+//    std::cout << gameMode << " was chosen successfully!\n";
+//    return gameMode;
+//}
 
-
-const std::string& eter::GameManager::chooseGameMode()
-{
+const std::string& eter::GameManager::chooseGameMode() {
     static std::string gameMode;
     const std::regex modeRegex("^A|B|C|(BC)$");
-    std::cout << "Please choose the mode you want to play :\nA for AMode\nB for BMode \nC for CMode \nBC for BCMode\n";
-    std::cin >> gameMode;
-    if (std::regex_match(gameMode, modeRegex) == false)
-    {
-        while (std::regex_match(gameMode, modeRegex) == false)
-        {
-            std::cout << "Introduce a valid mode : ";
-            std::cin >> gameMode;
-        }
-    }
+
+    gameMode = validateInput<std::string>(
+        "Please choose the mode you want to play:\nA for AMode\nB for BMode\nC for CMode\nBC for BCMode\n",
+        modeRegex,
+        "Invalid mode! Please introduce a valid mode (A, B, C, or BC): "
+    );
+
     gameMode += "Mode";
     std::cout << gameMode << " was chosen successfully!\n";
     return gameMode;

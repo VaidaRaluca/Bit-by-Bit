@@ -1,14 +1,29 @@
 #pragma once
-#include<cstdint>
+#include <cstdint>
 #include <vector>
 #include <optional>
 #include <string>
 #include <random>
 #include <utility>
+#include <regex>
 #include "Board.h"
 #include "Card.h"
 
+
+
 namespace eter {
+	template <typename T>
+	T validateInput(const std::string& prompt, const std::regex& pattern, const std::string& errorMessage) {
+		T input;
+		std::cout << prompt;
+		std::cin >> input;
+		while (!std::regex_match(input, pattern)) {
+			std::cout << errorMessage;
+			std::cin >> input;
+		}
+		std::cout << "Input processed successfully!\n";
+		return input;
+	}
 	 class Player
 	{
 	private:
