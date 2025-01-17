@@ -6,8 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <regex>
-//import player;
-//import game;
+
 using namespace eter;
 
 GameManager::GameManager(const Game& game) :
@@ -228,7 +227,6 @@ void GameManager::deleteSave(const std::string& saveFileName) {
 void GameManager::resetGame() {
     std::cout << "Resetting the game to its initial state...\n";
 
-    // Resetăm tabla de joc
     m_game.GetBoardRef().clear();
 
     m_game.GetPlayer1Ref().SetScore(0);
@@ -253,7 +251,6 @@ void GameManager::displayPlayerStats() const {
     const Player& player1 = m_game.GetPlayer1();
     const Player& player2 = m_game.GetPlayer2();
 
-    // Calculare statistici suplimentare
     size_t player1TotalCardsPlayed = player1.GetPlayedCards().size();
     size_t player2TotalCardsPlayed = player2.GetPlayedCards().size();
 
@@ -267,13 +264,10 @@ void GameManager::displayPlayerStats() const {
     float player1WinPercentage = totalRounds > 0 ? (player1RoundsWon * 100.0f / totalRounds) : 0.0f;
     float player2WinPercentage = totalRounds > 0 ? (player2RoundsWon * 100.0f / totalRounds) : 0.0f;
 
-    // Determinare cel mai bun jucator
     const std::string& bestPlayer = (player1RoundsWon > player2RoundsWon) ? player1.GetName() : player2.GetName();
 
-    // Afisare statistici
     std::cout << "\n===== Player Statistics =====\n";
 
-    // Player 1
     std::cout << "Player 1: " << player1.GetName() << "\n";
     std::cout << std::setw(20) << "Cards Played: " << player1TotalCardsPlayed << "\n";
     std::cout << std::setw(20) << "Cards Eliminated: " << player1TotalCardsEliminated << "\n";
@@ -281,7 +275,6 @@ void GameManager::displayPlayerStats() const {
         << " (" << player1WinPercentage << "%)\n";
     std::cout << "-----------------------------\n";
 
-    // Player 2
     std::cout << "Player 2: " << player2.GetName() << "\n";
     std::cout << std::setw(20) << "Cards Played: " << player2TotalCardsPlayed << "\n";
     std::cout << std::setw(20) << "Cards Eliminated: " << player2TotalCardsEliminated << "\n";
@@ -289,7 +282,6 @@ void GameManager::displayPlayerStats() const {
         << " (" << player2WinPercentage << "%)\n";
     std::cout << "=============================\n";
 
-    // Evidentierea castigator
     if (player1RoundsWon != player2RoundsWon) {
         std::cout << "Best Player: " << bestPlayer << "\n";
     }
@@ -305,15 +297,12 @@ void GameManager::updateLeaderboard() {
     uint8_t player1RoundsWon = m_game.GetPlayer1Wins();
     uint8_t player2RoundsWon = m_game.GetPlayer2Wins();
 
-    // Actualizează runde castigate
     m_player1TotalRounds += player1RoundsWon;
     m_player2TotalRounds += player2RoundsWon;
 
-    // Actualizeaza scorurile totale
     m_player1TotalScore += player1.GetScore();
     m_player2TotalScore += player2.GetScore();
 
-    // Determina castigatorul si victoriile totale
     if (player1RoundsWon > player2RoundsWon) {
         ++m_player1TotalWins;
     }
@@ -377,7 +366,6 @@ void GameManager::loadLeaderboard(const std::string& filename) {
 void GameManager::analyzeGameResults() {
     namespace fs = std::filesystem;
 
-    // Analiza jocului curent
     const Player& player1 = m_game.GetPlayer1();
     const Player& player2 = m_game.GetPlayer2();
 
@@ -414,7 +402,6 @@ void GameManager::analyzeGameResults() {
 
     std::cout << "=============================\n";
 
-    // Analiza salvarilor
     std::string saveDirectory = "saves/";
     int totalPlayer1Wins = 0;
     int totalPlayer2Wins = 0;
@@ -466,7 +453,6 @@ void GameManager::displayGlobalStats() const {
     std::cout << "Total Games Won by " << m_game.GetPlayer2().GetName() << ": " << m_player2TotalWins << "\n";
     std::cout << "Total Draws: " << m_draws << "\n";
 
-    // Determina cine este castigatorul general
     if (m_player1TotalWins > m_player2TotalWins) {
         std::cout << "Overall Winner: " << m_game.GetPlayer1().GetName() << "\n";
     }
@@ -501,7 +487,6 @@ void GameManager::loadGlobalStats(const std::string& filename) {
     std::cout << "Global statistics loaded from " << filename << ".\n";
 }
 
-//Functii auxiliare
 
 void GameManager::startAutoSaveTimer() {
     std::thread([this]() {
@@ -711,7 +696,6 @@ bool GameManager::confirmationForSave(const std::string& fileName) const {
     return (toupper(choice) == 'Y');
 }
 
-//LoadGame
 
 std::string GameManager::promptFileName() {
     std::cout << "Enter the name of the save file to load, or press 'L' to list all save files, or 'Q' to quit: ";
@@ -775,7 +759,6 @@ bool GameManager::loadGameFromFile(const std::string& filePath) {
     }
 }
 
-//SaveGame
 
 std::string GameManager::promptFileNameForSave() {
     std::cout << "Enter the name of the save file, or press 'Q' to quit: ";
@@ -818,24 +801,6 @@ bool GameManager::saveGameToFile(const std::string& filePath) {
     }
 }
 
-//const std::string& eter::GameManager::chooseGameMode()
-//{
-//    static std::string gameMode;
-//    const std::regex modeRegex("^A|B|C|(BC)$");
-//    std::cout << "Please choose the mode you want to play :\nA for AMode\nB for BMode \nC for CMode \nBC for BCMode\n";
-//    std::cin >> gameMode;
-//    if (std::regex_match(gameMode, modeRegex) == false)
-//    {
-//        while (std::regex_match(gameMode, modeRegex) == false)
-//        {
-//            std::cout << "Introduce a valid mode : ";
-//            std::cin >> gameMode;
-//        }
-//    }
-//    gameMode += "Mode";
-//    std::cout << gameMode << " was chosen successfully!\n";
-//    return gameMode;
-//}
 
 const std::string& eter::GameManager::chooseGameMode() {
     static std::string gameMode;

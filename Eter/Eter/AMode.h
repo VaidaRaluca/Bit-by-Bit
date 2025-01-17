@@ -15,9 +15,9 @@ namespace eter {
 		AMode(Game* game);
 		virtual void assignCardsInHand();
 		virtual void startMatch();
-		virtual void handleOption();  // afiseaza optiunile utilizatorului
-		virtual void startRound();  //porneste runda
-		virtual void applyModeRules(); // aplica toate regulile jocului
+		virtual void handleOption();  
+		virtual void startRound(); 
+		virtual void applyModeRules();
 
 		virtual ~AMode() = default;
 

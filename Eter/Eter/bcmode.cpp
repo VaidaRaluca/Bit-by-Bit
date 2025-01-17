@@ -66,7 +66,6 @@ void eter::BCMode::handleOption()
         m_game->playTurn();
         break;
     case OPTION_2:
-        //activare iluzie
         m_game->playIllusion();
         break;
     case OPTION_3:
@@ -82,7 +81,6 @@ void eter::BCMode::handleOption()
         }
         break;
     case OPTION_4: {
-        // Selectarea unei puteri elementale
         std::cout << "Select an elemental power:\n";
         int abilityIndex = 0;
         for (int i = 0; i <= static_cast<int>(eter::elementalPowerCards::powerAbility::rock); ++i) {
@@ -100,7 +98,6 @@ void eter::BCMode::handleOption()
 
         eter::elementalPowerCards elementalPower(selectedAbility);
 
-        // Verific?m dac? puterea a fost utilizat?
         if (elementalPower.GetUsed()) {
             std::cout << "This power has already been used.\n";
         }

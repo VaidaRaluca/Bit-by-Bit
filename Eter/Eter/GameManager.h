@@ -38,8 +38,8 @@ namespace eter
 		const Game& GetGame()const;
 		void SetGame(Game game);
 		void startNewGame(Player player1, Player player2, const std::string& gameMode);
-		void saveGame();   // Metoda pentru salvarea unui joc
-		void loadGame();   // Metoda pentru incarcarea unui joc
+		void saveGame();  
+		void loadGame();   
 
 		void autoSave(const std::string& autosaveFile = "saves/autosave.dat");
 		void loadAutoSave();
@@ -49,16 +49,16 @@ namespace eter
 		void deleteSaveInteractive();
 		void resetGame();
 		void displayPlayerStats() const;
-		//ChooseGame
+
 		static const std::string& chooseGameMode();
 	private:
-		//Analiza post joc
+
 		void analyzeGameResults();                           
 		void displayGlobalStats() const;                     
 		void saveGlobalStats(const std::string& filename) const; 
 		void loadGlobalStats(const std::string& filename);   
 
-		//Leader board
+
 		void updateLeaderboard();  
 		void displayLeaderboard() const;                        
 		void saveLeaderboard(const std::string& filename) const; 
@@ -83,12 +83,10 @@ namespace eter
 		bool confirmAction(const std::string& actionDescription) const;
 		bool confirmationForSave(const std::string& fileName) const;
 
-		//LoadGame
 		std::string promptFileName();
 		bool handleSpecialCommands(const std::string& fileName, const std::string& saveDirectory);
 		bool loadGameFromFile(const std::string& filePath);
 
-		//SaveGame
 		std::string promptFileNameForSave();
 		bool saveGameToFile(const std::string& filePath);
 	};

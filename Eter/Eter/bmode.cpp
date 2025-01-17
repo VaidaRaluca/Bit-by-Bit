@@ -86,60 +86,11 @@ void BMode::generateMage()
 void BMode::startMatch()
 {   
     AMode::startMatch();
-    /*size_t countRound = 1;
-    std::cout << "The game in B mode has started \n";
-    while(m_game->GetPlayer2Wins() < knrRoundsForWin && m_game->GetPlayer1Wins() < knrRoundsForWin)
-    {
-        std::cout << "Round " << countRound << " of 5 \n";
-        startRound(); 
-        countRound++;
-        std::cout << "The round has ended. \n";
-        std::cout << m_game->GetPlayer1().GetName()<<" wins: " <<static_cast<int> (m_game->GetPlayer1Wins())<<"\n";
-        std::cout << m_game->GetPlayer2().GetName() << " wins: " << static_cast<int> (m_game->GetPlayer2Wins())<< "\n";
-        assignCardsInHand();
-        m_game->resetBoard();
-    }
-    if (m_game->GetPlayer1Wins() > m_game->GetPlayer2Wins())
-        std::cout << "Player " << m_game->GetPlayer1().GetName() << " wins this game!" << std::endl;
-    else
-        std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this game!" << std::endl;
-
-    std::cout << "GAME OVER \n";*/
 }
 
 void BMode::startRound()
 {
     AMode::startRound();
-    /*char gameStatus = '0';
-    while (gameStatus == '0')
-    {
-        handleOption();
-        gameStatus = m_game->VerifyGameOver();
-        std::cout <<"Game status: "<< gameStatus << "\n";
-    }
-    std::cout << gameStatus << "\n";
-    if (gameStatus == '2' || gameStatus == '3')
-    {
-        std::string choice;
-        std::cout << "Do you want to continue the game with a single move? (YES or NO) \n";
-        std::cin >> choice;
-        if (choice == "YES")
-            handleOption();
-        if (m_game->GetPlayer1().GetColor() == m_game->GetBoard().findWinnerByScore())
-        {
-            std::cout << "Player " << m_game->GetPlayer1().GetName() << " wins this round!" << std::endl;
-            m_game->IncrementPlayer1Wins();
-        }
-        else
-            if (m_game->GetPlayer2().GetColor() == m_game->GetBoard().findWinnerByScore())
-            {
-                std::cout << "Player " << m_game->GetPlayer2().GetName() << " wins this round!" << std::endl;
-                m_game->IncrementPlayer2Wins();
-            }
-        else
-                std::cout << "DRAW \n";
-    }
-    std::cout << m_game->GetBoard();*/
 }
 
 void BMode::handleOption()

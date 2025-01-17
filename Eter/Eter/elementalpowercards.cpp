@@ -1,8 +1,5 @@
 ﻿#include "ElementalPowerCards.h"
 using namespace eter;
-//import board;
-//import player;
-//import card;
 #include <stdexcept>
 #include <unordered_map>
 #include <iostream>
@@ -223,16 +220,14 @@ namespace eter {
 	}
 
 	void elementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board) {
-		// Obținem vectorul de cărți jucate ale adversarului
 		auto& opponentPlayedCards = opponent.GetPlayedCardsForPower();
 
-		// Verificăm dacă adversarul a jucat cel puțin o carte
 		if (opponentPlayedCards.empty()) {
 			std::cout << "The opponent has no played cards to remove.\n";
 		}
 		else
 		{
-			// Obținem ultima carte jucată de adversar și poziția sa
+
 			const auto& lastPlayedCardWithPos = opponentPlayedCards.back();
 			const Card& lastCardPlayed = lastPlayedCardWithPos.first;
 			size_t  x = lastPlayedCardWithPos.second.first;

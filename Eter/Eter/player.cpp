@@ -75,7 +75,7 @@ std::vector<Card>& Player::GetCardsInHand()
 	return m_cardsInHand;
 }
 
-bool Player::GetHasUsedIllusion() const //returns false if the illusion has not yet been used
+bool Player::GetHasUsedIllusion() const 
 {
 	return m_hasUsedIllusion;
 }
@@ -158,7 +158,7 @@ bool Player::placeCard(size_t x, size_t y, const Card& card, Board& board)
 	}
 }
 
-void eter::Player::addPlayedCardForPower(const Card& card, size_t x, size_t y)//functia cu vectorul pentru puteri care obtine si pozitia ultimei carti
+void eter::Player::addPlayedCardForPower(const Card& card, size_t x, size_t y) //functia cu vectorul pentru puteri care obtine si pozitia ultimei carti
 {
 	m_playedCardsP.emplace_back(card, std::make_pair(x, y));
 }
@@ -179,13 +179,6 @@ void eter::Player::swap(Player& other) noexcept
 	swap(m_eliminatedCards, other.m_eliminatedCards);
 }
 
-std::pair<uint8_t, uint8_t> Player::findEmptyCell(Board& board) // this function could be moved somewhere else perhaps
-{
-	for (uint8_t rows = 0; rows < board.GetIndexMax(); rows++)
-		for (uint8_t cols = 0; cols < board.GetIndexMax(); cols++)
-			if (board.isValidPosition(rows, cols) && board.GetGrid()[rows][cols] == std::nullopt)
-				return { rows,cols };
-}
 
 void Player::useIllusion(size_t x, size_t y, Board& board, Card& illusion)
 {
@@ -240,26 +233,6 @@ void Player::removePlayedCardForPower(const Card& card, size_t row, size_t col)
 		m_playedCardsP.erase(it);
 	}
 }
-
-
-
-//std::string eter::Player::validateName()
-//{
-//	std::string name;
-//	const std::regex nameRegex("^[A-Z]+[a-z]*$");
-//	std::cout << "Player introduce your name (only letters): ";
-//	std::cin >> name;
-//	if (std::regex_match(name, nameRegex) == false)
-//	{
-//		while (std::regex_match(name, nameRegex) == false)
-//		{
-//			std::cout << "Player introduce a valid name: ";
-//			std::cin >> name;
-//		}
-//	}
-//	std::cout << "Name processed successfully!\n";
-//	return name;
-//}
 
 
 std::string eter::Player::validateName() {

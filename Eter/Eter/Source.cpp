@@ -15,19 +15,12 @@ int main()
 	Player player1{ name1, "red" };
 	Player player2{ name2, "blue" };
 
-	// Test AMode
 	GameManager game;
-	//game.StartNewGame(player1, player2, "AMode");
-	// Test BMode
 
-	//game.StartNewGame(player1, player2, "BMode");
-
-	//Test CMode
 	const std::string& gameMode = GameManager::chooseGameMode();
 
 	game.startNewGame(player1, player2, gameMode);
 
-	// game.StartNewGame(player1, player2, "BCMode");
 
 	//try {
 	//	game.SaveGame();

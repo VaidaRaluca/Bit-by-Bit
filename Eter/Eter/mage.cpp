@@ -1,4 +1,4 @@
-//mage.cpp
+
 #include "Board.h"
 #include "Player.h"
 module mage;
@@ -22,31 +22,31 @@ Mage::MagicAbility Mage::GetAbility() const {
 	return m_ability;
 }
 
-//Constructor de copiere
+
 Mage::Mage(const Mage& other)
 	: m_ability{ other.m_ability }, m_used{ other.m_used } {
 }
 
-//Operator de atribuire prin copiere
+
 Mage& Mage::operator=(const Mage& other) {
 	Mage temp{ other };
 	swap(temp);
 	return *this;
 }
 
-// Constructor de mutare
+
 Mage::Mage(Mage&& other) noexcept
 {
 	this->swap(other);
 }
 
-// Operator de atribuire prin mutare
+
 Mage& Mage::operator=(Mage&& other) noexcept {
 	this->swap(other);
 	return *this;
 }
 
-// Destructor
+
 Mage::~Mage() {}
 
 void Mage::swap(Mage& other) noexcept
@@ -60,7 +60,7 @@ void Mage::swap(Mage& other) noexcept
 	other.m_used = tempUsed;
 }
 
-//descriere abilitati
+
 const std::unordered_map<Mage::MagicAbility, std::string> abilityDescriptions = {
 	{ Mage::MagicAbility::removeOpponentCard, "Remove from play an opponent’s card that covers one of your cards." },
 	{ Mage::MagicAbility::removeEntireLine, "Remove all cards from a specific row or column on the board." },
@@ -72,63 +72,32 @@ const std::unordered_map<Mage::MagicAbility, std::string> abilityDescriptions = 
 	{ Mage::MagicAbility::shiftEdge, "Shift a row or column from one edge to another." }
 };
 
-// Gasirea pozitiei unei carti pe tabla
-std::optional<std::pair<size_t, size_t>> Mage::findCardPosition(const Card& card, Board& board) {
-	for (size_t i = 0; i < board.GetIndexMax(); ++i) {
-		for (size_t j = 0; j < board.GetIndexMax(); ++j) {
-			if (auto& cellOpt = board[{i, j}]; cellOpt.has_value() && !cellOpt->empty()) {
-				if (cellOpt->top() == card) {
-					return std::make_pair(i, j);
-				}
-			}
-		}
-	}
-	return std::nullopt;
-}
 
-// Eliminare carte dintr-o celula a tablei
-void Mage::removeCardFromBoard(std::optional<std::stack<Card>>& stack) {
-	if (stack.has_value() && !stack->empty()) {
-		stack->pop();
-		std::cout << "Card removed.\n";
-	}
-}
 
-// Mutare teanc intre doua pozitii
-void Mage::moveStack(const std::pair<int, int>& from, const std::pair<int, int>& to, Board& board) {
-	if (from != to && board.isValidPosition(to.first, to.second)) {
-		board[to] = board[from];
-		board[from].reset();
-		std::cout << "Stack moved from (" << from.first << ", " << from.second << ") to (" << to.first << ", " << to.second << ").\n";
-	}
-}
-
-// Activare abilitate
 void Mage::activate(Player& player, Player& opponent, Board& board) {
 	if (isAbilityUsed()) {
 		std::cout << "The ability has already been used!\n";
 		return;
 	}
 
-	displayAbilityDescription();  // Afiseaza descrierea abilitatii
+	displayAbilityDescription();  
 
-	if (!confirmAbilityActivation()) {  // Confirmarea utilizatorului
+	if (!confirmAbilityActivation()) {  
 		cancelAbilityActivation();
 		return;
 	}
-	std::cout << "P color " << player.GetColor() << " OP color" << opponent.GetColor() << '\n';
-	bool success{ false };  // Indicator pentru activarea cu succes a abilitatii
-	success = executeAbility(player, opponent, board);  // Incearca activarea abilitatii
+	bool success{ false };  
+	success = executeAbility(player, opponent, board);  
 	std::cout << "success is: " << success << '\n';
 	if (success) {
-		updateAbilityUsage();  // Actualizeaza contorul utilizarii
-		notifyAbilityActivated();  // Notificare de succes
+		updateAbilityUsage();  
+		notifyAbilityActivated();  
 	}
 	else
 		std::cout << "The ability was not activated successfully. Please try again.\n";
 }
 
-// Eliminare carte a oponentului
+
 void Mage::removeOpponentCard(Player& player, Player& opponent, Board& board) {
 	std::cout << "Activating ability: Remove Opponent Card\n";
 
@@ -146,13 +115,12 @@ void Mage::removeOpponentCard(Player& player, Player& opponent, Board& board) {
 		auto& cell{ board[{row, col}] };
 		if (!cell.has_value() || cell->empty()) {
 			std::cout << "No card found at position (" << row << ", " << col << "). Try again.\n";
-			continue;  // Retry input
+			continue;  
 		}
 		if (cell.has_value() && cell.value().top().GetColor() != opponent.GetColor()) {
 			std::cout << "The top card at (" << row << ", " << col << ") is not an opponent's card. Try again.\n";
 			continue;
 		}
-
 		validPosition = true;
 	}
 	auto& selectedCell{ board[{row, col}] };
@@ -182,7 +150,7 @@ void Mage::removeOpponentCard(Player& player, Player& opponent, Board& board) {
 	}
 
 	if (selectedCell->empty())
-		selectedCell.reset(); // Reseteaza celula daca stiva devine goala
+		selectedCell.reset(); 
 }
 
 void eter::Mage::removeEntireLine(Player& player, Board& board) {
@@ -197,11 +165,10 @@ void eter::Mage::removeEntireLine(Player& player, Board& board) {
 	else std::cout << "ERROR\n";
 }
 
-// Eliminare rand intreg
+
 void eter::Mage::removeEntireRow(Player& player, Board& board) {
 	std::cout << "Activating ability: Remove Entire Row\n";
 
-	// Solicita utilizatorului randul pe care doreste sa-l elimine
 	size_t row;
 	bool validRow{ false };
 	while (!validRow) {
@@ -231,7 +198,6 @@ void eter::Mage::removeEntireRow(Player& player, Board& board) {
 void eter::Mage::removeEntireColumn(Player& player, Board& board) {
 	std::cout << "Activating ability: Remove Entire Column\n";
 
-	// Solicita utilizatorului randul pe care doreste sa-l elimine
 	size_t col;
 	bool validCol{ false };
 	while (!validCol) {
@@ -258,7 +224,6 @@ void eter::Mage::removeEntireColumn(Player& player, Board& board) {
 	std::cout << "Column " << col << " has been removed!\n";
 }
 
-// Acoperire carte adversar
 void Mage::coverOpponentCard(Player& player, Player& opponent, Board& board) {
 	std::cout << "Activating ability: Cover Opponent Card\n";
 
@@ -274,7 +239,7 @@ void Mage::coverOpponentCard(Player& player, Player& opponent, Board& board) {
 		auto& cell{ board[{row, col}] };
 		if (!cell.has_value() || cell->empty()) {
 			std::cout << "No card found at position (" << row << ", " << col << "). Try again.\n";
-			continue;  // Retry input
+			continue;  
 		}
 		if (cell.value().top().GetColor() != opponent.GetColor()) {
 			std::cout << opponent.GetColor() << " " << player.GetColor() << " ";
@@ -293,7 +258,6 @@ void Mage::coverOpponentCard(Player& player, Player& opponent, Board& board) {
 	}
 	auto& selectedCell{ board[{row, col}] };
 	const Card& opponentCard { selectedCell->top()};
-	// Afiseaza cartile din mana jucatorului
 	player.printCardsInHand();
 	size_t cardIndex;
 	bool validCardIndex{ false };
@@ -312,14 +276,12 @@ void Mage::coverOpponentCard(Player& player, Player& opponent, Board& board) {
 		validCardIndex = true;
 	}
 	const Card& selectedCard{ player.GetCardsInHand().at(cardIndex) };
-	selectedCell->push(selectedCard); // Pune cartea in stiva
-	// Elimina cartea din mana jucatorului
+	selectedCell->push(selectedCard); 
 	player.GetCardsInHand().erase(player.GetCardsInHand().begin() + cardIndex);
-	player.addPlayedCard(selectedCard); // Adauga cartea la cele jucate
+	player.addPlayedCardForPower(selectedCard, row, col); 
 	std::cout << "Card placed successfully at (" << row << ", " << col << ").\n";
 }
 
-// Creare groapa
 void Mage::createPit(Board& board) {
 	std::cout << "Activating ability: Create Pit\n";
 
@@ -352,7 +314,6 @@ void Mage::createPit(Board& board) {
 }
 
 
-// Adaugare carte Eter
 void Mage::addExtraEterCard(Player& player, Board& board) {
 	std::cout << "Activating ability: Add Extra Eter Card\n";
 	size_t row, col;
@@ -379,13 +340,12 @@ void Mage::addExtraEterCard(Player& player, Board& board) {
 			continue;
 		}
 	}
-	board[{row, col}] = std::stack<Card>{}; // Initialize the optional if needed
+	board[{row, col}] = std::stack<Card>{}; 
 	board[{row, col}]->push(Card{ 5, player.GetColor(), true });
 	std::cout << "Extra Eter card placed at (" << row << ", " << col << ").\n";
 }
 
 
-// Mutare teanc propriu
 void Mage::moveOwnStack(Player& player, Board& board) {
 	std::cout << "Activating ability: Move Own Stack\n";
 
@@ -432,12 +392,11 @@ void Mage::moveOwnStack(Player& player, Board& board) {
 	}
 	auto& srcCell{ board[{fromRow, fromCol}] };
 	auto& destCell{ board[{toRow, toCol}] };
-	destCell = std::move(srcCell); // Muta teancul
-	srcCell.reset();             // Goleste pozitia sursa
+	destCell = std::move(srcCell); 
+	srcCell.reset();             
 	std::cout << "Stack moved from (" << fromRow << ", " << fromCol << ") to (" << toRow << ", " << toCol << ").\n";
 }
 
-// Mutare teanc adversar
 void Mage::moveOpponentStack(Player& opponent, Board& board) {
 	std::cout << "Activating ability: Move Opponent's Stack\n";
 
@@ -490,8 +449,8 @@ void Mage::moveOpponentStack(Player& opponent, Board& board) {
 	}
 	auto& srcCell{ board[{fromRow, fromCol}] };
 	auto& destCell{ board[{toRow, toCol} ]};
-	destCell = std::move(srcCell); // Move the stack to the destination
-	srcCell.reset();               // Clear the source cell
+	destCell = std::move(srcCell); 
+	srcCell.reset();              
 
 	std::cout << "Opponent's stack moved from (" << fromRow << ", " << fromCol
 		<< ") to (" << toRow << ", " << toCol << ").\n";
@@ -596,7 +555,6 @@ std::string Mage::abilityToString(MagicAbility ability) {
 	}
 }
 
-//Functii ajutatoare
 bool Mage::isAbilityUsed() const {
 	return m_used;
 }
@@ -639,7 +597,7 @@ bool Mage::executeAbility(Player& player, Player& opponent, Board& board) {
 	auto abilityIt = abilityMap.find(m_ability);
 	if (abilityIt != abilityMap.end()) {
 		if (abilityIt->second) {
-			abilityIt->second(player, opponent, board); // Explicitly pass the parameters
+			abilityIt->second(player, opponent, board); 
 			return true;
 		}
 		else {

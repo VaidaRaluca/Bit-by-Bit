@@ -35,8 +35,6 @@ namespace eter {
 		elementalPowerCards{elementalPowerCards::powerAbility::avalanche},
 		elementalPowerCards{elementalPowerCards::powerAbility::rock} };
 		elementalPowerCards m_power1, m_power2;
-		/*Game* m_game;
-		Player m_player;*/
 
 	public:
 		CMode() = default;

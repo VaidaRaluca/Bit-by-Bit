@@ -1,13 +1,7 @@
 ﻿#include "Game.h"
 using namespace eter;
-//import card;
-//import player;
 #include <string>
 #include <iostream>
-//import amode;
-//import bmode;
-//import cmode;
-//import board;
 
 Game::Game(Player player1, Player player2,std::string gameMode) :
 	m_player1{ player1 }, m_player2{ player2 }, m_gameMode{ gameMode }, 
@@ -30,7 +24,7 @@ Board Game::GetBoard()
 	return m_board;
 }
 
-//Getter ce returneaza &
+
 
 Player& Game::GetPlayer1Ref() {
 	return m_player1;
@@ -165,7 +159,6 @@ void Game::playIllusion() {
 	SetIsPlayerTurn();
 }
 
-//Functii ajutatoare
 
 uint8_t Game::GetPlayer1Wins() const {
 	return m_player1Wins;
@@ -175,17 +168,12 @@ uint8_t Game::GetPlayer2Wins() const {
 	return m_player2Wins;
 }
 
-//Gestionarea turei unui jucător
 void Game::handlePlayerTurn(Player& player) {
 	std::cout << player.GetName()
 		<< " enter the coordinates (x and y) >=0 of the position on the board and the index of the card (>=0) you want to place.\n";
 
 	size_t x, y, cardIndex;
 	getInputCoordinates(x, y, cardIndex);
-	/*if (cardIndex < 0 || cardIndex >= player.GetCardsInHand().size()) { // gotta work on this
-		std::cout << "Invalid card index\n";
-		return;
-	}*/
 	std::optional<std::stack<Card>> targetCell;
 	if (m_board.isValidPosition(x, y))
 		targetCell = m_board[{x, y}];
@@ -252,7 +240,6 @@ void eter::Game::handleActivateExplosion()
 	}
 }
 
-//Obtinerea coordonatelor
 void Game::getInputCoordinates(size_t& x, size_t& y, size_t& cardIndex) {
 	std::cout << "x = "; std::cin >> x;
 	std::cout << "y = "; std::cin >> y;

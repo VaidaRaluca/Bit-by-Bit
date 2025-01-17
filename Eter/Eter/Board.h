@@ -18,7 +18,7 @@ namespace eter {
 	public:
 		//Rule of 5 
 		Board();
-		Board(const Board& other); //constructor de copiere
+		Board(const Board& other); 
 		Board& operator=(const Board& other);
 		Board(Board&& other) noexcept;
 		Board& operator=(Board&& other) noexcept;

@@ -56,7 +56,6 @@ void AMode::startMatch()
 		std::cout << m_game->GetPlayer1().GetName() << " wins: " << static_cast<int> (m_game->GetPlayer1Wins()) << "\n";
 		std::cout << m_game->GetPlayer2().GetName() << " wins: " << static_cast<int> (m_game->GetPlayer2Wins()) << "\n";
 
-		// Reset the board and reassign cards
 		assignCardsInHand();
 		m_game->resetBoard();
 		m_game->SetIsUsedExplosion(false);

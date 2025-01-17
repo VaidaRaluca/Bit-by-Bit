@@ -91,7 +91,6 @@ void eter::Card::swap(Card& other) noexcept
 
 std::ostream& eter::operator<<(std::ostream& os, const Card& card)
 {
-	// Map colors to text color (foreground) and background color codes
 	std::string textColor, backgroundColor;
 
 	if (card.GetColor() == "red") {

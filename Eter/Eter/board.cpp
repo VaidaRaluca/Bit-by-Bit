@@ -517,7 +517,7 @@ void eter::Board::clear()
 {
 	for (auto& row : m_grid) {
 		for (auto& cell : row) {
-			cell.reset();  // `reset` resetează fiecare celulă la starea inițială
+			cell.reset();  
 		}
 	}
 }
@@ -541,34 +541,19 @@ void Board::eliminateCardsOnRow(size_t row)
 				continue;
 			if (m_grid[row][col].value().top().GetValue() == '/')
 				continue;
-			m_grid[row][col].reset(); // Elimina intregul teanc
+			m_grid[row][col].reset(); 
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
 		}
 }
 
 size_t Board::countOccupiedCellsOnRow(size_t row)
 {
-	/*size_t occupiedCount = 0;
-	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
-		if (m_grid[row][col].has_value())
-			++occupiedCount;
-	}
-	return occupiedCount;*/
 	return std::ranges::count_if(m_grid[row] | std::views::drop(m_indexColMin) | std::views::take(m_indexColMax - m_indexColMin + 1),
 		[](const auto& cell) { return cell.has_value(); });
 }
 
 bool Board::containsOwnCardOnRow(size_t row, const std::string& playerColor)
 {
-	/*for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
-		if (m_grid[row][col].has_value()) {
-			const Card& topCard = m_grid[row][col].value().top();
-			if (topCard.GetColor() == playerColor)
-				return true;
-		}
-	}
-	return false;*/
-
 	return std::ranges::any_of(
 		m_grid[row] | std::views::drop(m_indexColMin) | std::views::take(m_indexColMax - m_indexColMin + 1),
 		[&](const auto& cell) {
@@ -585,7 +570,7 @@ void Board::eliminateCardsOnColumn(size_t col)
 				continue;
 			if (m_grid[row][col].value().top().GetValue() == '/')
 				continue;
-			m_grid[row][col].reset(); // Elimina intregul teanc
+			m_grid[row][col].reset(); 
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
 		}
 }
@@ -612,26 +597,12 @@ std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGridForMode
 
 size_t Board::countOccupiedCellsOnColumn(size_t col)
 {
-	/*size_t occupiedCount = 0;
-	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
-		if (m_grid[row][col].has_value())
-			++occupiedCount;
-	}
-	return occupiedCount;*/
 	return std::ranges::count_if(m_grid[col] | std::views::drop(m_indexLineMin) | std::views::take(m_indexLineMax - m_indexLineMin + 1),
 		[](const auto& cell) { return cell.has_value(); });
 }
 
 bool Board::containsOwnCardOnColumn(size_t col, const std::string& playerColor)
 {
-	/*for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
-		if (m_grid[row][col].has_value()) {
-			const Card& topCard = m_grid[row][col].value().top();
-			if (topCard.GetColor() == playerColor)
-				return true;
-		}
-	}
-	return false;*/
 	return std::ranges::any_of(
 		m_grid[col] | std::views::drop(m_indexLineMin) | std::views::take(m_indexLineMax - m_indexLineMin + 1),
 		[&](const auto& cell) {
@@ -662,7 +633,6 @@ std::vector<Card> Board::shiftRowForward(size_t row) {
 	std::vector<Card> returnedCards;
 	auto temp = std::move(m_grid[row][m_indexColMax]);
 
-	// Salvăm cărțile din ultima celulă
 	if (temp.has_value() && !temp->empty()) {
 		while (!temp->empty()) {
 			returnedCards.push_back(temp->top());
@@ -670,12 +640,10 @@ std::vector<Card> Board::shiftRowForward(size_t row) {
 		}
 	}
 
-	// Mutăm toate celulele spre dreapta
 	for (size_t col = m_indexColMax; col > m_indexColMin; --col) {
 		m_grid[row][col] = std::move(m_grid[row][col - 1]);
 	}
 
-	// Prima celulă devine goală
 	m_grid[row][m_indexColMin].reset();
 
 	return returnedCards;
@@ -686,7 +654,6 @@ std::vector<Card> Board::shiftRowBackward(size_t row) {
 	std::vector<Card> returnedCards;
 	auto temp = std::move(m_grid[row][m_indexColMin]);
 
-	// Salvăm cărțile din prima celulă
 	if (temp.has_value() && !temp->empty()) {
 		while (!temp->empty()) {
 			returnedCards.push_back(temp->top());
@@ -694,12 +661,9 @@ std::vector<Card> Board::shiftRowBackward(size_t row) {
 		}
 	}
 
-	// Mutăm toate celulele spre stânga
 	for (size_t col = m_indexColMin; col < m_indexColMax; ++col) {
 		m_grid[row][col] = std::move(m_grid[row][col + 1]);
 	}
-
-	// Ultima celulă devine goală
 	m_grid[row][m_indexColMax].reset();
 
 	return returnedCards;
@@ -710,7 +674,6 @@ std::vector<Card> Board::shiftColumnForward(size_t col) {
 	std::vector<Card> returnedCards;
 	auto temp = std::move(m_grid[m_indexLineMax][col]);
 
-	// Salvăm cărțile din ultima celulă
 	if (temp.has_value() && !temp->empty()) {
 		while (!temp->empty()) {
 			returnedCards.push_back(temp->top());
@@ -718,12 +681,10 @@ std::vector<Card> Board::shiftColumnForward(size_t col) {
 		}
 	}
 
-	// Mutăm toate celulele în jos
 	for (size_t row = m_indexLineMax; row > m_indexLineMin; --row) {
 		m_grid[row][col] = std::move(m_grid[row - 1][col]);
 	}
 
-	// Prima celulă devine goală
 	m_grid[m_indexLineMin][col].reset();
 
 	return returnedCards;
@@ -733,7 +694,6 @@ std::vector<Card> Board::shiftColumnBackward(size_t col) {
 	std::vector<Card> returnedCards;
 	auto temp = std::move(m_grid[m_indexLineMin][col]);
 
-	// Salvăm cărțile din prima celulă
 	if (temp.has_value() && !temp->empty()) {
 		while (!temp->empty()) {
 			returnedCards.push_back(temp->top());
@@ -741,12 +701,10 @@ std::vector<Card> Board::shiftColumnBackward(size_t col) {
 		}
 	}
 
-	// Mutăm toate celulele în sus
 	for (size_t row = m_indexLineMin; row < m_indexLineMax; ++row) {
 		m_grid[row][col] = std::move(m_grid[row + 1][col]);
 	}
 
-	// Ultima celulă devine goală
 	m_grid[m_indexLineMax][col].reset();
 
 	return returnedCards;
@@ -755,10 +713,6 @@ std::vector<Card> Board::shiftColumnBackward(size_t col) {
 
 
 void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
-	/*for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
-		m_grid[row][toCol] = std::move(m_grid[row][fromCol]);
-		m_grid[row][fromCol].reset();
-	}*/
 
 	std::ranges::for_each(
 		std::views::iota(m_indexLineMin, m_indexLineMax + 1), 
@@ -770,11 +724,6 @@ void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
 }
 
 void eter::Board::moveRow(size_t fromRow, size_t toRow) {
-	//for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
-	//	m_grid[toRow][col] = std::move(m_grid[fromRow][col]);
-	//	m_grid[fromRow][col].reset();
-	//}
-
 
 	std::ranges::for_each(
 		std::views::iota(m_indexColMin, m_indexColMax + 1),

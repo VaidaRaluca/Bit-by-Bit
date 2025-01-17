@@ -13,16 +13,16 @@ namespace eter
 		Player m_player2;
 		Board m_board;
 		std::string m_gameMode;
-		bool m_isPlayerTurn;  // true pentru p1,false pentru p2
+		bool m_isPlayerTurn; 
 		bool m_isUsedExplosion;
 		uint8_t m_player1Wins;
 		uint8_t m_player2Wins;
-		uint8_t m_nrRound;   // numarul rundei in care ne aflam
+		uint8_t m_nrRound;   
 
-		std::vector<Card> m_returnedCards; //vectorul de carti returnate
+		std::vector<Card> m_returnedCards; 
 		uint8_t m_countTurnForReturnedCards = 0;
 
-		//Functii ajutatoare
+
 		void handlePlayerTurn(Player& player);
 		void handlePlayerTurnWithIllusion(Player& player);
 		void handleActivateExplosion();
@@ -36,7 +36,6 @@ namespace eter
 		Player GetPlayer2() const;
 		Board GetBoard();
 
-		//Getter ce returneaza &
 		Player& GetPlayer1Ref();
 		Player& GetPlayer2Ref();
 		Board& GetBoardRef();
@@ -50,7 +49,6 @@ namespace eter
 		const std::vector<Card>& GetReturnedCards() const;
 		uint8_t GetCountTurnForReturnedCards();
 
-		//Metode ajutatoare
 		uint8_t GetPlayer1Wins() const;
 		uint8_t GetPlayer2Wins() const;
 
