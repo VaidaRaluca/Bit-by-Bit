@@ -198,7 +198,7 @@ bool eter::Board::existNonAdjacentCards(size_t x, size_t y)
 	for (const auto& [dx, dy] : directions) {
 		int nx = x + dx;
 		int ny = y + dy;
-		if ( m_grid[nx][ny].has_value() && !m_grid[nx][ny].value().empty()) {
+		if (m_grid[nx][ny].has_value() && !m_grid[nx][ny].value().empty()) {
 			return true; // cel putin  un spadiacent este ocupat
 		}
 	}
@@ -340,7 +340,7 @@ void eter::Board::removeCard(size_t x, size_t y)
 	if (m_grid[x][y].has_value() && !m_grid[x][y].value().empty())
 	{
 		m_grid[x][y].value().pop();
-		if (m_grid[x][y]->empty()) 
+		if (m_grid[x][y]->empty())
 		{
 			m_grid[x][y].reset();
 		}
@@ -486,10 +486,10 @@ bool eter::Board::isTwoLineComplete()
 {
 	size_t linesOcupate, columnOcupate;
 	linesOcupate = columnOcupate = 0;
-	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) 
+	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row)
 	{
 		size_t occupiedSpaces = 0;
-		for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) 
+		for (size_t col = m_indexColMin; col <= m_indexColMax; ++col)
 		{
 			if (m_grid[row][col].has_value())
 				occupiedSpaces++;
@@ -509,15 +509,15 @@ bool eter::Board::isTwoLineComplete()
 		if (occupiedSpaces == m_dimMax)
 			columnOcupate++;
 	}
-	return (linesOcupate==2 || columnOcupate==2
-		||(linesOcupate == 1 && columnOcupate == 1));
+	return (linesOcupate == 2 || columnOcupate == 2
+		|| (linesOcupate == 1 && columnOcupate == 1));
 }
 
 void eter::Board::clear()
 {
 	for (auto& row : m_grid) {
 		for (auto& cell : row) {
-			cell.reset();  
+			cell.reset();
 		}
 	}
 }
@@ -541,19 +541,33 @@ void Board::eliminateCardsOnRow(size_t row)
 				continue;
 			if (m_grid[row][col].value().top().GetValue() == '/')
 				continue;
-			m_grid[row][col].reset(); 
+			m_grid[row][col].reset();
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
 		}
 }
 
 size_t Board::countOccupiedCellsOnRow(size_t row)
 {
+	/*size_t occupiedCount = 0;
+	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
+		if (m_grid[row][col].has_value())
+			++occupiedCount;
+	}
+	return occupiedCount;*/
 	return std::ranges::count_if(m_grid[row] | std::views::drop(m_indexColMin) | std::views::take(m_indexColMax - m_indexColMin + 1),
 		[](const auto& cell) { return cell.has_value(); });
 }
 
 bool Board::containsOwnCardOnRow(size_t row, const std::string& playerColor)
 {
+	/*for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
+		if (m_grid[row][col].has_value()) {
+			const Card& topCard = m_grid[row][col].value().top();
+			if (topCard.GetColor() == playerColor)
+				return true;
+		}
+	}
+	return false;*/
 	return std::ranges::any_of(
 		m_grid[row] | std::views::drop(m_indexColMin) | std::views::take(m_indexColMax - m_indexColMin + 1),
 		[&](const auto& cell) {
@@ -570,7 +584,7 @@ void Board::eliminateCardsOnColumn(size_t col)
 				continue;
 			if (m_grid[row][col].value().top().GetValue() == '/')
 				continue;
-			m_grid[row][col].reset(); 
+			m_grid[row][col].reset();
 			std::cout << "Stack removed at (" << row << ", " << col << ").\n";
 		}
 }
@@ -597,16 +611,38 @@ std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGridForMode
 
 size_t Board::countOccupiedCellsOnColumn(size_t col)
 {
-	return std::ranges::count_if(m_grid[col] | std::views::drop(m_indexLineMin) | std::views::take(m_indexLineMax - m_indexLineMin + 1),
-		[](const auto& cell) { return cell.has_value(); });
+	/*size_t occupiedCount = 0;
+	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
+		if (m_grid[row][col].has_value())
+			++occupiedCount;
+	}
+	return occupiedCount;*/
+	return static_cast<size_t>(std::ranges::count_if(
+		std::views::iota(static_cast<ptrdiff_t>(m_indexLineMin), static_cast<ptrdiff_t>(m_indexLineMax + 1)),
+		[&](ptrdiff_t row) {
+			return m_grid[static_cast<size_t>(row)][col].has_value();
+		}
+	));
 }
 
 bool Board::containsOwnCardOnColumn(size_t col, const std::string& playerColor)
 {
+	/*for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
+		if (m_grid[row][col].has_value()) {
+			const Card& topCard = m_grid[row][col].value().top();
+			if (topCard.GetColor() == playerColor)
+				return true;
+		}
+	}
+	return false;*/
 	return std::ranges::any_of(
-		m_grid[col] | std::views::drop(m_indexLineMin) | std::views::take(m_indexLineMax - m_indexLineMin + 1),
-		[&](const auto& cell) {
-			return cell.has_value() && cell->top().GetColor() == playerColor;
+		std::views::iota(m_indexLineMin, m_indexLineMax + 1),
+		[&](size_t row) {
+			if (m_grid[row][col].has_value()) {
+				const Card& topCard = m_grid[row][col].value().top();
+				return topCard.GetColor() == playerColor;
+			}
+			return false;
 		}
 	);
 }
@@ -649,7 +685,7 @@ std::vector<Card> Board::shiftRowForward(size_t row) {
 	return returnedCards;
 }
 
- 
+
 std::vector<Card> Board::shiftRowBackward(size_t row) {
 	std::vector<Card> returnedCards;
 	auto temp = std::move(m_grid[row][m_indexColMin]);
@@ -713,9 +749,13 @@ std::vector<Card> Board::shiftColumnBackward(size_t col) {
 
 
 void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
+	/*for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
+		m_grid[row][toCol] = std::move(m_grid[row][fromCol]);
+		m_grid[row][fromCol].reset();
+	}*/
 
 	std::ranges::for_each(
-		std::views::iota(m_indexLineMin, m_indexLineMax + 1), 
+		std::views::iota(m_indexLineMin, m_indexLineMax + 1),
 		[&](size_t row) {
 			m_grid[row][toCol] = std::move(m_grid[row][fromCol]);
 			m_grid[row][fromCol].reset();
@@ -724,12 +764,16 @@ void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
 }
 
 void eter::Board::moveRow(size_t fromRow, size_t toRow) {
+	//for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
+//	m_grid[toRow][col] = std::move(m_grid[fromRow][col]);
+//	m_grid[fromRow][col].reset();
+//}
 
 	std::ranges::for_each(
 		std::views::iota(m_indexColMin, m_indexColMax + 1),
 		[&](size_t col) {
-			m_grid[col][toRow] = std::move(m_grid[col][fromRow]);
-			m_grid[col][fromRow].reset();
+			m_grid[toRow][col] = std::move(m_grid[fromRow][col]);
+			m_grid[fromRow][col].reset();
 		}
 	);
 }
