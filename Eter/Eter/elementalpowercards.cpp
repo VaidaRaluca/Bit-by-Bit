@@ -1431,19 +1431,27 @@ void elementalPowerCards::activateHurricane(Player& player, Player& opponent, Bo
 }
 
 
-void eter::elementalPowerCards::activateMirage(Board& board, Player& player) {
+void elementalPowerCards::activateMirage( Board& board, Player& player) {
+	std::cout << "Activate mirage" << std::endl;
+
  	bool illusionFound = false;
 	size_t illusionRow = 0, illusionCol = 0;
+	Card* illusionCard = nullptr;
 
-	for (size_t row = 0; row < board.GetIndexMax(); ++row) {
-		for (size_t col = 0; col < board.GetIndexMax(); ++col) {
+	for (size_t row = board.GetIndexLineMin(); row <= board.GetIndexLineMax(); ++row) {
+		for (size_t col = board.GetIndexColMin(); col <= board.GetIndexColMax(); ++col) {
+			if (!board.isValidPosition(row, col)) {
+				continue;
+			}
+
 			auto& cell = board[{row, col}];
 			if (cell.has_value() && !cell->empty()) {
 				Card& topCard = cell->top();
-				if (topCard.GetColor() == player.GetColor() && !topCard.GetPosition()) {
+				if (!topCard.GetPosition() && topCard.GetColor() == player.GetColor()) {
 					illusionFound = true;
 					illusionRow = row;
 					illusionCol = col;
+					illusionCard = &topCard;
 					break;
 				}
 			}
@@ -1457,11 +1465,17 @@ void eter::elementalPowerCards::activateMirage(Board& board, Player& player) {
 	}
 
  	auto& illusionCell = board[{illusionRow, illusionCol}];
-	Card oldIllusion = illusionCell->top();
-	illusionCell->pop();
-	player.addCardToHand(oldIllusion);
+	if (!illusionCell.has_value() || illusionCell->empty()) {
+		std::cout << "Error: Illusion cell is invalid or empty.\n";
+		return;
+	}
 
-	std::cout << "Your illusion at position (" << illusionRow << ", " << illusionCol << ") has been returned to your hand.\n";
+	illusionCell->pop();  
+	illusionCard->SetPosition(true); 
+	illusionCard->SetColor(player.GetColor()); 
+	player.addCardToHand(*illusionCard);
+
+	std::cout << "Your illusion at position (" << illusionRow << ", " << illusionCol << ") has been returned to your hand as a normal card with the player's color.\n";
 
  	auto& cardsInHand = player.GetCardsInHand();
 	if (cardsInHand.empty()) {
@@ -1484,18 +1498,21 @@ void eter::elementalPowerCards::activateMirage(Board& board, Player& player) {
 		std::cout << "Invalid selection. Try again.\n";
 	}
 
- 	Card newIllusion = cardsInHand[selectedCardIndex - 1];
-	newIllusion.SetPosition(false); 
+	Card newIllusion = cardsInHand[selectedCardIndex - 1];
+	newIllusion.SetPosition(false);  
+	newIllusion.SetColor(player.GetColor());  
 	cardsInHand.erase(cardsInHand.begin() + (selectedCardIndex - 1));
 
-	if (!illusionCell.has_value()) {
+ 	if (!illusionCell.has_value()) {
 		illusionCell.emplace();
 	}
+
 	illusionCell->push(newIllusion);
 	player.addPlayedCard(newIllusion);
 
 	std::cout << "Placed new illusion card with value " << static_cast<int>(newIllusion.GetValue())
 		<< " at position (" << illusionRow << ", " << illusionCol << ").\n";
+	std::cout << "Mirage power activated successfully!" << std::endl;
 }
 
 
