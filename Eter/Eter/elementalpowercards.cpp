@@ -184,7 +184,7 @@ namespace eter {
 			activateEarthQuake(player, opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::crumble:
-			activateCrumble(board, player);
+			activateCrumble(board, player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::border:
 			activateBorder(board,  player);
@@ -1495,58 +1495,85 @@ void eter::elementalPowerCards::activateBlizzard(Board& board, Player& player, P
 
 void eter::elementalPowerCards::activateSupport(Board& board, Player& player)
 {
-	int row, col;
-	std::cout << "Enter the row and column of the card to boost (1/2/3): ";
-	std::cin >> row >> col;
-
-	if (row < 0 || row >= board.GetIndexMax() || col < 0 || col >= board.GetIndexMax()) {
-		std::cout << "Invalid position on the board.\n";
-		return;
-	}
-
-	auto& cell = board[{row, col}];
-	if (!cell.has_value() || cell->empty()) {
-		std::cout << "No cards at the specified position.\n";
-		return;
-	}
-
-	Card& topCard = cell->top();
-
-	if (topCard.GetColor() == player.GetColor() && (topCard.GetValue() >= 1 && topCard.GetValue() <= 3))
+	size_t row, col;
+	while (true)
 	{
-		int originalValue = topCard.GetValue(); 
-		topCard.SetValue(topCard.GetValue() + 1); 
+		std::cout << "Enter the position (row, col) of a card with value 1/2/3: ";
+		std::cin >> row >> col;
+
+		if (!board.isValidPosition(row, col))
+		{
+			std::cout << "Invalid position. Try again.\n";
+			continue;
+		}
+
+		auto& cell = board[{row, col}];
+		if (!cell.has_value())
+		{
+			std::cout << "No card at this position. Try again.\n";
+			continue;
+		}
+		if (cell->top().GetColor() != player.GetColor())
+		{
+			std::cout << "The card is not yours. Try again.\n";
+			continue;
+		}
+		if (cell->top().GetValue() < 1 || cell->top().GetValue() > 3)
+		{
+			std::cout << "The value of the card is not correct. Try again.\n";
+			continue;
+		}
+		break;
 	}
-	//continuare
+	player.removePlayedCardForPower(board[{row, col}]->top(), row, col);
+	uint8_t value;
+	value = board[{row, col}]->top().GetValue();
+	++value;
+	board[{row, col}]->top().SetValue(value);
+	player.addPlayedCardForPower(board[{row, col}]->top(), row, col);
+	std::cout << "The value of the card at position " << row << " and " << col << " increased by 1.\n";
 }
 
-void eter::elementalPowerCards::activateCrumble(Board& board, Player& player)
+void eter::elementalPowerCards::activateCrumble(Board& board, Player& player, Player& opponent)
 {
-	int row, col;
-	std::cout << "Enter the row and column of the card to boost (1/2/3): ";
-	std::cin >> row >> col;
-
-	if (row < 0 || row >= board.GetIndexMax() || col < 0 || col >= board.GetIndexMax()) {
-		std::cout << "Invalid position on the board.\n";
-		return;
-	}
-
-	auto& cell = board[{row, col}];
-	if (!cell.has_value() || cell->empty()) {
-		std::cout << "No cards at the specified position.\n";
-		return;
-	}
-
-	Card& topCard = cell->top();
-
-	if (topCard.GetColor() == player.GetColor() && (topCard.GetValue() >= 1 && topCard.GetValue() <= 3))
+	size_t row, col;
+	while (true)
 	{
-		int originalValue = topCard.GetValue();
-		topCard.SetValue(topCard.GetValue() -1);
-	}
-	//continuare
-}
+		std::cout << "Enter the position (row, col) of a card with value 2/3/4: ";
+		std::cin >> row >> col;
 
+		if (!board.isValidPosition(row, col))
+		{
+			std::cout << "Invalid position. Try again.\n";
+			continue;
+		}
+
+		auto& cell = board[{row, col}];
+		if (!cell.has_value())
+		{
+			std::cout << "No card at this position. Try again.\n";
+			continue;
+		}
+		if (cell->top().GetColor() != opponent.GetColor())
+		{
+			std::cout << "The card is not your opponent's. Try again.\n";
+			continue;
+		}
+		if (cell->top().GetValue() < 2 || cell->top().GetValue() > 4)
+		{
+			std::cout << "The value of the card is not correct. Try again.\n";
+			continue;
+		}
+		break;
+	}
+	opponent.removePlayedCardForPower(board[{row, col}]->top(), row, col);
+	uint8_t value;
+	value = board[{row, col}]->top().GetValue();
+	--value;
+	board[{row, col}]->top().SetValue(value);
+	opponent.addPlayedCardForPower(board[{row, col}]->top(), row, col);
+	std::cout << "The value of the card at position " << row << " and " << col << " decreased by 1.\n";
+}
 void eter::elementalPowerCards::activateRock(Board& board, Player& player)
 {
  	std::vector<std::pair<size_t, size_t>> illusionPositions;
