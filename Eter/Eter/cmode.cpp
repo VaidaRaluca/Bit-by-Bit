@@ -26,20 +26,36 @@ void CMode::applyModeRules()
     AMode::applyModeRules();
 }
 
-void eter::CMode::generatePower()
-{
+void eter::CMode::generatePower() {
+    if (m_power.size() < 2) {
+        std::cerr << "Error: Not enough powers available to generate two unique powers.\n";
+        return;
+    }
+
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(0, m_power.size() - 1);
 
-    int indexPower1 = dist(gen);
+     int indexPower1 = dist(gen);
     int indexPower2;
     do {
         indexPower2 = dist(gen);
     } while (indexPower2 == indexPower1);
 
-    m_power1 = m_power[indexPower1];
+     m_power1 = m_power[indexPower1];
     m_power2 = m_power[indexPower2];
+
+ 
+    if (indexPower1 > indexPower2) {
+        std::swap(indexPower1, indexPower2); 
+    }
+    m_power.erase(m_power.begin() + indexPower2);
+    m_power.erase(m_power.begin() + indexPower1);
+
+    std::cout << std::endl;
+    std::cout << "New powers generated for this round:\n";
+    
+     
 }
 
 void CMode::assignCardsInHand()
@@ -77,6 +93,7 @@ void CMode::assignCardsInHand()
 
 void CMode::startRound()
 {
+    generatePower();
     AMode::startRound();
   
 }
@@ -118,37 +135,35 @@ void eter::CMode::handleOption()
     case OPTION_2:
         m_game->playIllusion();
         break;
-    case OPTION_3:
-       {
+    case OPTION_3: {
         std::cout << "Select an elemental power:\n";
-        int abilityIndex = 0;
-        for (int i = 0; i <= static_cast<int>(eter::elementalPowerCards::powerAbility::rock); ++i) {
-            std::cout << i << " - " << static_cast<eter::elementalPowerCards::powerAbility>(i) << "\n";
-        }
-        std::cin >> abilityIndex;
+        std::cout << "1 "<< "\n";
+        std::cout << "2 "   << "\n";
 
-        if (abilityIndex < 0 || abilityIndex > static_cast<int>(eter::elementalPowerCards::powerAbility::rock)) {
-            std::cout << "Invalid ability selection.\n";
+        int powerChoice;
+        std::cin >> powerChoice;
+
+        if (powerChoice != 1 && powerChoice != 2) {
+            std::cout << "Invalid power selection.\n";
             break;
         }
 
-        eter::elementalPowerCards::powerAbility selectedAbility =
-            static_cast<eter::elementalPowerCards::powerAbility>(abilityIndex);
+        eter::elementalPowerCards selectedPower = (powerChoice == 1) ? m_power1 : m_power2;
 
-        eter::elementalPowerCards elementalPower(selectedAbility);
-        if (elementalPower.GetUsed()) {
+        if (selectedPower.GetUsed()) {
             std::cout << "This power has already been used.\n";
+            break;
+        }
+
+        if (m_game->GetIsPlayerTurn()) {
+            selectedPower.activate(m_game, m_game->GetPlayer1Ref(), m_game->GetPlayer2Ref(), m_game->GetBoardRef());
         }
         else {
-            if (m_game->GetIsPlayerTurn()) {
-                elementalPower.activate(m_game,m_game->GetPlayer1Ref(), m_game->GetPlayer2Ref(), m_game->GetBoardRef());
-            }
-            else {
-                elementalPower.activate(m_game,m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
-            }
-            elementalPower.SetUsed(true);
-            m_game->SetIsPlayerTurn();
+            selectedPower.activate(m_game, m_game->GetPlayer2Ref(), m_game->GetPlayer1Ref(), m_game->GetBoardRef());
         }
+
+        selectedPower.SetUsed(true);
+        m_game->SetIsPlayerTurn();
         break;
     }
     default:
