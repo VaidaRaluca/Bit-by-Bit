@@ -124,75 +124,99 @@ namespace eter {
 		switch (m_power)
 		{
 		case eter::elementalPowerCards::powerAbility::controlledExplosion:
+			std::cout << "Activating Controlled Explosion. The board explodes.\n";
 			activateExplosion(game);
 			break;
 		case eter::elementalPowerCards::powerAbility::destruction:
+			std::cout << "Activating Destruction. Remove from play the last card played by the opponent.\n";
 			activateDestruction(player, opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::flame:
+			std::cout << "Activating Flame. Reveal an opponent’s Illusion.\n";
 			activateFlame(player, opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::fire:
+			std::cout << "Activating Fire.Return to their owners' hands all visible cards of the same value.\n";
 			activateFire(player, opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::ash:
+			std::cout << "Activating ASH. If one of your cards was removed from play, you can immediately play it again.\n";
 			activateASH(player, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::spark:
+			std::cout << "Activating Spark. Take any of your cards that is covered by an opponent’s cards and play it onto a different space.\n";
 			activateSpark(player,opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::squall:
+			std::cout << "Activating Squall. Return to the opponent’s hand any one of his visible cards.\n";
 			activateSquall(opponent, player, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::gale:
+			std::cout << "Activating Gale. Remove any cards that are covered by others.\n";
 			activateGale(player, opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::hurricane:
+			std::cout << "Activating Hurricane. Move any one full row/column by one card.\n";
 			activateHurricane(player, opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::gust:
+			std::cout << "Activating Gust. Move any card on the playing field onto a neighboring card of a lower value.\n";
 			activateGust(board,player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::mirage:
+			std::cout << "Activating Mirage. Exchange your Illusion with a different card from your hand.\n";
 			activateMirage(board, player);
 			break;
 		case eter::elementalPowerCards::powerAbility::storm:
+			std::cout << "Activating Storm. Remove from play any stack of minimum 2 cards.\n";
 			activateStorm(board, player, opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::tide:
+			std::cout << "Activating Tide. Change positions of 2 different cards or stacks of cards.\n";
 			activateTide(player, opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::mist:
+			std::cout << "Activating Mist. Play an Illusion again. \n";
 			activateMist(player, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::wave:
+			std::cout << "Activating Wave. Move any card to the adjacent empty space, then play a card from your hand to this now empty space.\n";
 			activateWave(board, player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::whirlpool:
+			std::cout << "Activating WhirlPool. Move onto empty space two cards from different adjacent spaces in a straight line.\n";
 			activateWhirlpool(board, player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::blizzard:
+			std::cout << "Activating Blizzard.The opponent cannot play any cards onto the chosen row/column during his next turn.\n";
 			activateBlizzard(board, player, opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::waterfall:
+			std::cout << "Activating Waterfall. Move all cards in a chosen column into one stack at the bottom of that column.\n";
 			activateWaterfall(board);
 			break;
 		case eter::elementalPowerCards::powerAbility::support:
+			std::cout << "Activating Support. Value of a chosen card is increased by + 1.\n";
 			activateSupport(board, player);
 			break;
 		case eter::elementalPowerCards::powerAbility::earthQuake:
+			std::cout << "Activating EarthQuake. Remove from play all visible ‘1’ cards.\n";
 			activateEarthQuake(player, opponent, board);
 			break;
 		case eter::elementalPowerCards::powerAbility::crumble:
+			std::cout << "Activating Crumble. Value of a card is decreased by 1.\n";
 			activateCrumble(board, player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::border:
+			std::cout << "Activating Border.Place this card in any empty space on the playing field to establish the border of the play area.\n";
 			activateBorder(board,  player);
 			break;
 		case eter::elementalPowerCards::powerAbility::avalanche:
+			std::cout << "Activating Avalanche. Move two neighboring cards / stacs by one space.\n";
 			activateAvalanche(board,player,opponent);
 			break;
 		case eter::elementalPowerCards::powerAbility::rock:
+			std::cout << "Activating Rock. Cover any Illusion card with your card.\n";
 			activateRock(board, player);
 			break;
 		default:
