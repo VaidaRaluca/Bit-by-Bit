@@ -5,6 +5,7 @@
 #include  <random>
 #include "Card.h"
 #include "Board.h"
+#include"Player.h"
 namespace eter {
 
     enum class Effect {
@@ -29,8 +30,8 @@ namespace eter {
         void printeffectMatrix();
         bool areEffectsAdjacent();
         void verifyEffects();
-        void handleApplyEffects();
-        Board applyEffects();
+        void handleApplyEffects(Player& player1, Player& player2);
+        Board applyEffects(Player& player1, Player& player2);
         void rotateExplosion();
 
     };

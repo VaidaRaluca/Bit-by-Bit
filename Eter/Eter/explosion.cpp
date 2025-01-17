@@ -211,7 +211,7 @@ void eter::Explosion::verifyEffects()
     }
 }
 
-void eter::Explosion::handleApplyEffects()
+void eter::Explosion::handleApplyEffects(Player& player1, Player& player2)
 {
     m_board = m_originalBoard;
     size_t lineMatrixEffect{ 0 };
@@ -232,14 +232,30 @@ void eter::Explosion::handleApplyEffects()
             if (cellMatrixEffect != Effect::NONE) {
                 switch (cellMatrixEffect) {
                 case Effect::REMOVE_CARD:
-                    m_board.removeCard(lineBoard, colBoard);
-                    break;
+                {
+                    if (cellBoard && !cellBoard->empty())
+                    {
+                        Card card = cellBoard->top();
+                        if (card.GetValue() != '/' && card.GetValue() != '5')
+                        {
+                            m_board.removeCard(lineBoard, colBoard);
+                            if (card.GetColor() == player1.GetColor())
+                                player1.addToEliminatedCards(card);
+                            else
+                                player2.addToEliminatedCards(card);
+                        }
+                    }
+                }
+                break;
 
                 case Effect::RETURN_CARD:
                     if (cellBoard && !cellBoard->empty()) {
                         Card card = cellBoard->top();
-                        m_board.removeCard(lineBoard, colBoard);
-                        m_returnedCards.push_back(card);
+                        if (card.GetValue() != '/' && card.GetValue() != '5')
+                        {
+                            m_board.removeCard(lineBoard, colBoard);
+                            m_returnedCards.push_back(card);
+                        }
                     }
                     break;
 
@@ -265,12 +281,12 @@ void eter::Explosion::handleApplyEffects()
 
 }
 
-Board eter::Explosion::applyEffects()
+Board eter::Explosion::applyEffects(Player& player1, Player& player2)
 {
     verifyEffects();
     std::cout << "Explosion card after verify: \n";
     printeffectMatrix();
-    handleApplyEffects();
+    handleApplyEffects(player1, player2);
     m_board.updateAfterRemoval();
     std::cout << m_board;
     std::cout << " Returned cards: \n";

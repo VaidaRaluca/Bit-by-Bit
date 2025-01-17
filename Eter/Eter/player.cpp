@@ -132,6 +132,13 @@ void Player::addPlayedCard(const Card& card)
 
 void eter::Player::addCardToHand(const Card& card)
 {
+	if (card.GetPosition() == false)
+	{
+		Card newcard = card;
+		newcard.SetPosition(true);
+		m_cardsInHand.push_back(newcard);
+	}
+	else
 	m_cardsInHand.push_back(card);
 }
 

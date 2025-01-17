@@ -220,17 +220,31 @@ void eter::Game::handleActivateExplosion()
 		std::cout << m_board;
 		std::string playerName = GetIsPlayerTurn() ? m_player1.GetName() : m_player2.GetName();
 		std::cout << playerName << " fill the second line. Do you want to activate the explosion? (y/n) \n";
-		char choice;
-		std::cin >> choice;
-		if (choice == 'y')
+		char choice1;
+		while (true) {
+			std::cin >> choice1;
+			if (choice1 == 'y' || choice1 == 'n') {
+				break;
+			}
+			std::cout << "Invalid input. Please enter 'y' or 'n' \n ";
+		}
+
+		if (choice1 == 'y')
 		{
 			Explosion explosion(m_board.GetDimMax(), GetBoard());
 			explosion.rotateExplosion();
 			std::cout << "Do you want to continue to activate the explosion ? (y/ n) \n";
-			std::cin >> choice;
-			if (choice == 'y')
+			char choice2;
+			while (true) {
+				std::cin >> choice2;
+				if (choice2 == 'y' || choice2 == 'n') {
+					break;
+				}
+				std::cout << "Invalid input. Please enter 'y' or 'n' \n ";
+			}
+			if (choice2 == 'y')
 			{
-				GetBoardRef() = explosion.applyEffects();
+				GetBoardRef() = explosion.applyEffects(GetPlayer1Ref(),GetPlayer2Ref());
 				m_returnedCards = explosion.GetReturnedCards();
 				m_countTurnForReturnedCards = 1;
 			}

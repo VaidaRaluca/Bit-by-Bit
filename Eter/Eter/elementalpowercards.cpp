@@ -212,7 +212,7 @@ namespace eter {
 		std::cin >> choice;
 		if (choice == 'y')
 		{
-			game->GetBoardRef() = explosion.applyEffects();
+			game->GetBoardRef() = explosion.applyEffects(game->GetPlayer1Ref(), game->GetPlayer2Ref());
 			game->SetReturnedCards(explosion.GetReturnedCards());
 			game->SetCountTurnForReturnedCards (1);
 			game->SetIsUsedExplosion(true);
