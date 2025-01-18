@@ -242,7 +242,6 @@ namespace eter {
 			game->SetIsUsedExplosion(true);
 		}
 	}
-
 	void elementalPowerCards::activateDestruction(Player& player, Player& opponent, Board& board) {
 		auto& opponentPlayedCards = opponent.GetPlayedCardsForPower();
 
@@ -251,11 +250,15 @@ namespace eter {
 		}
 		else
 		{
-
 			const auto& lastPlayedCardWithPos = opponentPlayedCards.back();
 			const Card& lastCardPlayed = lastPlayedCardWithPos.first;
-			size_t  x = lastPlayedCardWithPos.second.first;
-			size_t  y = lastPlayedCardWithPos.second.second;
+			size_t x = lastPlayedCardWithPos.second.first;
+			size_t y = lastPlayedCardWithPos.second.second;
+
+ 			if (lastCardPlayed.GetValue() == 5) {
+				std::cout << "The last played card is of type 'eterr'  and cannot be destroyed.\n";
+				return;  
+			}
 
 			std::cout << "Debug: Last card played by the opponent is value " << lastCardPlayed.GetValue() + 1 - 1
 				<< " and color " << lastCardPlayed.GetColor() << " at position (" << (int)x << ", " << (int)y << ").\n";
@@ -269,6 +272,7 @@ namespace eter {
 				<< " from position (" << (int)x << ", " << (int)y << ").\n";
 		}
 	}
+
 
 
 	void elementalPowerCards::activateSquall(Player& opponent, Player& player, Board& board)
