@@ -125,7 +125,7 @@ void Mage::removeOpponentCard(Player& player, Player& opponent, Board& board) {
 	}
 	auto& selectedCell{ board[{row, col}] };
 	const Card& cardToRemove{ selectedCell.value().top() };
-	selectedCell->pop(); // Elimina cartea de sus din stiva
+	selectedCell->pop();
 	if (!selectedCell->empty())
 	{
 		const Card& belowTop{ selectedCell.value().top() };
@@ -354,7 +354,6 @@ void Mage::moveOwnStack(Player& player, Board& board) {
 	while (!isFromValid) {
 		std::cout << "Enter the original position (row, column) of the stack: ";
 		std::cin >> fromRow >> fromCol;
-		std::cout << "player color: " << player.GetColor() << '\n';
 		auto& fromCell = board[{fromRow, fromCol}];
 		if (!board.isValidPosition(fromRow, fromCol))
 		{

@@ -33,16 +33,13 @@ void Explosion::generateRandomEffects()
 
 
     do {
-        // Inițializăm matricea cu NONE
         m_effectMatrix = std::vector<std::vector<Effect>>(m_size, std::vector<Effect>(m_size, Effect::NONE));
         effectCount = 0;
 
-        // Generăm efectele
         std::vector<size_t> positions(m_size * m_size);
-        std::iota(positions.begin(), positions.end(), 0); // populeaza vect cu valori consecutive -> toate pozitiile din matrice (0, ..., size*size-1)
-        std::shuffle(positions.begin(), positions.end(), gen); // amesteca valorile din vect
+        std::iota(positions.begin(), positions.end(), 0); 
+        std::shuffle(positions.begin(), positions.end(), gen); 
 
-        // Plasăm efectele pe poziții aleatorii
         for (size_t i = 0; i < maxEffects; ++i) {
             if (effectCount >= maxEffects) {
                 break;
@@ -54,7 +51,7 @@ void Explosion::generateRandomEffects()
                 continue;
             }
 
-            Effect effect = static_cast<Effect>(effectDist(gen) + 1); // Generăm efectul
+            Effect effect = static_cast<Effect>(effectDist(gen) + 1); 
             m_effectMatrix[row][col] = effect;
             ++effectCount;
 

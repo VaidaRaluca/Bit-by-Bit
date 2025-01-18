@@ -9,7 +9,6 @@ Board::Board()
 	m_indexLineMin{ 10 }, m_indexLineMax{ 10 },
 	m_indexColMin{ 10 }, m_indexColMax{ 10 }
 {
-	// Inițializează grila
 	m_grid.resize(m_indexMax, std::vector<std::optional<std::stack<Card>>>(m_indexMax));
 }
 
@@ -150,7 +149,6 @@ bool Board::isValidPosition(size_t x, size_t y) const
 		return false;
 	}
 
-	// Dacă tabla este goală, orice poziție este validă
 	if (m_indexLineMin == 10 && m_indexLineMax == 10 && m_indexColMin == 10 && m_indexColMax == 10) {
 		return true;
 	}
@@ -172,15 +170,6 @@ bool eter::Board::isAdjacentToOccupiedSpace(size_t x, size_t y)const
 		{1, -1}, {1, 0}, {1, 1}
 	};
 
-	//for (const auto& [dx, dy] : directions) {
-	//	int nx = x + dx;
-	//	int ny = y + dy;
-	//	if ( isValidPosition(nx,ny) && m_grid[nx][ny].has_value() && !m_grid[nx][ny].value().empty()) {
-	//		return true; // cel putin  un spadiacent este ocupat
-	//	}
-	//}
-	//return false; // niciun sp adiacent nu este ocupat
-
 	return std::ranges::any_of(directions, [&](const auto& dir) {
 		int nx = x + dir.first, ny = y + dir.second;
 		return isValidPosition(nx, ny) && m_grid[nx][ny].has_value() && !m_grid[nx][ny]->empty();
@@ -199,10 +188,10 @@ bool eter::Board::existNonAdjacentCards(size_t x, size_t y)
 		int nx = x + dx;
 		int ny = y + dy;
 		if (m_grid[nx][ny].has_value() && !m_grid[nx][ny].value().empty()) {
-			return true; // cel putin  un spadiacent este ocupat
+			return true; 
 		}
 	}
-	return false; // niciun sp adiacent nu este ocupat
+	return false; 
 }
 
 
@@ -213,7 +202,6 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 		return false;
 	}
 
-	//Daca linia/coloana este blocata in urma puterii Blizzard
 	if (m_blockedLine.first != 10 && m_blockedLine.second != '\0') {
 		if (m_blockedLine.second == 'R')
 		{
@@ -234,14 +222,10 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 	if (m_grid[x][y].has_value())
 	{
 		const auto& stack = m_grid[x][y].value();
-		if ((!stack.empty() && stack.top().GetValue() == 5) || (!stack.empty() && card.GetValue() == 5)) return false; // cannot place anything over eter card
-		if (!stack.empty() && card.GetColor() == stack.top().GetColor() && !stack.top().GetPosition()) { // cannot put card over your own illusion
+		if ((!stack.empty() && stack.top().GetValue() == 5) || (!stack.empty() && card.GetValue() == 5)) return false; 
+		if (!stack.empty() && card.GetColor() == stack.top().GetColor() && !stack.top().GetPosition()) { 
 			return false;
 		}
-		//if (stack.top().GetValue() == static_cast<int>('/')) //pentru gropi///create pit in board
-		//{
-		//	return false;
-		//}
 		if (!stack.empty() && card.GetValue() > stack.top().GetValue()) {
 			return true;
 		}
@@ -257,7 +241,6 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 		}
 	}
 	if (isBoardEmpty) {
-		// Daca tabla este goala, initializeaza limitele
 		m_indexLineMin = x;
 		m_indexLineMax = x;
 		m_indexColMin = y;
@@ -284,13 +267,11 @@ bool eter::Board::placeCard(size_t x, size_t y, const Card& card)
 
 	m_grid[x][y]->push(card);
 
-	// Daca s-a inserat o carte actualizez indecsi
 	m_indexLineMin = std::min(m_indexLineMin, x);
 	m_indexLineMax = std::max(m_indexLineMax, x);
 	m_indexColMin = std::min(m_indexColMin, y);
 	m_indexColMax = std::max(m_indexColMax, y);
 
-	//Resetam linia blocata in urma puterii Blizzard
 	if (m_blockedLine.first != 10 && m_blockedLine.second != '\0')
 	{
 		m_blockedLine.first = 10;
@@ -304,7 +285,7 @@ bool eter::Board::placeCard(size_t x, size_t y, const Card& card)
 
 void Board::updateAfterRemoval()
 {
-	size_t newLineMin = m_indexMax; // Setează inițial la valori maxime
+	size_t newLineMin = m_indexMax; 
 	size_t newLineMax = 0;
 	size_t newColMin = m_indexMax;
 	size_t newColMax = 0;
@@ -329,7 +310,6 @@ void Board::updateAfterRemoval()
 		m_indexColMax = newColMax;
 	}
 	else {
-		// Tabla este goală, resetează limitele la valori implicite
 		m_indexLineMin = 10;
 		m_indexLineMax = 10;
 		m_indexColMin = 10;
@@ -551,26 +531,12 @@ void Board::eliminateCardsOnRow(size_t row)
 
 size_t Board::countOccupiedCellsOnRow(size_t row)
 {
-	/*size_t occupiedCount = 0;
-	for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
-		if (m_grid[row][col].has_value())
-			++occupiedCount;
-	}
-	return occupiedCount;*/
 	return std::ranges::count_if(m_grid[row] | std::views::drop(m_indexColMin) | std::views::take(m_indexColMax - m_indexColMin + 1),
 		[](const auto& cell) { return cell.has_value(); });
 }
 
 bool Board::containsOwnCardOnRow(size_t row, const std::string& playerColor)
 {
-	/*for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
-		if (m_grid[row][col].has_value()) {
-			const Card& topCard = m_grid[row][col].value().top();
-			if (topCard.GetColor() == playerColor)
-				return true;
-		}
-	}
-	return false;*/
 	return std::ranges::any_of(
 		m_grid[row] | std::views::drop(m_indexColMin) | std::views::take(m_indexColMax - m_indexColMin + 1),
 		[&](const auto& cell) {
@@ -614,12 +580,6 @@ std::vector<std::vector<std::optional<std::stack<Card>>>>& Board::GetGridForMode
 
 size_t Board::countOccupiedCellsOnColumn(size_t col)
 {
-	/*size_t occupiedCount = 0;
-	for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
-		if (m_grid[row][col].has_value())
-			++occupiedCount;
-	}
-	return occupiedCount;*/
 	return static_cast<size_t>(std::ranges::count_if(
 		std::views::iota(static_cast<ptrdiff_t>(m_indexLineMin), static_cast<ptrdiff_t>(m_indexLineMax + 1)),
 		[&](ptrdiff_t row) {
@@ -630,14 +590,6 @@ size_t Board::countOccupiedCellsOnColumn(size_t col)
 
 bool Board::containsOwnCardOnColumn(size_t col, const std::string& playerColor)
 {
-	/*for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
-		if (m_grid[row][col].has_value()) {
-			const Card& topCard = m_grid[row][col].value().top();
-			if (topCard.GetColor() == playerColor)
-				return true;
-		}
-	}
-	return false;*/
 	return std::ranges::any_of(
 		std::views::iota(m_indexLineMin, m_indexLineMax + 1),
 		[&](size_t row) {
@@ -752,11 +704,6 @@ std::vector<Card> Board::shiftColumnBackward(size_t col) {
 
 
 void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
-	/*for (size_t row = m_indexLineMin; row <= m_indexLineMax; ++row) {
-		m_grid[row][toCol] = std::move(m_grid[row][fromCol]);
-		m_grid[row][fromCol].reset();
-	}*/
-
 	std::ranges::for_each(
 		std::views::iota(m_indexLineMin, m_indexLineMax + 1),
 		[&](size_t row) {
@@ -767,11 +714,6 @@ void eter::Board::moveColumn(size_t fromCol, size_t toCol) {
 }
 
 void eter::Board::moveRow(size_t fromRow, size_t toRow) {
-	//for (size_t col = m_indexColMin; col <= m_indexColMax; ++col) {
-//	m_grid[toRow][col] = std::move(m_grid[fromRow][col]);
-//	m_grid[fromRow][col].reset();
-//}
-
 	std::ranges::for_each(
 		std::views::iota(m_indexColMin, m_indexColMax + 1),
 		[&](size_t col) {
