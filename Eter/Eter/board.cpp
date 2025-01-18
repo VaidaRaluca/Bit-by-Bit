@@ -214,7 +214,7 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 	}
 
 	//Daca linia/coloana este blocata in urma puterii Blizzard
-	if (m_blockedLine.first != 10 || m_blockedLine.second != '\0') {
+	if (m_blockedLine.first != 10 && m_blockedLine.second != '\0') {
 		if (m_blockedLine.second == 'R')
 		{
 			if (x == m_blockedLine.first)
@@ -224,7 +224,10 @@ bool eter::Board::canPlaceCard(size_t x, size_t y, const Card& card)
 		}
 		if (m_blockedLine.second == 'C')
 		{
-			return false;
+			if (y == m_blockedLine.first)
+			{
+				return false;
+			}
 		}
 	}
 
@@ -288,7 +291,7 @@ bool eter::Board::placeCard(size_t x, size_t y, const Card& card)
 	m_indexColMax = std::max(m_indexColMax, y);
 
 	//Resetam linia blocata in urma puterii Blizzard
-	if (m_blockedLine.first != 10 || m_blockedLine.second != '\0')
+	if (m_blockedLine.first != 10 && m_blockedLine.second != '\0')
 	{
 		m_blockedLine.first = 10;
 		m_blockedLine.second = '\0';
