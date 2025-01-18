@@ -140,7 +140,6 @@ void eter::Explosion::verifyEffects()
     size_t colMatrixEffect{ 0 };
     size_t lineBoard{ m_board.GetIndexLineMin() };
     size_t colBoard{ m_board.GetIndexColMin() };
-    std::cout << static_cast<int>(lineBoard) << " " << static_cast<int>(colBoard) << " INDECSI \n";
     while (lineMatrixEffect < m_effectMatrix.size() && lineBoard <= m_board.GetIndexLineMax())
     {
         while (colMatrixEffect < m_effectMatrix.size() &&
@@ -148,8 +147,6 @@ void eter::Explosion::verifyEffects()
         {
             auto cellMatrixEffect = m_effectMatrix[lineMatrixEffect][colMatrixEffect];
             auto& cellBoard = m_board.GetGrid()[lineBoard][colBoard];
-            std::cout << "Effect applied at (" << lineBoard << ", " << colBoard << "): "
-                << static_cast<int>(cellMatrixEffect) << "\n";
             if (cellBoard.has_value() && cellBoard.value().top().GetValue() == 5)
             {
                 m_effectMatrix[lineMatrixEffect][colMatrixEffect] = Effect::NONE;
@@ -215,7 +212,6 @@ void eter::Explosion::handleApplyEffects(Player& player1, Player& player2)
     size_t colMatrixEffect{ 0 };
     size_t lineBoard{ m_board.GetIndexLineMin() };
     size_t colBoard{ m_board.GetIndexColMin() };
-    std::cout << static_cast<int>(lineBoard) << " " << static_cast<int>(colBoard) << " INDECSI \n";
     while (lineMatrixEffect < m_effectMatrix.size() && lineBoard <= m_board.GetIndexLineMax())
     {
         while (colMatrixEffect < m_effectMatrix.size() &&
@@ -223,8 +219,8 @@ void eter::Explosion::handleApplyEffects(Player& player1, Player& player2)
         {
             auto cellMatrixEffect = m_effectMatrix[lineMatrixEffect][colMatrixEffect];
             auto& cellBoard = m_board.GetGrid()[lineBoard][colBoard];
-            std::cout << "Effect applied at (" << lineBoard << ", " << colBoard << "): "
-                << static_cast<int>(cellMatrixEffect) << "\n";
+            /*std::cout << "Effect applied at (" << lineBoard << ", " << colBoard << "): "
+                << static_cast<int>(cellMatrixEffect) << "\n";*/
 
             if (cellMatrixEffect != Effect::NONE) {
                 switch (cellMatrixEffect) {
@@ -281,14 +277,9 @@ void eter::Explosion::handleApplyEffects(Player& player1, Player& player2)
 Board eter::Explosion::applyEffects(Player& player1, Player& player2)
 {
     verifyEffects();
-    std::cout << "Explosion card after verify: \n";
-    printeffectMatrix();
     handleApplyEffects(player1, player2);
     m_board.updateAfterRemoval();
     std::cout << m_board;
-    std::cout << " Returned cards: \n";
-    for (const auto& it : m_returnedCards)
-        std::cout << it << "\n";
 
     return m_board;
 }

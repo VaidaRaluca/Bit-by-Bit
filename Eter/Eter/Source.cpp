@@ -9,6 +9,7 @@
 int main()
 {
 	using namespace eter;
+	std::cout << " \n        WELCOME TO ETER GAME \n \n";
 	std::string name1, name2;
 	name1 = Player::validateName();
 	name2 = Player::validateName();
@@ -20,14 +21,6 @@ int main()
 	const std::string& gameMode = GameManager::chooseGameMode();
 
 	game.startNewGame(player1, player2, gameMode);
-
-
-	//try {
-	//	game.SaveGame();
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Error saving game: " << e.what() << std::endl;
-	//}
 
 	return 0;
 }
