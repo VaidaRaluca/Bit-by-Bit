@@ -1,0 +1,25 @@
+# Game Information
+Mode: AMode
+Rounds for Win: 2
+Total Rounds: 3
+Current Round: 1
+
+# Player 1
+Name: Mihai
+Color: red
+Score: 0
+Illusion Used: 0
+
+# Player 2
+Name: Alina
+Color: blue
+Score: 0
+Illusion Used: 1
+
+# Board
+Cell(0,0): [1 red 1] 
+Cell(0,1): [1 blue 1] 
+Cell(1,0): [1 red 1] 
+Cell(1,1): [2 blue 0] 
+# Additional Mode Data
+Illusions Saved

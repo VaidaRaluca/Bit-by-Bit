@@ -19,6 +19,8 @@ namespace eter {
 		virtual void startRound(); 
 		virtual void applyModeRules();
 
+		void saveGame(const std::string& filename) const;
+
 		virtual ~AMode() = default;
 
 	};
